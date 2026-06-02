@@ -1,65 +1,74 @@
-import Image from "next/image";
+import { prisma } from "@/lib/prisma";
+import { fallbackHero, fallbackImpact, fallbackWorkflow, fallbackProjects, fallbackTestimonials } from "@/lib/defaults";
+import Hero from "@/components/home/Hero";
+import ValueProposition from "@/components/home/ValueProposition";
+import FeaturedProjects from "@/components/home/FeaturedProjects";
+import ImpactStats from "@/components/home/ImpactStats";
+import AiWorkflow from "@/components/home/AiWorkflow";
+import SkillsOverview from "@/components/home/SkillsOverview";
+import TestimonialSection from "@/components/home/TestimonialSection";
+import CtaSection from "@/components/home/CtaSection";
+import Marquee from "@/components/effects/Marquee";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+const marqueeItems = [
+  "Product Design",
+  "UI/UX",
+  "Design Systems",
+  "AI-First",
+  "Prototyping",
+  "User Research",
+  "Interaction Design",
+  "Design Tokens",
+];
+
+export default async function HomePage() {
+  const [heroContent, projects, impactContent, workflowContent, testimonials] = await Promise.all([
+    prisma.siteContent.findUnique({ where: { key: "homepage-hero" } }).catch(() => null),
+    prisma.project.findMany({ where: { featured: true, published: true }, orderBy: { order: "asc" }, take: 4 }).catch(() => fallbackProjects.filter(p => p.featured)),
+    prisma.siteContent.findUnique({ where: { key: "homepage-impact" } }).catch(() => null),
+    prisma.siteContent.findUnique({ where: { key: "homepage-workflow" } }).catch(() => null),
+    prisma.testimonial.findMany({ where: { featured: true }, orderBy: { order: "asc" }, take: 3 }).catch(() => fallbackTestimonials.filter(t => t.featured)),
+  ]);
+
+  const hero = heroContent?.value as any || fallbackHero;
+  const impact = impactContent?.value as any || fallbackImpact;
+  const workflow = workflowContent?.value as any || fallbackWorkflow;
+
+  const impactStats = [impact.stat1, impact.stat2, impact.stat3, impact.stat4].filter(Boolean);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      {/* 1. HERO — Who I am */}
+      <Hero content={hero} />
+
+      {/* 2. MARQUEE — Visual divider */}
+      <Marquee items={marqueeItems} />
+
+      {/* 3. VALUE PROPOSITION — What I solve */}
+      <ValueProposition />
+
+      {/* 4. FEATURED PROJECTS — Show don't tell */}
+      <FeaturedProjects projects={projects} />
+
+      {/* 5. IMPACT STATS — Quantified results */}
+      {impactStats.length > 0 && <ImpactStats stats={impactStats} />}
+
+      {/* 6. MARQUEE — Visual divider */}
+      <Marquee items={marqueeItems} speed={25} />
+
+      {/* 7. AI WORKFLOW — How I work */}
+      {workflow && <AiWorkflow content={workflow} />}
+
+      {/* 8. SKILLS — What I bring */}
+      <SkillsOverview />
+
+      {/* 9. TESTIMONIALS — Others vouch */}
+      <TestimonialSection testimonials={testimonials} />
+
+      {/* 10. CTA — Let's build */}
+      <CtaSection />
+    </>
   );
 }
