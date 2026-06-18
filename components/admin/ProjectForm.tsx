@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef, useState } from "react";
+import Image from "next/image";
 import type { UseFormReturn } from "react-hook-form";
 import type { ProjectFormData } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
@@ -14,12 +16,37 @@ interface ProjectFormProps {
 }
 
 export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFormProps) {
-  const { register, handleSubmit, formState: { errors }, setValue } = form;
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = form;
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const coverImage = watch("coverImage");
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setValue("title", value);
     setValue("slug", slugify(value));
+  };
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (res.ok) {
+        setValue("coverImage", data.url);
+      }
+    } catch {
+      // upload failed
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   return (
@@ -30,6 +57,31 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
         </div>
         <Input label="Slug *" placeholder="project-slug" error={errors.slug?.message} {...register("slug")} />
         <Input label="Category *" placeholder="Product Design, UI/UX, etc." error={errors.category?.message} {...register("category")} />
+      </div>
+
+      {/* Cover image upload */}
+      <div>
+        <label className="block text-sm font-medium text-on-surface mb-2">Cover Image</label>
+        <div className="flex items-start gap-4">
+          <div className="flex-1">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleUpload}
+              className="block w-full text-sm text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-98 file:text-primary-safe hover:file:bg-primary-90 file:cursor-pointer cursor-pointer"
+            />
+            {uploading && <p className="text-xs text-on-surface-variant mt-1">Uploading...</p>}
+            {coverImage && !uploading && (
+              <p className="text-xs text-on-surface-variant mt-1 truncate">{coverImage}</p>
+            )}
+          </div>
+          {coverImage && (
+            <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-outline-variant flex-shrink-0">
+              <Image src={coverImage} alt="Cover preview" fill className="object-cover" />
+            </div>
+          )}
+        </div>
       </div>
 
       <Textarea label="Description *" placeholder="Short project description" rows={3} error={errors.description?.message} {...register("description")} />
@@ -62,12 +114,12 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
 
       <div className="flex items-center gap-6">
         <label className="flex items-center gap-2 cursor-pointer group">
-          <input type="checkbox" {...register("featured")} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500/40 transition-colors cursor-pointer" />
-          <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Featured</span>
+          <input type="checkbox" {...register("featured")} className="rounded border-border-default text-text-accent focus:ring-focus-ring/40 transition-colors cursor-pointer" />
+          <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">Featured</span>
         </label>
         <label className="flex items-center gap-2 cursor-pointer group">
-          <input type="checkbox" {...register("published")} className="rounded border-gray-300 text-blue-600 focus:ring-blue-500/40 transition-colors cursor-pointer" />
-          <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Published</span>
+          <input type="checkbox" {...register("published")} className="rounded border-border-default text-text-accent focus:ring-focus-ring/40 transition-colors cursor-pointer" />
+          <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">Published</span>
         </label>
       </div>
 

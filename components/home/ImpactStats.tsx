@@ -24,21 +24,20 @@ function parseValue(value: string): { target: number; suffix: string } {
 }
 
 function AnimatedNumber({ value, delay = 0 }: { value: string; delay?: number }) {
-  const [display, setDisplay] = useState("0");
+  const [display, setDisplay] = useState(() => {
+    if (typeof window !== "undefined") {
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReduced) return value;
+      const { target } = parseValue(value);
+      if (target === 0) return value;
+    }
+    return "0";
+  });
   const ref = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) {
-      setDisplay(value);
-      return;
-    }
-
     const { target, suffix } = parseValue(value);
-    if (target === 0) {
-      setDisplay(value);
-      return;
-    }
+    if (target === 0) return;
 
     const obj = { val: 0 };
     let killed = false;
@@ -124,26 +123,24 @@ export default function ImpactStats({ stats }: ImpactStatsProps) {
     return () => ctx.revert();
   }, []);
 
-  // Bento grid: 2-col mobile, 3-col desktop
-  // 50+ = wide left, 5+ = tall right, 30+ = standard, 98% = wide
   const gridConfig = [
-    { className: "col-span-2 md:col-span-2 min-h-[180px] md:min-h-[240px] bg-inverse-surface text-inverse-on-surface" },
-    { className: "col-span-1 min-h-[160px] md:min-h-[240px] bg-surface-container-low text-on-surface" },
-    { className: "col-span-1 min-h-[160px] md:min-h-[240px] bg-surface-container text-on-surface" },
-    { className: "col-span-2 min-h-[180px] md:min-h-[220px] bg-primary-container text-on-primary-container" },
+    { className: "col-span-2 md:col-span-2 min-h-[180px] md:min-h-[240px] bg-bg-inverse text-text-inverse" },
+    { className: "col-span-1 min-h-[160px] md:min-h-[240px] bg-surface-secondary text-text-primary" },
+    { className: "col-span-1 min-h-[160px] md:min-h-[240px] bg-surface-primary text-text-primary" },
+    { className: "col-span-2 min-h-[180px] md:min-h-[220px] bg-primary-subtle text-primary-base" },
   ];
 
   return (
     <section ref={sectionRef} className="py-[var(--spacing-12)] md:py-[var(--spacing-13)]">
-      <div className="max-w-[var(--content-width-wide)] mx-auto px-[var(--spacing-6)]">
+      <div className="w-3/5 mx-auto px-[var(--spacing-6)]">
         {/* Section title */}
         <div className="mb-[var(--spacing-10)] md:mb-[var(--spacing-12)] text-center">
           <div className="overflow-hidden">
-            <h2 className="stat-title block text-5xl md:text-7xl lg:text-[var(--font-size-display-lg)] font-bold leading-[var(--line-height-display)] text-on-surface translate-y-full">
+            <h2 className="stat-title block text-5xl md:text-7xl lg:text-[var(--font-size-display-lg)] font-bold leading-[var(--line-height-display)] text-text-primary translate-y-full">
               Impact by the Numbers
             </h2>
           </div>
-          <p className="mt-[var(--spacing-4)] text-on-surface-variant text-lg max-w-xl mx-auto">
+          <p className="mt-[var(--spacing-4)] text-text-tertiary text-lg max-w-xl mx-auto">
             Measurable results from projects delivered to startups and enterprises across multiple industries.
           </p>
         </div>
@@ -153,7 +150,7 @@ export default function ImpactStats({ stats }: ImpactStatsProps) {
           {stats.map((stat, i) => (
             <div
               key={i}
-              className={`bento-card rounded-2xl border border-outline-variant opacity-0 flex flex-col justify-end p-[var(--spacing-6)] md:p-[var(--spacing-8)] transition-shadow duration-300 hover:shadow-2 ${gridConfig[i]?.className || ""}`}
+              className={`bento-card rounded-2xl border border-border-subtle opacity-0 flex flex-col justify-end p-[var(--spacing-6)] md:p-[var(--spacing-8)] transition-shadow duration-300 hover:shadow-2 ${gridConfig[i]?.className || ""}`}
             >
               <p className={`font-bold leading-none ${
                 i === 0 || i === 3
@@ -162,7 +159,7 @@ export default function ImpactStats({ stats }: ImpactStatsProps) {
               }`}>
                 <AnimatedNumber value={stat.value} delay={i * 0.1} />
               </p>
-              <p className="mt-[var(--spacing-3)] text-sm opacity-70">
+              <p className="mt-[var(--spacing-3)] text-sm opacity-70 text-text-primary">
                 {stat.label}
               </p>
             </div>

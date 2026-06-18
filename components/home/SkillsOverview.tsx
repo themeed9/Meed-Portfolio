@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Palette, Camera, Video, PenTool } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
+import { fadeInUp, staggerContainer, easeEntrance } from "@/lib/motion";
 
 const secondarySkills = [
   { title: "Brand Design", description: "Visual identity, logos, and brand systems", icon: Palette },
@@ -15,187 +13,104 @@ const secondarySkills = [
   { title: "Marketing Design", description: "Campaigns, pitch decks, and collateral", icon: PenTool },
 ];
 
-function AnimatedLine({
-  children,
-  className = "",
-  delay = 0,
-  as: Tag = "span",
+function SkillRow({
+  skill,
+  index,
 }: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-  as?: "span" | "h2" | "h3" | "p";
+  skill: (typeof secondarySkills)[number];
+  index: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 90%", "start 60%"],
+  });
 
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const el = ref.current;
-    if (!el) return;
-
-    const inner = el.querySelector(".animated-line-inner");
-
-    gsap.fromTo(
-      inner,
-      { y: "100%" },
-      {
-        y: "0%",
-        duration: 1,
-        ease: "power3.out",
-        delay,
-        scrollTrigger: {
-          trigger: el,
-          start: "top 88%",
-          once: true,
-        },
-      }
-    );
-  }, [delay]);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.97, 1]);
+  const borderProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const borderColor = useTransform(
+    borderProgress,
+    [0, 1],
+    ["rgba(0,0,0,0.06)", "rgba(0,0,0,0.12)"]
+  );
 
   return (
-    <div ref={ref} className={`overflow-hidden ${className}`}>
-      <Tag className="animated-line-inner block translate-y-full">
-        {children}
-      </Tag>
-    </div>
+    <motion.div
+      ref={ref}
+      style={{ scale, borderColor }}
+      className="flex items-center gap-5 p-5 rounded-xl border transition-colors duration-300 hover:border-primary-safe/30 group cursor-pointer"
+    >
+      <div className="w-10 h-10 rounded-xl bg-primary-98 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+        <skill.icon size={18} className="text-primary-safe" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <h3 className="font-semibold text-on-surface">{skill.title}</h3>
+        <p className="text-sm text-on-surface-variant">{skill.description}</p>
+      </div>
+      <ArrowRight size={16} className="text-on-surface-variant group-hover:text-primary-safe group-hover:translate-x-1 transition-all duration-300 flex-shrink-0" />
+    </motion.div>
   );
 }
 
 export default function SkillsOverview() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      // Animate skill items with stagger
-      const items = itemsRef.current?.querySelectorAll(".skill-item");
-      if (items?.length) {
-        gsap.fromTo(
-          items,
-          { opacity: 0, y: 50 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power3.out",
-            stagger: 0.12,
-            scrollTrigger: {
-              trigger: items[0],
-              start: "top 88%",
-              once: true,
-            },
-          }
-        );
-      }
-
-      // Animate the underline on section title
-      const underlines = sectionRef.current?.querySelectorAll(".title-underline");
-      if (underlines?.length) {
-        gsap.fromTo(
-          underlines,
-          { scaleX: 0 },
-          {
-            scaleX: 1,
-            duration: 0.8,
-            ease: "power3.out",
-            delay: 0.6,
-            scrollTrigger: {
-              trigger: underlines[0],
-              start: "top 88%",
-              once: true,
-            },
-          }
-        );
-      }
-
-      // Animate the link arrow
-      const arrows = sectionRef.current?.querySelectorAll(".link-arrow");
-      if (arrows?.length) {
-        gsap.fromTo(
-          arrows,
-          { x: -20, opacity: 0 },
-          {
-            x: 0,
-            opacity: 1,
-            duration: 0.6,
-            ease: "power3.out",
-            delay: 0.8,
-            scrollTrigger: {
-              trigger: arrows[0],
-              start: "top 88%",
-              once: true,
-            },
-          }
-        );
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section ref={sectionRef} className="py-[var(--spacing-12)] md:py-[var(--spacing-13)]">
+    <section className="py-[var(--spacing-12)] md:py-[var(--spacing-13)] overflow-hidden">
       <div className="max-w-[var(--content-width-wide)] mx-auto px-[var(--spacing-6)]">
-        {/* Header — AnimatedLines style */}
-        <div className="max-w-xl mb-[var(--spacing-11)]">
-          <AnimatedLine
-            as="span"
-            className="text-xs font-semibold text-primary-safe uppercase tracking-widest"
-            delay={0}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--spacing-10)] lg:gap-[var(--spacing-14)] items-start">
+          {/* Left — header */}
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
           >
-            More Skills
-          </AnimatedLine>
-
-          <AnimatedLine
-            as="h2"
-            className="mt-3 text-3xl md:text-4xl font-bold text-on-surface"
-            delay={0.08}
-          >
-            Creative &amp; Visual Design
-          </AnimatedLine>
-
-          <AnimatedLine
-            as="p"
-            className="mt-[var(--spacing-4)] text-on-surface-variant leading-relaxed"
-            delay={0.16}
-          >
-            Beyond product design, I bring brands to life through visual storytelling, social media, and AI-powered creative production.
-          </AnimatedLine>
-
-          {/* Underline accent */}
-          <div className="mt-[var(--spacing-6)] h-[2px] w-12 bg-primary-safe title-underline origin-left" />
-        </div>
-
-        {/* Skills — staggered items */}
-        <div ref={itemsRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {secondarySkills.map((skill) => (
-            <div
-              key={skill.title}
-              className="skill-item p-6 rounded-2xl border border-outline-variant bg-surface hover:shadow-2 hover:border-outline transition-all duration-300 opacity-0 cursor-pointer group"
+            <motion.div variants={fadeInUp}>
+              <span className="text-xs font-semibold text-primary-safe uppercase tracking-widest">
+                More Skills
+              </span>
+            </motion.div>
+            <motion.h2
+              variants={fadeInUp}
+              className="mt-3 text-4xl md:text-5xl lg:text-[var(--font-size-display-md)] font-bold leading-[var(--line-height-display)] text-on-surface"
             >
-              <div className="w-10 h-10 rounded-xl bg-primary-98 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                <skill.icon size={18} className="text-primary-safe" />
-              </div>
-              <h3 className="font-semibold text-on-surface mb-1">{skill.title}</h3>
-              <p className="text-sm text-on-surface-variant">{skill.description}</p>
-            </div>
-          ))}
-        </div>
+              Creative &amp; Visual Design
+            </motion.h2>
+            <motion.p
+              variants={fadeInUp}
+              className="mt-[var(--spacing-4)] text-on-surface-variant text-lg leading-relaxed"
+            >
+              Beyond product design, I bring brands to life through visual storytelling, social media, and AI-powered creative production.
+            </motion.p>
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: easeEntrance, delay: 0.4 }}
+              className="mt-[var(--spacing-6)] h-[2px] w-16 bg-primary-safe origin-left"
+            />
+          </motion.div>
 
-        {/* Link — with animated arrow */}
-        <div className="mt-[var(--spacing-10)] text-center">
-          <Link
-            href="/services"
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary-safe hover:text-primary-container transition-colors cursor-pointer"
-          >
-            <span>View All Services</span>
-            <ArrowRight size={16} className="link-arrow" />
-          </Link>
+          {/* Right — skills list */}
+          <div className="space-y-3">
+            {secondarySkills.map((skill, index) => (
+              <SkillRow key={skill.title} skill={skill} index={index} />
+            ))}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.5 }}
+              className="pt-3 text-center lg:text-right"
+            >
+              <Link
+                href="/services"
+                className="inline-flex items-center gap-2 text-sm font-medium text-primary-safe hover:text-primary-container transition-colors cursor-pointer group"
+              >
+                <span>View All Services</span>
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

@@ -47,8 +47,8 @@ export default function TestimonialForm() {
           <Textarea label="Testimonial *" placeholder="What they said..." rows={4} error={errors.content?.message} {...register("content")} />
           <Input label="Rating (1-5)" type="number" placeholder="5" error={errors.rating?.message} {...register("rating")} />
           <label className="flex items-center gap-2">
-            <input type="checkbox" {...register("featured")} className="rounded border-gray-300 text-blue-600" />
-            <span className="text-sm text-gray-700 dark:text-gray-300">Featured on homepage</span>
+            <input type="checkbox" {...register("featured")} className="rounded border-border-default text-text-accent" />
+            <span className="text-sm text-text-secondary">Featured on homepage</span>
           </label>
           <div className="flex gap-3 pt-2">
             <Button type="submit" variant="primary" isLoading={isSubmitting}>Add Testimonial</Button>

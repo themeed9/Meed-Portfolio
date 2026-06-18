@@ -12,7 +12,7 @@ export default function AppShell({ children, footer }: { children: React.ReactNo
   return (
     <>
       <Navbar />
-      <main className="min-h-screen">{children}</main>
+      <main id="main-content" className="min-h-screen outline-none">{children}</main>
       {footer}
     </>
   );

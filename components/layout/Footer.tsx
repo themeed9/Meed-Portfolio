@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { Mail, Link as LinkIcon, AtSign, Globe, GitBranch } from "lucide-react";
+import Image from "next/image";
+import { Mail } from "lucide-react";
+import { FaLinkedinIn, FaXTwitter, FaDribbble, FaGithub } from "react-icons/fa6";
 
 const socialIcons: Record<string, React.ReactNode> = {
-  linkedin: <LinkIcon size={18} />,
-  twitter: <AtSign size={18} />,
-  dribbble: <Globe size={18} />,
-  github: <GitBranch size={18} />,
+  linkedin: <FaLinkedinIn size={16} />,
+  twitter: <FaXTwitter size={16} />,
+  dribbble: <FaDribbble size={16} />,
+  github: <FaGithub size={16} />,
 };
 
 const footerLinks = [
@@ -18,17 +20,30 @@ const footerLinks = [
 
 export default async function Footer() {
   let socialLinks: any[] = [];
+  let footerBgUrl: string | null = null;
   try {
     const { prisma } = await import("@/lib/prisma");
-    socialLinks = await prisma.socialLink.findMany({ orderBy: { order: "asc" } });
+    const [links, settings] = await Promise.all([
+      prisma.socialLink.findMany({ orderBy: { order: "asc" } }),
+      prisma.siteContent.findUnique({ where: { key: "site-settings" } }),
+    ]);
+    socialLinks = links;
+    const value = settings?.value as Record<string, unknown> | undefined;
+    footerBgUrl = (value?.footerBgImage as string) || null;
   } catch {
     const { fallbackSocialLinks } = await import("@/lib/defaults");
     socialLinks = fallbackSocialLinks;
   }
 
   return (
-    <footer className="border-t border-outline-variant bg-surface-container-low">
-      <div className="max-w-[var(--content-width-wide)] mx-auto px-[var(--spacing-6)] py-[var(--spacing-14)]">
+    <footer className="relative border-t border-outline-variant">
+      {footerBgUrl && (
+        <div className="absolute inset-0 z-0">
+          <Image src={footerBgUrl} alt="" fill className="object-cover" />
+          <div className="absolute inset-0 bg-surface-container-low/90" aria-hidden="true" />
+        </div>
+      )}
+      <div className="relative z-10 max-w-[var(--content-width-wide)] mx-auto px-[var(--spacing-6)] py-[var(--spacing-14)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--spacing-12)]">
           <div>
             <Link href="/" className="text-xl font-bold tracking-tight text-on-surface">
@@ -45,9 +60,9 @@ export default async function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2.5 rounded-[var(--radius-sm)] bg-surface-container-high text-on-surface-variant hover:text-primary-safe hover:bg-surface-container-highest transition-all"
-                  aria-label={link.platform}
+                  aria-label={`Visit ${link.platform} profile`}
                 >
-                  {socialIcons[link.icon?.toLowerCase() || ""] || <span>{link.platform}</span>}
+                  <span aria-hidden="true">{socialIcons[link.icon?.toLowerCase() || ""] || link.platform}</span>
                 </a>
               ))}
             </div>
@@ -75,7 +90,7 @@ export default async function Footer() {
               href="/contact"
               className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-primary-safe hover:text-primary-container transition-colors"
             >
-              <Mail size={16} />
+              <Mail size={16} aria-hidden="true" />
               Start a Conversation
             </Link>
           </div>

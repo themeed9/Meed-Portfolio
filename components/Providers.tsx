@@ -6,17 +6,22 @@ import SmoothScroll from "@/components/effects/SmoothScroll";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(() => {
+    if (typeof window !== "undefined") {
+      return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+    return true;
+  });
 
   const handleLoadComplete = useCallback(() => {
-    setIsLoading(false);
+    setShowLoading(false);
   }, []);
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <SmoothScroll>
-        {isLoading && <LoadingScreen onComplete={handleLoadComplete} />}
-        <div style={{ opacity: isLoading ? 0 : 1, transition: "opacity 0.3s ease" }}>
+        {showLoading && <LoadingScreen onComplete={handleLoadComplete} />}
+        <div style={{ opacity: showLoading ? 0 : 1, transition: "opacity 0.3s ease" }}>
           {children}
         </div>
       </SmoothScroll>

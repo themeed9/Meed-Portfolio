@@ -17,14 +17,14 @@ export default function AdminHeader({ title, description, backHref, action }: Ad
         {backHref && (
           <Link
             href={backHref}
-            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white mb-3 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-text-tertiary hover:text-text-primary mb-3 transition-colors"
           >
             <ArrowLeft size={16} />
             Back
           </Link>
         )}
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>
-        {description && <p className="mt-1 text-sm text-gray-500">{description}</p>}
+        <h1 className="text-2xl font-bold text-text-primary">{title}</h1>
+        {description && <p className="mt-1 text-sm text-text-tertiary">{description}</p>}
       </div>
       {action && <div>{action}</div>}
     </div>

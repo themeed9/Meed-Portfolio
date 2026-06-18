@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../lib/prisma";
 import bcrypt from "bcryptjs";
-
-const prisma = new PrismaClient();
 
 async function main() {
   const adminEmail = process.env.ADMIN_EMAIL;
@@ -241,6 +239,11 @@ async function main() {
         ctaLink: "/work",
         secondaryCtaText: "Get in Touch",
         secondaryCtaLink: "/contact",
+        slides: [
+          { src: "/images/projects/payflow-fintech-dashboard-1.jpg", alt: "PayFlow Fintech Dashboard" },
+          { src: "/images/projects/bloom-ai-ecommerce-1.jpg", alt: "Bloom AI E-commerce Platform" },
+          { src: "/images/projects/vertex-saas-analytics-1.jpg", alt: "Vertex SaaS Analytics Platform" },
+        ],
       },
     },
     {

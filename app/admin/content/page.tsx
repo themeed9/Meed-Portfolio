@@ -40,46 +40,46 @@ export default async function AdminContentPage() {
         ))}
       </div>
 
-      <div className="border-t border-gray-100 dark:border-gray-800 pt-12 mt-12">
+      <div className="border-t border-border-subtle pt-12 mt-12">
         <div className="flex items-center gap-3 mb-6">
-          <Mail size={20} className="text-gray-500" />
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Contact Messages</h2>
+          <Mail size={20} className="text-text-tertiary" />
+          <h2 className="text-xl font-bold text-text-primary">Contact Messages</h2>
           {unreadCount > 0 && (
-            <span className="text-xs font-medium text-white bg-blue-600 px-2 py-0.5 rounded-full">{unreadCount} new</span>
+            <span className="text-xs font-medium text-primary-foreground bg-primary-base px-2 py-0.5 rounded-full">{unreadCount} new</span>
           )}
         </div>
 
         {messages.length === 0 ? (
-          <p className="text-sm text-gray-400 py-8 text-center">No messages received yet.</p>
+          <p className="text-sm text-text-tertiary py-8 text-center">No messages received yet.</p>
         ) : (
           <div className="space-y-3">
             {messages.map((msg) => (
               <form key={msg.id} action={markAsRead.bind(null, msg.id)} className={`p-5 rounded-2xl border transition-colors ${
                 msg.read
-                  ? "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800"
-                  : "bg-blue-50 dark:bg-blue-900/10 border-blue-100 dark:border-blue-800/30"
+                  ? "bg-surface-primary border-border-subtle"
+                  : "bg-primary-subtle border-primary-base/20"
               }`}>
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-900 dark:text-white">{msg.name}</p>
+                      <p className="font-medium text-text-primary">{msg.name}</p>
                       {!msg.read && (
-                        <span className="w-2 h-2 rounded-full bg-blue-500" />
+                        <span className="w-2 h-2 rounded-full bg-primary-base" />
                       )}
                     </div>
-                    <p className="text-sm text-gray-500">{msg.email}</p>
+                    <p className="text-sm text-text-tertiary">{msg.email}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-400">{new Date(msg.createdAt).toLocaleDateString()}</span>
+                    <span className="text-xs text-text-tertiary">{new Date(msg.createdAt).toLocaleDateString()}</span>
                     {!msg.read && (
-                      <button type="submit" className="text-xs text-blue-600 hover:underline">Mark read</button>
+                      <button type="submit" className="text-xs text-text-accent hover:underline">Mark read</button>
                     )}
                   </div>
                 </div>
                 {msg.subject && (
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{msg.subject}</p>
+                  <p className="text-sm font-medium text-text-primary mb-1">{msg.subject}</p>
                 )}
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{msg.message}</p>
+                <p className="text-sm text-text-secondary leading-relaxed">{msg.message}</p>
               </form>
             ))}
           </div>

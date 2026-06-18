@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ExternalLink, GitBranch, Calendar, Clock, User, Layers } from "lucide-react";
 import Badge from "@/components/ui/Badge";
@@ -30,18 +32,59 @@ interface ProjectData {
 }
 
 export default function CaseStudyLayout({ project }: { project: ProjectData }) {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.id = "schema-project";
+    script.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "CreativeWork",
+      name: project.title,
+      description: project.description,
+      dateCreated: project.year || undefined,
+      keywords: project.tags.join(", "),
+      author: {
+        "@type": "Person",
+        name: "Abdulhameed Abdulsalam",
+      },
+    });
+    document.head.appendChild(script);
+    return () => { script.remove(); };
+  }, [project]);
+
   return (
     <article>
-      <div className="relative h-[50vh] md:h-[60vh] bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white dark:to-gray-950 z-10" />
-        <div className="relative z-20 text-center px-6">
+      <div className="relative h-[50vh] min-h-[400px] md:h-[65vh] bg-surface-container-high overflow-hidden">
+        {project.coverImage ? (
+          <Image
+            src={project.coverImage}
+            alt={project.title}
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-surface-tertiary to-surface-secondary" />
+        )}
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 -mt-16 relative z-10">
+        <div className="bg-surface-primary rounded-2xl border border-border-subtle p-[var(--spacing-8)] md:p-[var(--spacing-10)] max-w-3xl">
           <Badge variant="primary">{project.category}</Badge>
-          <h1 className="mt-4 text-4xl md:text-6xl font-bold text-gray-900 dark:text-white max-w-3xl mx-auto">
+          <h1 className="mt-4 text-3xl md:text-5xl font-bold text-text-primary leading-[var(--line-height-heading)]">
             {project.title}
           </h1>
-          <p className="mt-4 text-lg text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
+          <p className="mt-4 text-base md:text-lg text-text-secondary leading-relaxed">
             {project.description}
           </p>
+          {project.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-5">
+              {project.tags.map((tag) => (
+                <Badge key={tag}>{tag}</Badge>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -52,11 +95,11 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
               <motion.section
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Overview</h2>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{project.overview}</p>
+                <h2 className="text-2xl font-bold text-text-primary mb-4">Overview</h2>
+                <p className="text-text-secondary leading-relaxed">{project.overview}</p>
               </motion.section>
             )}
 
@@ -64,11 +107,11 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
               <motion.section
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">The Challenge</h2>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{project.challenge}</p>
+                <h2 className="text-2xl font-bold text-text-primary mb-4">The Challenge</h2>
+                <p className="text-text-secondary leading-relaxed">{project.challenge}</p>
               </motion.section>
             )}
 
@@ -80,11 +123,11 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
               <motion.section
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Our Approach</h2>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{project.approach}</p>
+                <h2 className="text-2xl font-bold text-text-primary mb-4">Our Approach</h2>
+                <p className="text-text-secondary leading-relaxed">{project.approach}</p>
               </motion.section>
             )}
 
@@ -92,12 +135,12 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
               <motion.section
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
-                className="p-8 rounded-2xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30"
+                className="p-8 rounded-2xl bg-primary-subtle border border-border-accent/30"
               >
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Results</h2>
-                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{project.results}</p>
+                <h2 className="text-2xl font-bold text-text-primary mb-4">Results</h2>
+                <p className="text-text-secondary leading-relaxed">{project.results}</p>
               </motion.section>
             )}
 
@@ -105,15 +148,15 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
               <motion.blockquote
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
-                className="p-8 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800"
+                className="p-8 rounded-2xl bg-surface-secondary border border-border-subtle"
               >
-                <p className="text-lg text-gray-700 dark:text-gray-200 italic leading-relaxed">
+                <p className="text-lg text-text-secondary italic leading-relaxed">
                   &ldquo;{project.testimonial}&rdquo;
                 </p>
                 {project.testimonialAuthor && (
-                  <p className="mt-4 font-semibold text-sm text-gray-900 dark:text-white">
+                  <p className="mt-4 font-semibold text-sm text-text-primary">
                     — {project.testimonialAuthor}
                   </p>
                 )}
@@ -122,44 +165,44 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
           </div>
 
           <aside className="space-y-8">
-            <div className="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+            <div className="p-6 rounded-2xl bg-surface-secondary border border-border-subtle">
+              <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">
                 Project Info
               </h3>
               <div className="space-y-4">
                 {project.client && (
                   <div className="flex items-start gap-3">
-                    <User size={16} className="mt-0.5 text-gray-400" />
+                    <User size={16} className="mt-0.5 text-text-tertiary" aria-hidden="true" />
                     <div>
-                      <p className="text-xs text-gray-500">Client</p>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{project.client}</p>
+                      <p className="text-xs text-text-tertiary">Client</p>
+                      <p className="text-sm font-medium text-text-primary">{project.client}</p>
                     </div>
                   </div>
                 )}
                 {project.role && (
                   <div className="flex items-start gap-3">
-                    <Layers size={16} className="mt-0.5 text-gray-400" />
+                    <Layers size={16} className="mt-0.5 text-text-tertiary" aria-hidden="true" />
                     <div>
-                      <p className="text-xs text-gray-500">My Role</p>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{project.role}</p>
+                      <p className="text-xs text-text-tertiary">My Role</p>
+                      <p className="text-sm font-medium text-text-primary">{project.role}</p>
                     </div>
                   </div>
                 )}
                 {project.duration && (
                   <div className="flex items-start gap-3">
-                    <Clock size={16} className="mt-0.5 text-gray-400" />
+                    <Clock size={16} className="mt-0.5 text-text-tertiary" aria-hidden="true" />
                     <div>
-                      <p className="text-xs text-gray-500">Duration</p>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{project.duration}</p>
+                      <p className="text-xs text-text-tertiary">Duration</p>
+                      <p className="text-sm font-medium text-text-primary">{project.duration}</p>
                     </div>
                   </div>
                 )}
                 {project.year && (
                   <div className="flex items-start gap-3">
-                    <Calendar size={16} className="mt-0.5 text-gray-400" />
+                    <Calendar size={16} className="mt-0.5 text-text-tertiary" aria-hidden="true" />
                     <div>
-                      <p className="text-xs text-gray-500">Year</p>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{project.year}</p>
+                      <p className="text-xs text-text-tertiary">Year</p>
+                      <p className="text-sm font-medium text-text-primary">{project.year}</p>
                     </div>
                   </div>
                 )}
@@ -167,8 +210,8 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
             </div>
 
             {project.tools.length > 0 && (
-              <div className="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+              <div className="p-6 rounded-2xl bg-surface-secondary border border-border-subtle">
+                <h3 className="text-sm font-semibold text-text-primary uppercase tracking-wider mb-4">
                   Tools Used
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -185,9 +228,9 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-bg-inverse text-text-inverse rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
                 >
-                  <ExternalLink size={16} />
+                  <ExternalLink size={16} aria-hidden="true" />
                   View Live Project
                 </a>
               )}
@@ -196,9 +239,9 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl text-sm font-medium hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-border-default text-text-primary rounded-full text-sm font-medium hover:border-border-strong transition-colors"
                 >
-                  <GitBranch size={16} />
+                  <GitBranch size={16} aria-hidden="true" />
                   View Source
                 </a>
               )}
