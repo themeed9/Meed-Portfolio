@@ -64,10 +64,19 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+export const resumeExperienceSchema = z.object({
+  year: z.string().min(1, "Year is required"),
+  title: z.string().min(1, "Title is required"),
+  company: z.string().min(1, "Company is required"),
+  description: z.string().min(1, "Description is required"),
+  order: z.coerce.number().int().min(0).default(0),
+});
+
 export type ContactFormData = z.infer<typeof contactFormSchema>;
 export type ProjectFormData = z.infer<typeof projectSchema>;
 export type SiteContentFormData = z.infer<typeof siteContentSchema>;
 export type SkillFormData = z.infer<typeof skillSchema>;
 export type ServiceFormData = z.infer<typeof serviceSchema>;
+export type ResumeExperienceFormData = z.infer<typeof resumeExperienceSchema>;
 export type TestimonialFormData = z.infer<typeof testimonialSchema>;
 export type LoginFormData = z.infer<typeof loginSchema>;

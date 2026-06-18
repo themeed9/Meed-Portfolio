@@ -135,6 +135,13 @@ export const fallbackResume = {
   version: "1.0",
 };
 
+export const fallbackResumeExperiences = [
+  { id: "1", year: "2024 - Present", title: "Senior Product Designer", company: "Freelance / Studio", description: "Leading product design for SaaS, fintech, and e-commerce clients. Specializing in AI-enhanced design workflows and design systems.", order: 1 },
+  { id: "2", year: "2022 - 2024", title: "Product Designer", company: "Digital Agency", description: "Designed and shipped 20+ digital products across fintech, healthcare, and enterprise SaaS. Built and maintained component libraries.", order: 2 },
+  { id: "3", year: "2021 - 2022", title: "UI/UX Designer", company: "Startup", description: "Owned the end-to-end design process for a B2B analytics platform. Grew the user base from 1K to 15K users through UX improvements.", order: 3 },
+  { id: "4", year: "2020 - 2021", title: "Junior Designer", company: "Creative Studio", description: "Started career designing brand identities, marketing materials, and social media content for small businesses and startups.", order: 4 },
+];
+
 export const fallbackAbout = {
   paragraphs: [
     "I'm a Product Designer with 5 years of experience crafting digital products that people love to use. My superpower? Combining deep design craft with AI-enhanced workflows to deliver results faster, without compromising quality.",
@@ -145,14 +152,14 @@ export const fallbackAbout = {
 
 export const fallbackHero = {
   title: "Product Designer\nwith an AI Edge",
-  subtitle: "I design clear, usable, developer-friendly digital products using Figma, AI workflows, and design systems thinking.",
+  subtitle: "I design clear, usable, developer-friendly digital products using Figma,\nAI workflows, and design systems thinking.",
   ctaText: "View My Work",
   ctaLink: "/work",
   secondaryCtaText: "Get in Touch",
   secondaryCtaLink: "/contact",
-  heroImage: "/hero.jpg",
-  heroImageAlt: "Creative workspace — Abdulhameed Abdulsalam, Product Designer",
-  profileImage: null,
+  slides: [
+    { src: "/hero.jpg", alt: "Creative workspace — Abdulhameed Abdulsalam, Product Designer" },
+  ],
 };
 
 export const fallbackImpact = {

@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-6">
+    <div className="min-h-screen flex items-center justify-center bg-bg-secondary px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -45,7 +45,7 @@ export default function AdminLoginPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05 }}
-            className="text-2xl font-bold text-gray-900 dark:text-white"
+            className="text-2xl font-bold text-text-primary"
           >
             MEED CMS
           </motion.h1>
@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="mt-2 text-sm text-gray-500"
+            className="mt-2 text-sm text-text-tertiary"
           >
             Sign in to manage your portfolio
           </motion.p>
@@ -70,7 +70,8 @@ export default function AdminLoginPage() {
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              className="p-3 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800/30 text-sm text-red-600 dark:text-red-400"
+              className="p-3 rounded-lg bg-surface-primary border border-border-subtle text-sm text-primary-base"
+              role="alert"
             >
               {error}
             </motion.div>
@@ -96,7 +97,7 @@ export default function AdminLoginPage() {
           </Button>
         </motion.form>
 
-        <p className="mt-8 text-center text-xs text-gray-400">
+        <p className="mt-8 text-center text-xs text-text-tertiary">
           Secure admin access only
         </p>
       </motion.div>

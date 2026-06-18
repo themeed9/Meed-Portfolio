@@ -3,6 +3,10 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.invalid";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "REDACTED_PLACEHOLDER_PASSWORD";
+const ADMIN_HASH = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -16,25 +20,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email as string },
-        });
+        const email = credentials.email as string;
+        const password = credentials.password as string;
 
-        if (!user) return null;
+        // Try database auth first
+        try {
+          const user = await prisma.user.findUnique({
+            where: { email },
+          });
 
-        const passwordMatch = await bcrypt.compare(
-          credentials.password as string,
-          user.password
-        );
+          if (user) {
+            const passwordMatch = await bcrypt.compare(password, user.password);
+            if (passwordMatch) {
+              return {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                role: user.role,
+              };
+            }
+          }
+        } catch {
+          // Database unavailable — fall through to env-var auth
+        }
 
-        if (!passwordMatch) return null;
+        // Fallback: authenticate against env vars (dev mode)
+        if (email === ADMIN_EMAIL && bcrypt.compareSync(password, ADMIN_HASH)) {
+          return {
+            id: "1",
+            email: ADMIN_EMAIL,
+            name: "Admin",
+            role: "admin",
+          };
+        }
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-        };
+        return null;
       },
     }),
   ],

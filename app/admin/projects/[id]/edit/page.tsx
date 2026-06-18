@@ -12,6 +12,7 @@ export default function EditProjectPage() {
   const router = useRouter();
   const params = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema) as any,
   });
@@ -32,6 +33,7 @@ export default function EditProjectPage() {
   }, [params.id, form]);
 
   const onSubmit = async (data: ProjectFormData) => {
+    setError("");
     const res = await fetch(`/api/projects/${params.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -40,6 +42,9 @@ export default function EditProjectPage() {
     if (res.ok) {
       router.push("/admin/projects");
       router.refresh();
+    } else {
+      const err = await res.json();
+      setError(err.error || "Failed to update project");
     }
   };
 
@@ -47,7 +52,7 @@ export default function EditProjectPage() {
     return (
       <div>
         <AdminHeader title="Edit Project" backHref="/admin/projects" />
-        <div className="text-center py-20 text-gray-400">Loading...</div>
+        <div className="text-center py-20 text-text-tertiary">Loading...</div>
       </div>
     );
   }
@@ -56,6 +61,7 @@ export default function EditProjectPage() {
     <div>
       <AdminHeader title="Edit Project" description="Update project details" backHref="/admin/projects" />
       <div className="max-w-3xl">
+        {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{error}</div>}
         <ProjectForm form={form} onSubmit={onSubmit} isSubmitting={form.formState.isSubmitting} />
       </div>
     </div>

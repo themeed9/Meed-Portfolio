@@ -1,11 +1,9 @@
 "use client";
 
-import { useRef, useEffect } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Search, Lightbulb, Pen, BarChart3, Send } from "lucide-react";
-
-gsap.registerPlugin(ScrollTrigger);
+import { fadeInUp, staggerContainer, easeEntrance } from "@/lib/motion";
 
 const stepIcons = [Search, Lightbulb, Pen, BarChart3, Send];
 
@@ -21,101 +19,96 @@ interface WorkflowContent {
   steps: WorkflowStep[];
 }
 
-export default function AiWorkflow({ content }: { content: WorkflowContent }) {
-  const sectionRef = useRef<HTMLDivElement>(null);
+function StepCard({
+  step,
+  index,
+  icon: Icon,
+}: {
+  step: WorkflowStep;
+  index: number;
+  icon: React.ElementType;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start 85%", "start 40%"],
+  });
 
-  useEffect(() => {
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      const titleEl = sectionRef.current?.querySelector(".wf-title");
-      if (titleEl) {
-        gsap.fromTo(
-          titleEl,
-          { y: "100%" },
-          {
-            y: "0%",
-            duration: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: titleEl,
-              start: "top 88%",
-              once: true,
-            },
-          }
-        );
-      }
-
-      const sub = sectionRef.current?.querySelector(".wf-sub");
-      if (sub) {
-        gsap.fromTo(
-          sub,
-          { opacity: 0, y: 20 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power3.out",
-            delay: 0.2,
-            scrollTrigger: {
-              trigger: sub,
-              start: "top 88%",
-              once: true,
-            },
-          }
-        );
-      }
-
-      const steps = sectionRef.current?.querySelectorAll(".workflow-step");
-      if (steps?.length) {
-        gsap.fromTo(
-          steps,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power3.out",
-            stagger: 0.12,
-            scrollTrigger: {
-              trigger: steps[0],
-              start: "top 88%",
-              once: true,
-            },
-          }
-        );
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  const xOffset = useTransform(scrollYProgress, [0, 1], [index % 2 === 0 ? -40 : 40, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.4, 1], [0, 0.3, 1]);
 
   return (
-    <section ref={sectionRef} className="relative py-[var(--spacing-12)] md:py-[var(--spacing-13)] overflow-hidden bg-inverse-surface text-inverse-on-surface">
-      <div className="max-w-[var(--content-width-wide)] mx-auto px-[var(--spacing-6)]">
-        <div className="mb-[var(--spacing-14)] max-w-2xl">
-          <div className="overflow-hidden">
-            <h2 className="wf-title block text-5xl md:text-7xl lg:text-[var(--font-size-display-lg)] font-bold leading-[var(--line-height-display)] translate-y-full">
-              My Workflow
-            </h2>
-          </div>
-          <p className="wf-sub mt-[var(--spacing-4)] text-inverse-on-surface/80 text-lg leading-relaxed">
-            {content.description}
-          </p>
+    <motion.div
+      ref={ref}
+      style={{ x: xOffset, opacity }}
+      className="flex items-start gap-5"
+    >
+      <span className="flex-shrink-0 text-[10px] font-bold text-primary-safe tracking-wider mt-0.5">
+        {step.number}
+      </span>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-3 mb-1.5">
+          <Icon size={16} className="text-primary-safe flex-shrink-0" />
+          <h3 className="text-base font-semibold text-on-surface">{step.title}</h3>
         </div>
+        <p className="text-sm text-on-surface-variant leading-relaxed">{step.description}</p>
+      </div>
+    </motion.div>
+  );
+}
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-[var(--spacing-8)]">
-          {content.steps.map((step, index) => {
-            const Icon = stepIcons[index] || Search;
-            return (
-              <div key={step.number} className="workflow-step opacity-0">
-                <Icon size={24} className="text-inverse-on-surface/80 mb-[var(--spacing-4)]" />
-                <h3 className="text-lg font-semibold text-inverse-on-surface mb-2">{step.title}</h3>
-                <p className="text-sm text-inverse-on-surface/70 leading-relaxed">{step.description}</p>
-              </div>
-            );
-          })}
+export default function AiWorkflow({ content }: { content: WorkflowContent }) {
+  return (
+    <section className="py-[var(--spacing-12)] md:py-[var(--spacing-13)] overflow-hidden">
+      <div className="max-w-[var(--content-width-wide)] mx-auto px-[var(--spacing-6)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--spacing-10)] lg:gap-[var(--spacing-14)] items-start">
+          {/* Left — title + description */}
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+          >
+            <motion.div variants={fadeInUp}>
+              <span className="text-xs font-semibold text-primary-safe uppercase tracking-widest">
+                Process
+              </span>
+            </motion.div>
+            <motion.h2
+              variants={fadeInUp}
+              className="mt-3 text-4xl md:text-5xl lg:text-[var(--font-size-display-md)] font-bold leading-[var(--line-height-display)] text-on-surface"
+            >
+              My Workflow
+            </motion.h2>
+            <motion.p
+              variants={fadeInUp}
+              className="mt-[var(--spacing-4)] text-on-surface-variant text-lg leading-relaxed"
+            >
+              {content.description}
+            </motion.p>
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: easeEntrance, delay: 0.4 }}
+              className="mt-[var(--spacing-6)] h-[2px] w-16 bg-primary-safe origin-left"
+            />
+          </motion.div>
+
+          {/* Right — steps list */}
+          <div className="space-y-[var(--spacing-7)]">
+            {content.steps.map((step, index) => {
+              const Icon = stepIcons[index] || Search;
+              return (
+                <StepCard
+                  key={step.number}
+                  step={step}
+                  index={index}
+                  icon={Icon}
+                />
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

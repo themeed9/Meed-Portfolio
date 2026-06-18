@@ -16,7 +16,7 @@ export default function Marquee({
   const duplicated = [...items, ...items, ...items, ...items];
 
   return (
-    <div className={`overflow-hidden py-[var(--spacing-8)] ${className}`}>
+    <div className={`overflow-hidden py-[var(--spacing-8)] ${className}`} aria-hidden="true">
       <div
         className="flex gap-[var(--spacing-10)] whitespace-nowrap"
         style={{
@@ -32,7 +32,7 @@ export default function Marquee({
             className="text-[var(--font-size-display-sm)] md:text-[var(--font-size-display-md)] font-bold text-outline-variant/30 uppercase tracking-wider flex items-center gap-[var(--spacing-6)]"
           >
             {item}
-            <span className="w-2 h-2 rounded-full bg-primary/40 flex-shrink-0" />
+            <span className="w-2 h-2 rounded-full bg-primary/40 flex-shrink-0" aria-hidden="true" />
           </span>
         ))}
       </div>

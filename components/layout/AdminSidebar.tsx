@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, FolderKanban, FileText, Wrench, MessageSquare, LogOut, Image } from "lucide-react";
+import { LayoutDashboard, FolderKanban, FileText, Wrench, MessageSquare, LogOut, Image, Settings } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 const sidebarLinks = [
@@ -11,7 +11,9 @@ const sidebarLinks = [
   { label: "Content", href: "/admin/content", icon: FileText },
   { label: "Skills", href: "/admin/skills", icon: Wrench },
   { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquare },
+  { label: "Resume", href: "/admin/resume", icon: FileText },
   { label: "Media Library", href: "/admin/media", icon: Image },
+  { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 export default function AdminSidebar() {
@@ -23,9 +25,9 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="w-64 min-h-screen bg-white dark:bg-gray-950 border-r border-gray-100 dark:border-gray-800 flex flex-col">
-      <div className="p-6 border-b border-gray-100 dark:border-gray-800">
-        <Link href="/admin" className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">
+    <aside className="w-64 min-h-screen bg-surface-primary border-r border-border-subtle flex flex-col">
+      <div className="p-6 border-b border-border-subtle">
+        <Link href="/admin" className="text-lg font-bold tracking-tight text-text-primary">
           MEED CMS
         </Link>
       </div>
@@ -37,8 +39,8 @@ export default function AdminSidebar() {
             href={link.href}
             className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
               isActive(link.href)
-                ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400"
-                : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                ? "bg-primary-subtle text-text-accent"
+                : "text-text-tertiary hover:bg-surface-tertiary"
             }`}
           >
             <link.icon size={18} />
@@ -47,10 +49,10 @@ export default function AdminSidebar() {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-gray-100 dark:border-gray-800 space-y-2">
+      <div className="p-4 border-t border-border-subtle space-y-2">
         <Link
           href="/"
-          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-text-tertiary hover:bg-surface-tertiary transition-colors"
           target="_blank"
         >
           <LayoutDashboard size={18} />
@@ -58,7 +60,7 @@ export default function AdminSidebar() {
         </Link>
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
-          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-primary-base hover:bg-surface-tertiary transition-colors w-full"
         >
           <LogOut size={18} />
           Sign Out

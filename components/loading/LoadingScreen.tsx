@@ -65,12 +65,15 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
     <div
       ref={containerRef}
       className="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center"
+      role="status"
+      aria-live="polite"
+      aria-label="Loading"
     >
       <div ref={numRef} className="text-[var(--font-size-display-lg)] font-bold text-white tabular-nums">
         {progress}
       </div>
 
-      <div className="absolute bottom-[var(--spacing-8)] left-[var(--spacing-6)] right-[var(--spacing-6)] h-px bg-white/10">
+      <div className="absolute bottom-[var(--spacing-8)] left-[var(--spacing-6)] right-[var(--spacing-6)] h-px bg-white/10" aria-hidden="true">
         <div
           ref={barRef}
           className="h-full bg-white origin-left"

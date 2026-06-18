@@ -9,20 +9,29 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<any>(null);
+  const prefersReducedRef = useRef(false);
 
   useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    prefersReducedRef.current = mq.matches;
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedRef.current) return;
+
     const lenis = lenisRef.current?.lenis;
     if (!lenis) return;
 
     lenis.on("scroll", ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    const ticker = gsap.ticker;
+    ticker.add((time) => {
       lenis.raf(time * 1000);
     });
-    gsap.ticker.lagSmoothing(0);
+    ticker.lagSmoothing(0);
 
     return () => {
-      gsap.ticker.remove((time) => {
+      ticker.remove((time) => {
         lenis.raf(time * 1000);
       });
     };

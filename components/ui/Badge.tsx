@@ -9,7 +9,7 @@ export default function Badge({ children, variant = "default", className = "" }:
     default: "bg-surface-container-high text-on-surface-variant",
     primary: "bg-primary-98 text-primary-30",
     secondary: "bg-tertiary-98 text-tertiary-30",
-    success: "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+    success: "bg-primary-subtle text-primary-base",
   };
 
   return (
