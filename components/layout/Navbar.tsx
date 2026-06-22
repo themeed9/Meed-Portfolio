@@ -18,7 +18,7 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const logoUrl = "https://res.cloudinary.com/dlfax4vpr/image/upload/q_auto/f_auto/v1782126019/Subtract_mlmndl.png";
   const [siteName, setSiteName] = useState("MEED");
   const { theme, setTheme, resolvedTheme } = useTheme();
   const pathname = usePathname();
@@ -34,7 +34,6 @@ export default function Navbar() {
       .then((res) => res.json())
       .then((data) => {
         setSiteName(data.siteName || "MEED");
-        setLogoUrl(data.logoUrl || null);
       })
       .catch(() => {});
   }, []);
@@ -82,18 +81,14 @@ export default function Navbar() {
           }`}
           aria-label="Home"
         >
-          {logoUrl ? (
-            <div className="relative h-6 w-[140px]">
-              <Image
-                src={logoUrl}
-                alt={siteName}
-                fill
-                className="object-contain object-left"
-              />
-            </div>
-          ) : (
-            <span className="text-xl font-bold tracking-tight">{siteName}</span>
-          )}
+          <div className="relative h-7 w-auto min-w-[112px]">
+            <Image
+              src={logoUrl}
+              alt={siteName}
+              fill
+              className="object-contain object-left"
+            />
+          </div>
         </Link>
 
         {/* Desktop nav */}
