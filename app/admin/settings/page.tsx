@@ -29,7 +29,7 @@ const emptyLink = (order: number): SocialLink => ({
   order,
 });
 
-type ImageField = "logoUrl" | "ctaBgImage" | "footerBgImage";
+type ImageField = "logoUrl" | "ctaBgImage" | "footerBgImage" | "aboutImage";
 
 function BgImageSection({
   title,
@@ -84,10 +84,12 @@ function BgImageSection({
 export default function SettingsPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const aboutImageRef = useRef<HTMLInputElement>(null);
   const ctaBgRef = useRef<HTMLInputElement>(null);
   const footerBgRef = useRef<HTMLInputElement>(null);
   const [siteName, setSiteName] = useState("MEED");
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [aboutImage, setAboutImage] = useState<string | null>(null);
   const [ctaBgImage, setCtaBgImage] = useState<string | null>(null);
   const [footerBgImage, setFooterBgImage] = useState<string | null>(null);
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
@@ -107,6 +109,7 @@ export default function SettingsPage() {
       .then(([settings, links, heroSlides]) => {
         setSiteName(settings.siteName || "MEED");
         setLogoUrl(settings.logoUrl || null);
+        setAboutImage(settings.aboutImage || null);
         setCtaBgImage(settings.ctaBgImage || null);
         setFooterBgImage(settings.footerBgImage || null);
         setSocialLinks(links.length > 0 ? links : [emptyLink(0)]);
@@ -185,7 +188,7 @@ export default function SettingsPage() {
     const siteRes = await fetch("/api/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ siteName, logoUrl, ctaBgImage, footerBgImage }),
+      body: JSON.stringify({ siteName, logoUrl, aboutImage, ctaBgImage, footerBgImage }),
     });
 
     if (!siteRes.ok) {
@@ -223,6 +226,7 @@ export default function SettingsPage() {
 
   const removeImage = (field: ImageField, ref: React.RefObject<HTMLInputElement | null>) => {
     if (field === "logoUrl") setLogoUrl(null);
+    if (field === "aboutImage") setAboutImage(null);
     if (field === "ctaBgImage") setCtaBgImage(null);
     if (field === "footerBgImage") setFooterBgImage(null);
     if (ref.current) ref.current.value = "";
@@ -297,6 +301,34 @@ export default function SettingsPage() {
           {logoUrl && (
             <button onClick={() => removeImage("logoUrl", fileInputRef)} className="text-sm text-primary-base hover:underline">
               Remove logo
+            </button>
+          )}
+        </div>
+
+        {/* ── About Image ─────────────────────────────────── */}
+        <div className="p-6 bg-surface-primary rounded-2xl border border-border-subtle space-y-6">
+          <h2 className="text-lg font-semibold text-text-primary">About Page Photo</h2>
+
+          {aboutImage && (
+            <div className="relative w-32 h-40 rounded-xl border border-border-subtle overflow-hidden bg-surface-container-high">
+              <Image src={aboutImage} alt="About photo" fill className="object-cover" />
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
+            <input
+              ref={aboutImageRef}
+              type="file"
+              accept="image/*"
+              onChange={(e) => handleUpload(e, "aboutImage", setAboutImage)}
+              className="block w-full text-sm text-text-tertiary file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-subtle file:text-text-accent hover:file:bg-primary-subtle/80 file:cursor-pointer cursor-pointer"
+            />
+            {uploading === "aboutImage" && <span className="text-sm text-text-tertiary">Uploading...</span>}
+          </div>
+
+          {aboutImage && (
+            <button onClick={() => removeImage("aboutImage", aboutImageRef)} className="text-sm text-primary-base hover:underline">
+              Remove photo
             </button>
           )}
         </div>

@@ -38,7 +38,7 @@ export default async function Footer() {
   }
 
   if (!logoUrl) {
-    logoUrl = "https://res.cloudinary.com/dlfax4vpr/image/upload/q_auto/f_auto/v1782126019/Subtract_mlmndl.png";
+    logoUrl = "https://res.cloudinary.com/dlfax4vpr/image/upload/q_auto/v1782126019/Subtract_mlmndl.png";
   }
 
   return (
@@ -55,12 +55,7 @@ export default async function Footer() {
             <Link href="/" className="inline-block">
               {logoUrl ? (
                 <div className="relative h-6 w-auto min-w-[98px]">
-                  <Image
-                    src={logoUrl}
-                    alt="MEED"
-                    fill
-                    className="object-contain object-left"
-                  />
+                  <Image src={logoUrl} alt="MEED" fill className="object-contain object-left" style={{ filter: "var(--logo-filter)" }} />
                 </div>
               ) : (
                 <span className="text-xl font-bold tracking-tight text-on-surface">MEED</span>

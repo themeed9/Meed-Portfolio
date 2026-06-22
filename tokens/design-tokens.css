@@ -110,6 +110,9 @@
   /* ── Legacy palette (referenced by some components) ──────── */
   --color-primary-90: hsl(150, 60%, 70%);
   --color-primary-98: hsl(150, 55%, 92%);
+
+  /* ── Logo filter ─────────────────────────────────────────── */
+  --logo-filter: brightness(0);
 }
 
 /* ── Dark Mode ──────────────────────────────────────────── */
@@ -181,6 +184,9 @@
   /* ── Legacy palette override ─────────────────────────────── */
   --color-primary-90: hsl(150, 50%, 65%);
   --color-primary-98: hsl(150, 55%, 85%);
+
+  /* ── Logo filter ─────────────────────────────────────────── */
+  --logo-filter: brightness(0) invert(1);
 }
 
 /* ── Typography ─────────────────────────────────────────── */

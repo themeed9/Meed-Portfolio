@@ -18,7 +18,7 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const logoUrl = "https://res.cloudinary.com/dlfax4vpr/image/upload/q_auto/f_auto/v1782126019/Subtract_mlmndl.png";
+  const logoUrl = "https://res.cloudinary.com/dlfax4vpr/image/upload/q_auto/v1782126019/Subtract_mlmndl.png";
   const [siteName, setSiteName] = useState("MEED");
   const { theme, setTheme, resolvedTheme } = useTheme();
   const pathname = usePathname();
@@ -87,6 +87,7 @@ export default function Navbar() {
               alt={siteName}
               fill
               className="object-contain object-left"
+              style={{ filter: "var(--logo-filter)" }}
             />
           </div>
         </Link>
