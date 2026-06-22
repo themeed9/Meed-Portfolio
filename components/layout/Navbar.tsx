@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/lib/theme-context";
 import { Menu, X, Moon, Sun } from "lucide-react";
 
 const navLinks = [

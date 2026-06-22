@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/lib/theme-context";
 import SmoothScroll from "@/components/effects/SmoothScroll";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 
@@ -18,7 +18,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+    <ThemeProvider>
       <SmoothScroll>
         {showLoading && <LoadingScreen onComplete={handleLoadComplete} />}
         <div style={{ opacity: showLoading ? 0 : 1, transition: "opacity 0.3s ease" }}>
