@@ -29,7 +29,7 @@ export default function Marquee({
         {duplicated.map((item, i) => (
           <span
             key={i}
-            className="text-[var(--font-size-display-sm)] md:text-[var(--font-size-display-md)] font-bold text-outline-variant/30 uppercase tracking-wider flex items-center gap-[var(--spacing-6)]"
+            className="text-[var(--font-size-display-sm)] md:text-[var(--font-size-display-md)] font-bold text-on-surface-variant/40 uppercase tracking-wider flex items-center gap-[var(--spacing-6)]"
           >
             {item}
             <span className="w-2 h-2 rounded-full bg-primary/40 flex-shrink-0" aria-hidden="true" />

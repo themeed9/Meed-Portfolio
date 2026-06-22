@@ -31,7 +31,6 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
     [0, 0.6],
     ["inset(0 100% 0 0)", "inset(0 0% 0 0)"]
   );
-  const isEven = index % 2 === 0;
 
   return (
     <motion.div
@@ -47,7 +46,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
       style={{ scale }}
-      className={`w-full ${isEven ? "md:ml-0 md:mr-[15%]" : "md:ml-[15%] md:mr-0"}`}
+      className="w-full max-w-3xl mx-auto"
     >
       <Link href={`/work/${project.slug}`} className="group block cursor-pointer">
         <div className="bg-surface-primary rounded-2xl border border-border-subtle overflow-hidden transition-shadow duration-300 hover:shadow-[var(--elevation-2)]">
@@ -118,7 +117,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
           </motion.p>
         </motion.div>
 
-        <div className="max-w-[60%] mx-auto space-y-[var(--spacing-10)] md:space-y-[var(--spacing-14)]">
+        <div className="max-w-full md:max-w-[60%] mx-auto space-y-[var(--spacing-10)] md:space-y-[var(--spacing-14)]">
           {projects.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}

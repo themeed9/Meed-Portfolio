@@ -19,6 +19,7 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
   const { register, handleSubmit, formState: { errors }, setValue, watch } = form;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const coverImage = watch("coverImage");
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +33,7 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
     if (!file) return;
 
     setUploading(true);
+    setUploadError("");
     const formData = new FormData();
     formData.append("file", file);
 
@@ -40,9 +42,11 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
       const data = await res.json();
       if (res.ok) {
         setValue("coverImage", data.url);
+      } else {
+        setUploadError(data.error || "Upload failed");
       }
     } catch {
-      // upload failed
+      setUploadError("Upload failed — check console for details");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -72,7 +76,8 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
               className="block w-full text-sm text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-98 file:text-primary-safe hover:file:bg-primary-90 file:cursor-pointer cursor-pointer"
             />
             {uploading && <p className="text-xs text-on-surface-variant mt-1">Uploading...</p>}
-            {coverImage && !uploading && (
+            {uploadError && <p className="text-xs text-error mt-1">{uploadError}</p>}
+            {coverImage && !uploading && !uploadError && (
               <p className="text-xs text-on-surface-variant mt-1 truncate">{coverImage}</p>
             )}
           </div>

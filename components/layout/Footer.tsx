@@ -21,6 +21,7 @@ const footerLinks = [
 export default async function Footer() {
   let socialLinks: any[] = [];
   let footerBgUrl: string | null = null;
+  let logoUrl: string | null = null;
   try {
     const { prisma } = await import("@/lib/prisma");
     const [links, settings] = await Promise.all([
@@ -30,9 +31,14 @@ export default async function Footer() {
     socialLinks = links;
     const value = settings?.value as Record<string, unknown> | undefined;
     footerBgUrl = (value?.footerBgImage as string) || null;
+    logoUrl = (value?.logoUrl as string) || null;
   } catch {
     const { fallbackSocialLinks } = await import("@/lib/defaults");
     socialLinks = fallbackSocialLinks;
+  }
+
+  if (!logoUrl) {
+    logoUrl = "https://res.cloudinary.com/dlfax4vpr/image/upload/q_auto/f_auto/v1782126019/Subtract_mlmndl.png";
   }
 
   return (
@@ -46,8 +52,19 @@ export default async function Footer() {
       <div className="relative z-10 max-w-[var(--content-width-wide)] mx-auto px-[var(--spacing-6)] py-[var(--spacing-14)]">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--spacing-12)]">
           <div>
-            <Link href="/" className="text-xl font-bold tracking-tight text-on-surface">
-              MEED
+            <Link href="/" className="inline-block">
+              {logoUrl ? (
+                <div className="relative h-6 w-auto min-w-[98px]">
+                  <Image
+                    src={logoUrl}
+                    alt="MEED"
+                    fill
+                    className="object-contain object-left"
+                  />
+                </div>
+              ) : (
+                <span className="text-xl font-bold tracking-tight text-on-surface">MEED</span>
+              )}
             </Link>
             <p className="mt-4 text-sm text-on-surface-variant max-w-xs">
               Product Designer crafting clear, usable, developer-friendly digital products with an AI edge.
