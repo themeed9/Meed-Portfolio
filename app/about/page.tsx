@@ -3,6 +3,7 @@ import { fallbackSkills, fallbackAbout, fallbackResume } from "@/lib/defaults";
 import { generateMetadata } from "@/lib/seo";
 import FadeIn from "@/components/effects/FadeIn";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Download } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,8 @@ export const metadata = generateMetadata({
 export default async function AboutPage() {
   const aboutContent = await prisma.siteContent.findUnique({ where: { key: "homepage-about" } }).catch(() => null);
   const about = aboutContent?.value as any || fallbackAbout;
+  const settings = await prisma.siteContent.findUnique({ where: { key: "site-settings" } }).catch(() => null);
+  const aboutImage = (settings?.value as any)?.aboutImage || about?.imageUrl || null;
   const skills = await prisma.skill.findMany({ orderBy: { order: "asc" } }).catch(() => fallbackSkills);
   const resume = await prisma.resume.findFirst({ where: { active: true } }).catch(() => null) || fallbackResume;
 
@@ -47,8 +50,14 @@ export default async function AboutPage() {
               )}
             </div>
           </div>
-          <div className="aspect-[4/5] rounded-2xl bg-surface-tertiary flex items-center justify-center" aria-hidden="true">
-            <span className="text-sm text-text-tertiary">Photo</span>
+          <div className="relative aspect-[4/5] rounded-2xl bg-surface-tertiary overflow-hidden">
+            {aboutImage ? (
+              <Image src={aboutImage} alt="About photo" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center" aria-hidden="true">
+                <span className="text-sm text-text-tertiary">Photo</span>
+              </div>
+            )}
           </div>
         </div>
 

@@ -242,3 +242,5 @@ textarea:focus:not(:focus-visible) {
 @utility text-primary-safe {
   color: var(--color-text-accent);
 }
+
+

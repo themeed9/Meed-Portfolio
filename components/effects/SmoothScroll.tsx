@@ -17,6 +17,10 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
   }, []);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (prefersReducedRef.current) return;
 
     const lenis = lenisRef.current?.lenis;

@@ -9,6 +9,7 @@ export async function GET() {
     siteName: "MEED",
     ctaBgImage: null,
     footerBgImage: null,
+    aboutImage: null,
   };
   return NextResponse.json(entry?.value ?? defaults);
 }
@@ -26,6 +27,7 @@ export async function PUT(request: Request) {
       siteName: body.siteName || "MEED",
       ctaBgImage: body.ctaBgImage || null,
       footerBgImage: body.footerBgImage || null,
+      aboutImage: body.aboutImage || null,
     };
 
     const entry = await prisma.siteContent.upsert({

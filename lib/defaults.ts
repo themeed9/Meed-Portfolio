@@ -148,6 +148,7 @@ export const fallbackAbout = {
     "I specialize in SaaS, fintech, and e-commerce — complex spaces where clarity is the differentiator. Every project I ship comes with a design system, thorough documentation, and a developer handoff that engineers actually enjoy.",
     "Beyond product design, I create brand identities, social media content, and AI-powered storytelling. I believe the best designers are systems thinkers who can operate across the full spectrum — from strategy to pixels.",
   ],
+  imageUrl: null,
 };
 
 export const fallbackHero = {
