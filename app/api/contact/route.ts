@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { contactFormSchema } from "@/lib/validations";
+import { sendContactNotification } from "@/lib/email";
 
 export async function GET() {
   const session = await auth();
@@ -28,6 +29,16 @@ export async function POST(request: Request) {
     await prisma.contactMessage.create({
       data: { name, email, subject, message },
     });
+
+    // Send email notification to the configured contact email
+    const settings = await prisma.siteContent.findUnique({ where: { key: "site-settings" } });
+    const contactEmail = String((settings?.value as any)?.contactEmail || process.env.CONTACT_EMAIL || "");
+
+    if (contactEmail) {
+      sendContactNotification({ name, email, subject, message, recipientEmail: contactEmail }).catch(
+        (err) => console.error("Failed to send email notification:", err),
+      );
+    }
 
     return NextResponse.json({ success: true, message: "Message sent successfully!" }, { status: 200 });
   } catch (error) {
