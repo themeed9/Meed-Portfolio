@@ -20,12 +20,14 @@ export default async function AdminContentPage() {
   const session = await auth();
   if (!session?.user) redirect("/admin/login");
 
-  const [contentEntries, messages] = await Promise.all([
+  const [contentEntries, messages, settings] = await Promise.all([
     prisma.siteContent.findMany({ orderBy: { key: "asc" } }).catch(() => []),
     prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
+    prisma.siteContent.findUnique({ where: { key: "site-settings" } }).catch(() => null),
   ]);
 
   const unreadCount = messages.filter((m: any) => !m.read).length;
+  const contactEmail = (settings?.value as any)?.contactEmail || "";
 
   return (
     <div>
@@ -41,13 +43,18 @@ export default async function AdminContentPage() {
       </div>
 
       <div className="border-t border-border-subtle pt-12 mt-12">
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex items-center gap-3 mb-2">
           <Mail size={20} className="text-text-tertiary" />
           <h2 className="text-xl font-bold text-text-primary">Contact Messages</h2>
           {unreadCount > 0 && (
             <span className="text-xs font-medium text-primary-foreground bg-primary-base px-2 py-0.5 rounded-full">{unreadCount} new</span>
           )}
         </div>
+        {contactEmail && (
+          <p className="text-sm text-text-tertiary mb-6">
+            Notifications sent to <span className="font-medium text-text-secondary">{contactEmail}</span>
+          </p>
+        )}
 
         {messages.length === 0 ? (
           <p className="text-sm text-text-tertiary py-8 text-center">No messages received yet.</p>

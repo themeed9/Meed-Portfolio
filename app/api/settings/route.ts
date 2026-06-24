@@ -10,6 +10,7 @@ export async function GET() {
     ctaBgImage: null,
     footerBgImage: null,
     aboutImage: null,
+    contactEmail: process.env.CONTACT_EMAIL || "",
   };
   return NextResponse.json(entry?.value ?? defaults);
 }
@@ -28,6 +29,7 @@ export async function PUT(request: Request) {
       ctaBgImage: body.ctaBgImage || null,
       footerBgImage: body.footerBgImage || null,
       aboutImage: body.aboutImage || null,
+      contactEmail: body.contactEmail || process.env.CONTACT_EMAIL || "",
     };
 
     const entry = await prisma.siteContent.upsert({

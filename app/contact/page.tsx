@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, useReducedMotion } from "framer-motion";
@@ -13,7 +13,17 @@ import Textarea from "@/components/ui/Textarea";
 
 export default function ContactPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [contactEmail, setContactEmail] = useState("");
   const prefersReduced = useReducedMotion();
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.contactEmail) setContactEmail(data.contactEmail);
+      })
+      .catch(() => {});
+  }, []);
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema) as any,
   });
@@ -60,7 +70,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <p className="text-sm text-text-tertiary">Email</p>
-                  <p className="font-medium text-text-primary">hello@meedport.com</p>
+                  <p className="font-medium text-text-primary">{contactEmail || "hello@meedport.com"}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">

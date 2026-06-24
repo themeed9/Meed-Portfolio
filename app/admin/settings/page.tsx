@@ -92,6 +92,7 @@ export default function SettingsPage() {
   const [aboutImage, setAboutImage] = useState<string | null>(null);
   const [ctaBgImage, setCtaBgImage] = useState<string | null>(null);
   const [footerBgImage, setFooterBgImage] = useState<string | null>(null);
+  const [contactEmail, setContactEmail] = useState("");
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [slides, setSlides] = useState<{ src: string; alt: string }[]>([]);
   const [slidesUploading, setSlidesUploading] = useState(false);
@@ -112,6 +113,7 @@ export default function SettingsPage() {
         setAboutImage(settings.aboutImage || null);
         setCtaBgImage(settings.ctaBgImage || null);
         setFooterBgImage(settings.footerBgImage || null);
+        setContactEmail(settings.contactEmail || "");
         setSocialLinks(links.length > 0 ? links : [emptyLink(0)]);
         setSlides(Array.isArray(heroSlides) ? heroSlides : []);
         setLoading(false);
@@ -188,7 +190,7 @@ export default function SettingsPage() {
     const siteRes = await fetch("/api/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ siteName, logoUrl, aboutImage, ctaBgImage, footerBgImage }),
+      body: JSON.stringify({ siteName, logoUrl, aboutImage, ctaBgImage, footerBgImage, contactEmail }),
     });
 
     if (!siteRes.ok) {
@@ -343,6 +345,23 @@ export default function SettingsPage() {
           onUpload={(e) => handleUpload(e, "ctaBgImage", setCtaBgImage)}
           onRemove={() => removeImage("ctaBgImage", ctaBgRef)}
         />
+
+        {/* ── Contact Email ────────────────────────────────── */}
+        <div className="p-6 bg-surface-primary rounded-2xl border border-border-subtle space-y-6">
+          <div>
+            <h2 className="text-lg font-semibold text-text-primary">Contact Email</h2>
+            <p className="mt-1 text-sm text-text-tertiary">
+              Email address where contact form submissions will be sent
+            </p>
+          </div>
+          <input
+            type="email"
+            value={contactEmail}
+            onChange={(e) => setContactEmail(e.target.value)}
+            className="block w-full rounded-xl border border-border-default bg-surface px-4 py-2.5 text-sm text-text-primary placeholder-text-tertiary focus:border-text-accent focus:ring-2 focus:ring-focus-ring/40 transition-colors"
+            placeholder="you@example.com"
+          />
+        </div>
 
         {/* ── Footer Background ───────────────────────────── */}
         <BgImageSection

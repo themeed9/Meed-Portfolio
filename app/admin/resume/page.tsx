@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import AdminHeader from "@/components/layout/AdminHeader";
 import ResumeExperienceForm from "./ResumeExperienceForm";
 import DeleteButton from "./DeleteButton";
+import ResumeUpload from "./ResumeUpload";
 
 export const dynamic = "force-dynamic";
 
@@ -19,9 +20,24 @@ export default async function AdminResumePage() {
   } catch {
   }
 
+  let resumeUrl: string | null = null;
+  try {
+    const resume = await prisma.resume.findFirst({ where: { active: true } });
+    resumeUrl = resume?.fileUrl || null;
+  } catch {
+  }
+
   return (
     <div>
-      <AdminHeader title="Resume Experiences" description="Manage your work experience entries shown on the resume page" />
+      <AdminHeader title="Resume" description="Manage your resume PDF and work experience entries" />
+
+      <div className="mb-10 p-6 bg-surface-primary rounded-2xl border border-border-subtle">
+        <h2 className="text-lg font-bold text-text-primary mb-4">Resume PDF</h2>
+        <p className="text-sm text-text-tertiary mb-4">
+          Upload your resume PDF. This will be available for download on the resume page.
+        </p>
+        <ResumeUpload currentUrl={resumeUrl} />
+      </div>
 
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-lg font-bold text-text-primary">Experience</h2>

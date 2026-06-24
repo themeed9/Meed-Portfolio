@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { fallbackResume, fallbackResumeExperiences } from "@/lib/defaults";
+import { fallbackResume, fallbackResumeExperiences, fallbackResumeSummary, fallbackResumeCompetencies, fallbackResumeTools, fallbackResumeEducation, fallbackResumeCertifications } from "@/lib/defaults";
 import { generateMetadata } from "@/lib/seo";
 import FadeIn from "@/components/effects/FadeIn";
-import { Download } from "lucide-react";
+import { Download, CheckCircle, Award, GraduationCap } from "lucide-react";
 import Button from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
@@ -17,36 +17,37 @@ export default async function ResumePage() {
 
   let experiences = fallbackResumeExperiences;
   try {
-    experiences = await prisma.resumeExperience.findMany({
+    const dbExperiences = await prisma.resumeExperience.findMany({
       orderBy: { order: "asc" },
     });
+    if (dbExperiences.length > 0) experiences = dbExperiences;
   } catch {
   }
 
   return (
     <FadeIn className="pt-[var(--spacing-13)] pb-[var(--spacing-12)]">
-      <div className="max-w-3xl mx-auto px-[var(--spacing-6)] text-center">
-        <span className="text-xs font-semibold text-text-accent uppercase tracking-widest">
-          Resume
-        </span>
-        <h1 className="mt-3 text-4xl md:text-5xl font-bold text-text-primary">
-          Download My Resume
-        </h1>
-        <p className="mt-4 text-text-tertiary max-w-md mx-auto leading-relaxed">
-          Get a detailed overview of my experience, skills, and the impact I&apos;ve delivered across product design projects.
-        </p>
+      <div className="max-w-3xl mx-auto px-[var(--spacing-6)]">
+        <div className="text-center">
+          <span className="text-xs font-semibold text-text-accent uppercase tracking-widest">
+            Resume
+          </span>
+          <h1 className="mt-3 text-4xl md:text-5xl font-bold text-text-primary">
+            Abdulhameed Abdulsalam
+          </h1>
+          <p className="mt-2 text-text-accent font-medium">
+            Product Designer (UI/UX Designer)
+          </p>
+          <p className="text-text-tertiary text-sm mt-1">
+            Lagos, Nigeria
+          </p>
+        </div>
 
-        <div className="mt-[var(--spacing-12)] p-[var(--spacing-8)] rounded-2xl border border-border-subtle bg-surface-primary max-w-sm mx-auto">
-          <div className="w-16 h-16 rounded-2xl bg-primary-subtle flex items-center justify-center mx-auto mb-5" aria-hidden="true">
-            <Download size={28} className="text-text-accent" />
-          </div>
-          <h3 className="font-semibold text-text-primary mb-1">Abdulhameed Abdulsalam</h3>
-          <p className="text-sm text-text-tertiary mb-6">Product Designer — Resume</p>
+        <div className="mt-[var(--spacing-8)] flex justify-center">
           {resume ? (
             <a href={resume.fileUrl} target="_blank" rel="noopener noreferrer">
-              <Button variant="primary" size="lg" className="w-full">
+              <Button variant="primary" size="lg">
                 <Download size={16} aria-hidden="true" />
-                Download Resume
+                Download Resume PDF
               </Button>
             </a>
           ) : (
@@ -54,9 +55,48 @@ export default async function ResumePage() {
           )}
         </div>
 
-        <div className="mt-[var(--spacing-12)]">
-          <h2 className="text-2xl font-bold text-text-primary mb-[var(--spacing-8)]">Experience Snapshot</h2>
-          <div className="space-y-[var(--spacing-8)] text-left">
+        {/* Professional Summary */}
+        <section className="mt-[var(--spacing-12)]">
+          <h2 className="text-xl font-bold text-text-primary mb-4">Professional Summary</h2>
+          <p className="text-text-tertiary leading-relaxed">{fallbackResumeSummary}</p>
+        </section>
+
+        {/* Core Competencies */}
+        <section className="mt-[var(--spacing-12)]">
+          <h2 className="text-xl font-bold text-text-primary mb-4">Core Competencies</h2>
+          <div className="flex flex-wrap gap-2">
+            {fallbackResumeCompetencies.map((skill) => (
+              <span
+                key={skill}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-subtle text-sm text-text-accent"
+              >
+                <CheckCircle size={14} />
+                {skill}
+              </span>
+            ))}
+          </div>
+        </section>
+
+        {/* Tools */}
+        <section className="mt-[var(--spacing-12)]">
+          <h2 className="text-xl font-bold text-text-primary mb-4">Tools</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {fallbackResumeTools.map((tool) => (
+              <div
+                key={tool.name}
+                className="p-3 rounded-xl bg-surface-primary border border-border-subtle"
+              >
+                <p className="font-medium text-text-primary text-sm">{tool.name}</p>
+                <p className="text-xs text-text-tertiary">{tool.category}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Experience */}
+        <section className="mt-[var(--spacing-12)]">
+          <h2 className="text-xl font-bold text-text-primary mb-[var(--spacing-8)]">Experience</h2>
+          <div className="space-y-[var(--spacing-8)]">
             {experiences.length === 0 ? (
               <p className="text-sm text-text-tertiary text-center py-8">No experience entries yet.</p>
             ) : (
@@ -76,7 +116,49 @@ export default async function ResumePage() {
               ))
             )}
           </div>
-        </div>
+        </section>
+
+        {/* Education */}
+        <section className="mt-[var(--spacing-12)]">
+          <h2 className="text-xl font-bold text-text-primary mb-4">Education</h2>
+          <div className="space-y-4">
+            {fallbackResumeEducation.map((edu) => (
+              <div
+                key={edu.degree}
+                className="flex items-start gap-4 p-4 rounded-xl bg-surface-primary border border-border-subtle"
+              >
+                <div className="w-10 h-10 rounded-lg bg-primary-subtle flex items-center justify-center shrink-0">
+                  <GraduationCap size={20} className="text-text-accent" />
+                </div>
+                <div>
+                  <p className="font-medium text-text-primary">{edu.degree}</p>
+                  <p className="text-sm text-text-tertiary">{edu.school}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Certification */}
+        <section className="mt-[var(--spacing-12)]">
+          <h2 className="text-xl font-bold text-text-primary mb-4">Certification</h2>
+          <div className="space-y-4">
+            {fallbackResumeCertifications.map((cert) => (
+              <div
+                key={cert.name}
+                className="flex items-start gap-4 p-4 rounded-xl bg-surface-primary border border-border-subtle"
+              >
+                <div className="w-10 h-10 rounded-lg bg-primary-subtle flex items-center justify-center shrink-0">
+                  <Award size={20} className="text-text-accent" />
+                </div>
+                <div>
+                  <p className="font-medium text-text-primary">{cert.name}</p>
+                  <p className="text-sm text-text-tertiary">{cert.issuer} &middot; {cert.year}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </FadeIn>
   );

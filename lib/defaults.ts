@@ -136,10 +136,51 @@ export const fallbackResume = {
 };
 
 export const fallbackResumeExperiences = [
-  { id: "1", year: "2024 - Present", title: "Senior Product Designer", company: "Freelance / Studio", description: "Leading product design for SaaS, fintech, and e-commerce clients. Specializing in AI-enhanced design workflows and design systems.", order: 1 },
-  { id: "2", year: "2022 - 2024", title: "Product Designer", company: "Digital Agency", description: "Designed and shipped 20+ digital products across fintech, healthcare, and enterprise SaaS. Built and maintained component libraries.", order: 2 },
-  { id: "3", year: "2021 - 2022", title: "UI/UX Designer", company: "Startup", description: "Owned the end-to-end design process for a B2B analytics platform. Grew the user base from 1K to 15K users through UX improvements.", order: 3 },
-  { id: "4", year: "2020 - 2021", title: "Junior Designer", company: "Creative Studio", description: "Started career designing brand identities, marketing materials, and social media content for small businesses and startups.", order: 4 },
+  {
+    id: "1", year: "2023 – Present", title: "UI/UX Designer", company: "TrustBanc Microfinance Bank",
+    description: "Design user-centered interfaces and product experiences for fintech products, improving usability across customer-facing and internal digital workflows. Redesigned key user journeys and interaction flows, improving task efficiency by 30% through clearer navigation, streamlined workflows, and more intuitive UI patterns. Collaborate with product managers, engineers, and business stakeholders to translate product requirements into wireframes, high-fidelity interfaces, and implementation-ready design solutions. Contribute reusable components and patterns to a shared Figma design system, improving consistency, design scalability, and handoff efficiency across product teams. Create front-end-friendly UI specifications and prototypes that support smoother developer implementation and reduce ambiguity during build.",
+    order: 1,
+  },
+  {
+    id: "2", year: "2023 – Present", title: "Product Designer", company: "DealRide Autos",
+    description: "Led UI/UX design for an automotive e-commerce platform focused on improving vehicle discovery, browsing, and purchase clarity for prospective buyers. Improved the product experience and conversion performance by 18% through UX refinements, clearer content hierarchy, stronger calls-to-action, and more intuitive page layouts. Designed responsive user interfaces that simplified vehicle exploration, product comparison, and purchase decision-making across mobile and web touchpoints. Worked cross-functionally with engineering and marketing teams to align user experience improvements with campaign goals, platform functionality, and business growth objectives.",
+    order: 2,
+  },
+  {
+    id: "3", year: "2019 – Present", title: "Freelance Product / UX Designer", company: "Self-Employed",
+    description: "Designed and shipped digital products across fintech, lifestyle, service, and e-commerce industries, helping clients translate ideas into functional, user-centered digital experiences. Planned and delivered wireframes, user flows, high-fidelity UI designs, prototypes, and design systems for websites, dashboards, and mobile/web applications. Built and maintained scalable design systems and reusable UI components to improve consistency, collaboration, and speed across projects. Improved engagement by 15% on client products through analytics-informed design improvements, clearer interaction patterns, and usability-focused interface refinements.",
+    order: 3,
+  },
+];
+
+export const fallbackResumeSummary = "Results-driven Product Designer with 5+ years of experience designing intuitive, user-centered digital experiences across fintech, SaaS, e-commerce, and service-based platforms. Skilled in UI/UX design, user flows, wireframing, prototyping, design systems, usability improvement, and developer handoff, with a strong ability to translate business goals and ambiguous requirements into scalable, conversion-focused product solutions. Experienced collaborating with product managers, engineers, marketers, and stakeholders to improve usability, engagement, and product performance through data-informed design decisions. Proficient in Figma, Framer, Adobe XD, Replit, and AI-assisted design workflows for faster ideation, prototyping, and implementation-aware design.";
+
+export const fallbackResumeCompetencies = [
+  "Product Design", "UI Design", "UX Design", "User-Centered Design",
+  "User Flows & Journey Mapping", "Wireframing & Prototyping",
+  "Information Architecture", "Interaction Design",
+  "Responsive Web & Mobile Design", "Design Systems & Component Libraries",
+  "Accessibility & Usability Best Practices", "SaaS Product Design",
+  "E-commerce UX", "Conversion-Focused Design",
+  "Cross-functional Collaboration", "Developer Handoff",
+  "Stakeholder Communication", "Analytics-Informed Design Decisions",
+  "Problem Solving & Iterative Design",
+];
+
+export const fallbackResumeTools = [
+  { name: "Figma", category: "Design" },
+  { name: "Framer", category: "Design" },
+  { name: "Adobe XD", category: "Design" },
+  { name: "Figma Make", category: "Prototyping / Workflow" },
+  { name: "Replit", category: "Prototyping / Workflow" },
+];
+
+export const fallbackResumeEducation = [
+  { degree: "B.A. English", school: "University of Ilorin", year: "" },
+];
+
+export const fallbackResumeCertifications = [
+  { name: "UI/UX Design Certificate", issuer: "Dev and Design", year: "2023" },
 ];
 
 export const fallbackAbout = {
