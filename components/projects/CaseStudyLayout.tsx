@@ -61,7 +61,7 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
             alt={project.title}
             fill
             className="object-cover"
-            priority
+            preload
             sizes="100vw"
           />
         ) : (
@@ -98,7 +98,8 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-2xl font-bold text-text-primary mb-4">Overview</h2>
+                <p className="eyebrow mb-4">01 — Overview</p>
+                <h2 className="text-3xl font-semibold text-text-primary mb-4">Executive summary</h2>
                 <p className="text-text-secondary leading-relaxed">{project.overview}</p>
               </motion.section>
             )}
@@ -110,7 +111,8 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-2xl font-bold text-text-primary mb-4">The Challenge</h2>
+                <p className="eyebrow mb-4">02 — The problem</p>
+                <h2 className="text-3xl font-semibold text-text-primary mb-4">The product challenge</h2>
                 <p className="text-text-secondary leading-relaxed">{project.challenge}</p>
               </motion.section>
             )}
@@ -126,7 +128,7 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
                 viewport={{ once: true, margin: "-50px" }}
                 transition={{ duration: 0.5 }}
               >
-                <h2 className="text-2xl font-bold text-text-primary mb-4">Our Approach</h2>
+                <h2 className="text-2xl font-bold text-text-primary mb-4">Design direction</h2>
                 <p className="text-text-secondary leading-relaxed">{project.approach}</p>
               </motion.section>
             )}
@@ -139,7 +141,8 @@ export default function CaseStudyLayout({ project }: { project: ProjectData }) {
                 transition={{ duration: 0.5 }}
                 className="p-8 rounded-2xl bg-primary-subtle border border-border-accent/30"
               >
-                <h2 className="text-2xl font-bold text-text-primary mb-4">Results</h2>
+                <p className="eyebrow mb-4">13 — Outcomes</p>
+                <h2 className="text-2xl font-bold text-text-primary mb-4">What was accomplished</h2>
                 <p className="text-text-secondary leading-relaxed">{project.results}</p>
               </motion.section>
             )}

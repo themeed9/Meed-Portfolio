@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Mail } from "lucide-react";
 import { FaLinkedinIn, FaXTwitter, FaDribbble, FaGithub } from "react-icons/fa6";
 
@@ -12,16 +11,14 @@ const socialIcons: Record<string, React.ReactNode> = {
 
 const footerLinks = [
   { label: "Work", href: "/work" },
-  { label: "Services", href: "/services" },
   { label: "About", href: "/about" },
   { label: "Resume", href: "/resume" },
   { label: "Contact", href: "/contact" },
 ];
 
 export default async function Footer() {
-  let socialLinks: any[] = [];
+  let socialLinks: { id: string; platform: string; url: string; icon: string | null; order: number }[] = [];
   let footerBgUrl: string | null = null;
-  let logoUrl: string | null = null;
   try {
     const { prisma } = await import("@/lib/prisma");
     const [links, settings] = await Promise.all([
@@ -31,21 +28,16 @@ export default async function Footer() {
     socialLinks = links;
     const value = settings?.value as Record<string, unknown> | undefined;
     footerBgUrl = (value?.footerBgImage as string) || null;
-    logoUrl = (value?.logoUrl as string) || null;
   } catch {
     const { fallbackSocialLinks } = await import("@/lib/defaults");
     socialLinks = fallbackSocialLinks;
-  }
-
-  if (!logoUrl) {
-    logoUrl = "https://res.cloudinary.com/dlfax4vpr/image/upload/q_auto/v1782126019/Subtract_mlmndl.png";
   }
 
   return (
     <footer className="relative border-t border-outline-variant">
       {footerBgUrl && (
         <div className="absolute inset-0 z-0">
-          <Image src={footerBgUrl} alt="" fill className="object-cover" />
+          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${footerBgUrl})` }} aria-hidden="true" />
           <div className="absolute inset-0 bg-surface-container-low/90" aria-hidden="true" />
         </div>
       )}
@@ -53,16 +45,10 @@ export default async function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[var(--spacing-12)]">
           <div>
             <Link href="/" className="inline-block">
-              {logoUrl ? (
-                <div className="relative h-6 w-auto min-w-[98px]">
-                  <Image src={logoUrl} alt="MEED" fill className="object-contain object-left" style={{ filter: "var(--logo-filter)" }} />
-                </div>
-              ) : (
-                <span className="text-xl font-bold tracking-tight text-on-surface">MEED</span>
-              )}
+              <span className="text-sm font-bold tracking-[0.16em] text-on-surface">MEED</span>
             </Link>
             <p className="mt-4 text-sm text-on-surface-variant max-w-xs">
-              Product Designer crafting clear, usable, developer-friendly digital products with an AI edge.
+              Product Designer focused on clear, scalable digital products across fintech, SaaS, mobile, and web.
             </p>
             <div className="flex gap-3 mt-6">
               {socialLinks.map((link) => (
@@ -96,14 +82,14 @@ export default async function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-on-surface uppercase tracking-wider">Get in Touch</h3>
             <p className="mt-4 text-sm text-on-surface-variant">
-              Have a project in mind? Let&apos;s talk about how I can help.
+              Interested in product design opportunities or thoughtful product collaboration.
             </p>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-primary-safe hover:text-primary-container transition-colors"
             >
               <Mail size={16} aria-hidden="true" />
-              Start a Conversation
+              Email Abdulhameed
             </Link>
           </div>
         </div>

@@ -162,6 +162,19 @@ body {
   color: var(--color-text-primary);
 }
 
+main {
+  min-width: 0;
+}
+
+.eyebrow {
+  color: var(--color-text-accent);
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.18em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
 ::selection {
   background-color: hsla(150, 55%, 32%, 0.15);
   color: inherit;
@@ -242,5 +255,4 @@ textarea:focus:not(:focus-visible) {
 @utility text-primary-safe {
   color: var(--color-text-accent);
 }
-
 

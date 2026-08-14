@@ -19,10 +19,10 @@ export function generateMetadata({
   const url = slug ? `${baseUrl}/${slug}` : baseUrl;
 
   return {
-    title: `${title} | Abdulhameed Abdulsalam`,
+    title,
     description,
     openGraph: {
-      title: `${title} | Abdulhameed Abdulsalam`,
+      title,
       description,
       url,
       siteName: "Abdulhameed Abdulsalam",
@@ -32,7 +32,7 @@ export function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | Abdulhameed Abdulsalam`,
+      title,
       description,
       images: image ? [image] : [],
     },
