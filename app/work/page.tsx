@@ -1,51 +1,26 @@
-import { prisma } from "@/lib/prisma";
 import { fallbackProjects } from "@/lib/defaults";
 import { generateMetadata } from "@/lib/seo";
 import ProjectCard from "@/components/projects/ProjectCard";
-import FadeIn from "@/components/effects/FadeIn";
-
-export const dynamic = "force-dynamic";
 
 export const metadata = generateMetadata({
-  title: "Work",
-  description: "Explore my portfolio of product design, UI/UX, fintech, SaaS, and brand design projects.",
+  title: "Selected Product Work",
+  description: "Product design case studies across fintech, financial services, SaaS, authentication, design systems, and responsive experiences.",
+  slug: "work",
 });
 
-export default async function WorkPage() {
-  const projects = await prisma.project.findMany({
-    where: { published: true },
-    orderBy: { order: "asc" },
-  }).catch(() => fallbackProjects);
-
-  const categories = [...new Set(projects.map((p) => p.category))];
-
+export default function WorkPage() {
   return (
-    <FadeIn className="pt-[var(--spacing-13)] pb-[var(--spacing-12)]">
-      <div className="max-w-[var(--content-width-wide)] mx-auto px-[var(--spacing-6)]">
-        <div className="max-w-2xl mb-[var(--spacing-12)]">
-          <span className="text-xs font-semibold text-text-accent uppercase tracking-widest">
-            Portfolio
-          </span>
-          <h1 className="mt-3 text-4xl md:text-5xl font-bold text-text-primary">
-            Selected Work
-          </h1>
-          <p className="mt-4 text-text-tertiary leading-relaxed">
-            A curated selection of product design, UI/UX, and brand projects spanning fintech, SaaS, e-commerce, and more.
-          </p>
+    <div className="pt-32 pb-24 md:pt-40">
+      <div className="mx-auto max-w-[var(--content-width-standard)] px-5 md:px-8">
+        <p className="eyebrow">Selected work</p>
+        <div className="mt-4 grid gap-6 border-b border-border-default pb-10 lg:grid-cols-[1fr_0.7fr] lg:items-end">
+          <h1 className="text-5xl font-semibold tracking-[-0.04em] md:text-7xl">Product decisions, systems, and interaction detail.</h1>
+          <p className="text-lg leading-8 text-text-secondary">Three case studies showing how I frame product problems, organise complexity, design responsive systems, and work close to implementation.</p>
         </div>
-
-        {projects.length === 0 ? (
-          <div className="text-center py-[var(--spacing-11)] text-text-tertiary">
-            <p>No projects published yet. Check back soon.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-[var(--spacing-6)]">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        )}
+        <div className="mt-12 grid gap-8 md:grid-cols-2">
+          {fallbackProjects.map((project) => <ProjectCard key={project.id} project={project} />)}
+        </div>
       </div>
-    </FadeIn>
+    </div>
   );
 }

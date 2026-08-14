@@ -41,7 +41,7 @@ export default function CaseStudySection({ section }: CaseStudySectionProps) {
             }
           }
           if (line.startsWith("- ")) {
-            return <li key={i} className="text-text-secondary ml-4 mb-1">{line.replace("- ", "")}</li>;
+            return <p key={i} className="text-text-secondary pl-5 mb-2 before:content-['•'] before:-ml-5 before:mr-3">{line.replace("- ", "")}</p>;
           }
           if (line.trim() === "") return <div key={i} className="h-2" />;
           return <p key={i} className="text-text-secondary leading-relaxed mb-3">{line}</p>;

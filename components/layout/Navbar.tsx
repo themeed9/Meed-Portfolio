@@ -2,14 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "@/lib/theme-context";
 import { Menu, X, Moon, Sun } from "lucide-react";
 
 const navLinks = [
   { label: "Work", href: "/work" },
-  { label: "Services", href: "/services" },
   { label: "About", href: "/about" },
   { label: "Resume", href: "/resume" },
   { label: "Contact", href: "/contact" },
@@ -18,9 +16,8 @@ const navLinks = [
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const logoUrl = "https://res.cloudinary.com/dlfax4vpr/image/upload/q_auto/v1782126019/Subtract_mlmndl.png";
   const [siteName, setSiteName] = useState("MEED");
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -81,15 +78,7 @@ export default function Navbar() {
           }`}
           aria-label="Home"
         >
-          <div className="relative h-7 w-auto min-w-[112px]">
-            <Image
-              src={logoUrl}
-              alt={siteName}
-              fill
-              className="object-contain object-left"
-              style={{ filter: "var(--logo-filter)" }}
-            />
-          </div>
+          <span className="text-sm font-bold tracking-[0.16em]">{siteName}</span>
         </Link>
 
         {/* Desktop nav */}

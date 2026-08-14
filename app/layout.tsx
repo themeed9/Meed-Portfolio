@@ -1,28 +1,28 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import AppShell from "@/components/layout/AppShell";
 import Footer from "@/components/layout/Footer";
 import Providers from "@/components/Providers";
 import PageTransition from "@/components/layout/PageTransition";
 
-const geistSans = Geist({
+const geistSans = localFont({
+  src: "../node_modules/next/dist/next-devtools/server/font/geist-latin.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "../node_modules/next/dist/next-devtools/server/font/geist-mono-latin.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
   display: "swap",
 });
 
-const siteTitle = "Abdulhameed Abdulsalam | Product Designer";
+const siteTitle = "Abdulhameed Abdulsalam — Product Designer";
 const siteDescription =
-  "Product Designer with an AI Edge. I design clear, usable, developer-friendly digital products using Figma, AI workflows, and design systems thinking.";
+  "Product Designer focused on fintech, SaaS, UX research, design systems, and technically feasible digital experiences across mobile and web.";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://meedport.com";
 

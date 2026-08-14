@@ -40,7 +40,7 @@ export default function ValueProposition() {
     };
   }, []);
 
-  const text = "I help startups ship products 3x faster";
+  const text = "I turn complex product problems into clear, scalable experiences";
   const words = text.split(" ");
 
   return (
@@ -59,7 +59,7 @@ export default function ValueProposition() {
           </h2>
           <p className="mt-[var(--spacing-6)] text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
             From concept to launch, I design and build digital products that
-            users love and businesses trust. AI-first approach, pixel-perfect execution.
+            people can understand and teams can implement. Research, systems thinking, and strong execution.
           </p>
         </div>
       </div>
