@@ -43,8 +43,8 @@ Edit `.env` and set:
 |---|---|---|
 | `DATABASE_URL` | Yes | Your Neon PostgreSQL connection string |
 | `AUTH_SECRET` | Yes | Generate with `openssl rand -base64 32` |
-| `ADMIN_EMAIL` | Yes | Admin login email for the seed user |
-| `ADMIN_PASSWORD` | Yes | Admin login password for the seed user |
+| `ADMIN_EMAIL` | Maintenance only | Exact admin email used by seed/password-rotation tooling; runtime login queries the database |
+| `ADMIN_PASSWORD` | Maintenance only | Input for explicit seed/password-rotation tooling; not a runtime authentication fallback |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | No* | Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | No* | Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | No* | Cloudinary API secret |
@@ -112,8 +112,8 @@ Add the same variables from `.env` to your Vercel project dashboard:
 | `AUTH_SECRET` | Your auth secret |
 | `AUTH_URL` | `https://your-domain.vercel.app` |
 | `NEXT_PUBLIC_SITE_URL` | `https://your-domain.vercel.app` |
-| `ADMIN_EMAIL` | Admin email for seed |
-| `ADMIN_PASSWORD` | Admin password for seed |
+| `ADMIN_EMAIL` | Maintenance email for explicit seed/password-rotation commands only |
+| `ADMIN_PASSWORD` | Maintenance input for explicit seed/password-rotation commands only; not required by the production runtime |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Your Cloudinary cloud name |
 | `CLOUDINARY_API_KEY` | Your Cloudinary API key |
 | `CLOUDINARY_API_SECRET` | Your Cloudinary API secret |
