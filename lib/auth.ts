@@ -1,11 +1,18 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { createHash } from "crypto";
 import { prisma } from "@/lib/prisma";
+import { checkLoginRateLimit, clearLoginFailures, recordLoginFailure } from "@/lib/rate-limit";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@example.invalid";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "REDACTED_PLACEHOLDER_PASSWORD";
-const ADMIN_HASH = bcrypt.hashSync(ADMIN_PASSWORD, 10);
+const DUMMY_PASSWORD_HASH = "$2b$12$C6UzMDM.H6dfI/f/IKcEe.8p0/8Y7YQM1KFKt.8Gd9eZNj5x92m8u";
+
+function loginKey(request: Request, email: string) {
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const ip = forwarded || request.headers.get("x-real-ip") || "unknown";
+  const identifier = createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
+  return `${ip}:${identifier}`;
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -15,45 +22,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
-        const email = credentials.email as string;
+        const email = (credentials.email as string).trim().toLowerCase();
         const password = credentials.password as string;
+        const key = loginKey(request, email);
+        if (!checkLoginRateLimit(key).allowed) return null;
 
-        // Try database auth first
+        // Runtime authentication is database-only and fails closed on errors.
         try {
           const user = await prisma.user.findUnique({
             where: { email },
           });
 
-          if (user) {
-            const passwordMatch = await bcrypt.compare(password, user.password);
-            if (passwordMatch) {
-              return {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                role: user.role,
-              };
-            }
+          const passwordMatch = await bcrypt.compare(password, user?.password ?? DUMMY_PASSWORD_HASH);
+          if (user && passwordMatch) {
+            clearLoginFailures(key);
+            return {
+              id: user.id,
+              email: user.email,
+              name: user.name,
+              role: user.role,
+            };
           }
         } catch {
-          // Database unavailable — fall through to env-var auth
+          recordLoginFailure(key);
+          return null;
         }
 
-        // Fallback: authenticate against env vars (dev mode)
-        if (email === ADMIN_EMAIL && bcrypt.compareSync(password, ADMIN_HASH)) {
-          return {
-            id: "1",
-            email: ADMIN_EMAIL,
-            name: "Admin",
-            role: "admin",
-          };
-        }
-
+        recordLoginFailure(key);
         return null;
       },
     }),
