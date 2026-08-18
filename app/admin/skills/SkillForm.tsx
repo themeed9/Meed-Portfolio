@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { formResolver } from "@/lib/form-resolver";
 import { skillSchema, type SkillFormData } from "@/lib/validations";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -13,7 +13,7 @@ export default function SkillForm() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<SkillFormData>({
-    resolver: zodResolver(skillSchema) as any,
+    resolver: formResolver(skillSchema),
   });
 
   const onSubmit = async (data: SkillFormData) => {

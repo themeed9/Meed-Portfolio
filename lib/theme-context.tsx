@@ -34,11 +34,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    const stored = getStoredTheme();
-    setThemeState(stored);
-    const resolved = stored === "system" ? getSystemTheme() : stored;
-    setResolvedTheme(resolved);
-    applyTheme(stored);
+    const frame = requestAnimationFrame(() => {
+      const stored = getStoredTheme();
+      setThemeState(stored);
+      const resolved = stored === "system" ? getSystemTheme() : stored;
+      setResolvedTheme(resolved);
+      applyTheme(stored);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   useEffect(() => {

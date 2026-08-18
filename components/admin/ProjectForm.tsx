@@ -18,9 +18,11 @@ interface ProjectFormProps {
 export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFormProps) {
   const { register, handleSubmit, formState: { errors }, setValue, watch } = form;
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState<"coverImage" | "homepageImage" | "heroImage" | null>(null);
   const [uploadError, setUploadError] = useState("");
   const coverImage = watch("coverImage");
+  const homepageImage = watch("homepageImage");
+  const heroImage = watch("heroImage");
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -28,11 +30,11 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
     setValue("slug", slugify(value));
   };
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "coverImage" | "homepageImage" | "heroImage") => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setUploading(true);
+    setUploading(field);
     setUploadError("");
     const formData = new FormData();
     formData.append("file", file);
@@ -41,14 +43,14 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
       const res = await fetch("/api/upload", { method: "POST", body: formData });
       const data = await res.json();
       if (res.ok) {
-        setValue("coverImage", data.url);
+        setValue(field, data.url);
       } else {
         setUploadError(data.error || "Upload failed");
       }
     } catch {
       setUploadError("Upload failed — check console for details");
     } finally {
-      setUploading(false);
+      setUploading(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
@@ -72,12 +74,12 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              onChange={handleUpload}
+              onChange={(event) => handleUpload(event, "coverImage")}
               className="block w-full text-sm text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-98 file:text-primary-safe hover:file:bg-primary-90 file:cursor-pointer cursor-pointer"
             />
-            {uploading && <p className="text-xs text-on-surface-variant mt-1">Uploading...</p>}
+            {uploading === "coverImage" && <p className="text-xs text-on-surface-variant mt-1">Uploading...</p>}
             {uploadError && <p className="text-xs text-error mt-1">{uploadError}</p>}
-            {coverImage && !uploading && !uploadError && (
+            {coverImage && uploading !== "coverImage" && !uploadError && (
               <p className="text-xs text-on-surface-variant mt-1 truncate">{coverImage}</p>
             )}
           </div>
@@ -89,7 +91,20 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
         </div>
       </div>
 
+      <div className="grid gap-6 sm:grid-cols-2">
+        {([[
+          "homepageImage", "Homepage image", homepageImage,
+        ], ["heroImage", "Project hero image", heroImage]] as const).map(([field, label, value]) => <div key={field}>
+          <label className="block text-sm font-medium text-on-surface mb-2">{label}</label>
+          <input type="file" accept="image/*" onChange={(event) => handleUpload(event, field)} className="block w-full text-sm text-on-surface-variant file:mr-3 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-medium file:bg-primary-98 file:text-primary-safe" />
+          {uploading === field && <p className="mt-1 text-xs text-text-tertiary">Uploading...</p>}
+          <Input label={`${label} URL`} placeholder="https://..." {...register(field)} />
+          {value && <div className="relative mt-3 aspect-[16/9] overflow-hidden rounded-lg border border-border-subtle"><Image src={value} alt={`${label} preview`} fill className="object-cover" /></div>}
+        </div>)}
+      </div>
+
       <Textarea label="Description *" placeholder="Short project description" rows={3} error={errors.description?.message} {...register("description")} />
+      <Textarea label="Recruiter summary" placeholder="One concise summary for project indexes and recruiting review" rows={3} {...register("recruiterSummary")} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Input label="Tags (comma separated)" placeholder="Figma, SaaS, Design System" {...register("tags")} />
@@ -100,6 +115,12 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
         <Input label="Year" placeholder="2024" {...register("year")} />
         <Input label="Client" placeholder="Client name" {...register("client")} />
         <Input label="Duration" placeholder="3 months" {...register("duration")} />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <Input label="Project status" placeholder="Launched, MVP, Concept" {...register("status")} />
+        <Input label="Platform" placeholder="iOS, Android, responsive web" {...register("platform")} />
+        <Input label="Display order" type="number" min="0" {...register("order")} />
       </div>
 
       <Input label="Role" placeholder="Lead Product Designer" {...register("role")} />

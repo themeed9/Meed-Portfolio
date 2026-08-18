@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  ci:
+    name: Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Prisma generate
+        run: npx prisma generate
+
+      - name: Check no secrets tracked
+        shell: bash
+        run: |
+          if git ls-files | grep -E '^\.env($|\.)' | grep -v '^\.env\.example$'; then
+            echo "::error::An environment file is tracked. Environment files must be ignored (SEC-INV-009)."
+            exit 1
+          fi
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Production dependency audit (runtime tree)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Full dependency audit (dev tree, informational)
+        continue-on-error: true
+        run: npm audit
+
+  # Note: Security invariants that require a running server and/or a database
+  # (SEC-INV-001/002/003/006/008) are verified by integration/manual checks.
+  # This CI runs without production secrets and never connects to production
+  # Supabase. See docs/security/security-regression-contract.md.

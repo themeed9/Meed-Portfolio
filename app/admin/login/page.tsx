@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { formResolver } from "@/lib/form-resolver";
 import { motion } from "framer-motion";
 import { loginSchema, type LoginFormData } from "@/lib/validations";
 import Button from "@/components/ui/Button";
@@ -14,7 +14,7 @@ export default function AdminLoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema) as any,
+    resolver: formResolver(loginSchema),
   });
 
   const onSubmit = async (data: LoginFormData) => {

@@ -3,10 +3,9 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import AdminHeader from "@/components/layout/AdminHeader";
 import ContentForm from "@/components/admin/ContentForm";
+import NewContentForm from "@/components/admin/NewContentForm";
 
 export const dynamic = "force-dynamic";
-import Button from "@/components/ui/Button";
-import Link from "next/link";
 import { Mail } from "lucide-react";
 
 async function markAsRead(id: string) {
@@ -26,8 +25,9 @@ export default async function AdminContentPage() {
     prisma.siteContent.findUnique({ where: { key: "site-settings" } }).catch(() => null),
   ]);
 
-  const unreadCount = messages.filter((m: any) => !m.read).length;
-  const contactEmail = (settings?.value as any)?.contactEmail || "";
+  const unreadCount = messages.filter((message) => !message.read).length;
+  const settingsValue = settings?.value && typeof settings.value === "object" && !Array.isArray(settings.value) ? settings.value : null;
+  const contactEmail = settingsValue && "contactEmail" in settingsValue && typeof settingsValue.contactEmail === "string" ? settingsValue.contactEmail : "";
 
   return (
     <div>
@@ -36,6 +36,7 @@ export default async function AdminContentPage() {
         description={`Manage homepage content${unreadCount > 0 ? ` — ${unreadCount} unread messages` : ""}`}
       />
 
+      <NewContentForm />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
         {contentEntries.map((entry) => (
           <ContentForm key={entry.id} entry={entry} />

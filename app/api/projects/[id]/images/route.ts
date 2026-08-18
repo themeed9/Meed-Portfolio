@@ -1,0 +1,7 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+const imageSchema=z.object({url:z.string().min(1),alt:z.string().max(300).optional().nullable(),caption:z.string().max(1000).optional().nullable()});
+export async function POST(request:Request,{params}:{params:Promise<{id:string}>}){if(!(await auth())?.user)return NextResponse.json({error:"Unauthorized"},{status:401});const{ id:projectId}=await params;const parsed=imageSchema.safeParse(await request.json());if(!parsed.success)return NextResponse.json({error:"Invalid image"},{status:400});const max=await prisma.projectImage.aggregate({where:{projectId},_max:{order:true}});return NextResponse.json(await prisma.projectImage.create({data:{projectId,...parsed.data,order:(max._max.order??-1)+1}}),{status:201})}
+export async function PUT(request:Request,{params}:{params:Promise<{id:string}>}){if(!(await auth())?.user)return NextResponse.json({error:"Unauthorized"},{status:401});const{ id:projectId}=await params;const order=z.array(z.object({id:z.string(),order:z.number().int().min(0)})).safeParse(await request.json());if(!order.success)return NextResponse.json({error:"Invalid order"},{status:400});await prisma.$transaction(order.data.map(item=>prisma.projectImage.updateMany({where:{id:item.id,projectId},data:{order:item.order}})));return NextResponse.json({success:true})}

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { formResolver } from "@/lib/form-resolver";
 import { projectSchema, type ProjectFormData } from "@/lib/validations";
 import AdminHeader from "@/components/layout/AdminHeader";
 import ProjectForm from "@/components/admin/ProjectForm";
@@ -12,8 +12,8 @@ export default function NewProjectPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const form = useForm<ProjectFormData>({
-    resolver: zodResolver(projectSchema) as any,
-    defaultValues: { featured: false, published: false },
+    resolver: formResolver(projectSchema),
+    defaultValues: { featured: false, published: false, order: 0 },
   });
 
   const onSubmit = async (data: ProjectFormData) => {

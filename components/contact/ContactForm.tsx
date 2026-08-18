@@ -1,0 +1,10 @@
+"use client";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle, Send } from "lucide-react";
+import { contactFormSchema, type ContactFormData } from "@/lib/validations";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Textarea from "@/components/ui/Textarea";
+export default function ContactForm(){const[submitted,setSubmitted]=useState(false);const{register,handleSubmit,formState:{errors,isSubmitting},reset}=useForm<ContactFormData>({resolver:zodResolver(contactFormSchema)});async function submit(data:ContactFormData){const response=await fetch("/api/contact",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});if(response.ok){setSubmitted(true);reset()}}if(submitted)return <div className="border-y border-border-default py-14 text-center" role="status"><CheckCircle size={32} className="mx-auto text-text-accent"/><h2 className="mt-5 type-h3">Message sent.</h2><p className="mt-2 type-body text-text-secondary">Thank you for reaching out.</p><Button variant="outline" className="mt-6" onClick={()=>setSubmitted(false)}>Send another message</Button></div>;return <form onSubmit={handleSubmit(submit)} className="space-y-5"><div className="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden="true"><label htmlFor="website">Website</label><input id="website" tabIndex={-1} autoComplete="off" {...register("website")}/></div><div className="grid gap-5 sm:grid-cols-2"><Input label="Name *" error={errors.name?.message} {...register("name")}/><Input label="Email *" type="email" error={errors.email?.message} {...register("email")}/></div><Input label="Subject" {...register("subject")}/><Textarea label="Message *" rows={7} error={errors.message?.message} {...register("message")}/><Button type="submit" variant="primary" size="lg" isLoading={isSubmitting}><Send size={16} aria-hidden="true"/>Send message</Button></form>}

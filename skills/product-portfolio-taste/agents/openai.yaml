@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Portfolio Taste"
+  short_description: "Editorial visual quality authority for the portfolio"
+  default_prompt: "Use $product-portfolio-taste to audit this portfolio page against the project visual system."

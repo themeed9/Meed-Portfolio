@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const testimonials = await prisma.testimonial.findMany({ orderBy: { order: "asc" } });
     return NextResponse.json(testimonials);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch testimonials" }, { status: 500 });
   }
 }

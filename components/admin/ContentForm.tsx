@@ -8,7 +8,7 @@ import Textarea from "@/components/ui/Textarea";
 interface ContentEntry {
   id: string;
   key: string;
-  value: any;
+  value: unknown;
 }
 
 export default function ContentForm({ entry }: { entry: ContentEntry }) {
@@ -26,7 +26,7 @@ export default function ContentForm({ entry }: { entry: ContentEntry }) {
         body: JSON.stringify({ value: parsed }),
       });
       if (res.ok) router.refresh();
-    } catch (e) {
+    } catch {
       alert("Invalid JSON format");
     } finally {
       setIsSaving(false);

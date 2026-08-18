@@ -29,9 +29,14 @@ model Project {
   title           String
   slug            String   @unique
   description     String
+  recruiterSummary String?
+  status          String?
+  platform        String?
   category        String
   tags            String[]
   coverImage      String?
+  homepageImage   String?
+  heroImage       String?
   liveUrl         String?
   githubUrl       String?
   featured        Boolean  @default(false)
@@ -68,13 +73,18 @@ model ProjectImage {
 model CaseStudySection {
   id        String   @id @default(cuid())
   projectId String
+  type      String   @default("rich_text")
   title     String?
+  eyebrow   String?
   content   String
+  payload   Json?
+  metadata  Json?
   imageUrl  String?
   imageAlt  String?
   order     Int      @default(0)
   project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Skill {

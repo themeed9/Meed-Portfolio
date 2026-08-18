@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { formResolver } from "@/lib/form-resolver";
 import { testimonialSchema, type TestimonialFormData } from "@/lib/validations";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -14,7 +14,7 @@ export default function TestimonialForm() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<TestimonialFormData>({
-    resolver: zodResolver(testimonialSchema) as any,
+    resolver: formResolver(testimonialSchema),
     defaultValues: { rating: 5, featured: true },
   });
 

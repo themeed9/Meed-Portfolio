@@ -5,12 +5,14 @@ import { auth } from "@/lib/auth";
 
 export async function GET() {
   try {
+    const session = await auth();
     const projects = await prisma.project.findMany({
+      where: session?.user?.role === "admin" ? undefined : { published: true },
       orderBy: { order: "asc" },
       include: { images: { orderBy: { order: "asc" } } },
     });
     return NextResponse.json(projects);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch projects" }, { status: 500 });
   }
 }
@@ -35,9 +37,14 @@ export async function POST(request: Request) {
         title: data.title,
         slug: data.slug,
         description: data.description,
+        recruiterSummary: data.recruiterSummary || null,
+        status: data.status || null,
+        platform: data.platform || null,
         category: data.category,
         tags: data.tags ? data.tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
         coverImage: data.coverImage || null,
+        homepageImage: data.homepageImage || null,
+        heroImage: data.heroImage || null,
         liveUrl: data.liveUrl || null,
         githubUrl: data.githubUrl || null,
         featured: data.featured,
@@ -47,6 +54,7 @@ export async function POST(request: Request) {
         role: data.role || null,
         duration: data.duration || null,
         tools: data.tools ? data.tools.split(",").map((t) => t.trim()).filter(Boolean) : [],
+        order: data.order,
         overview: data.overview || null,
         challenge: data.challenge || null,
         approach: data.approach || null,

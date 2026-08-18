@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { FolderKanban, MessageSquare, FileText, Wrench, ArrowRight, Eye } from "lucide-react";
+import { FolderKanban, MessageSquare, Wrench, ArrowRight, Eye } from "lucide-react";
 
 export default async function AdminDashboardPage() {
   const session = await auth();

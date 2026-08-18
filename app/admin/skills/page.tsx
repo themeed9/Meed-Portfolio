@@ -2,10 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import AdminHeader from "@/components/layout/AdminHeader";
-import Button from "@/components/ui/Button";
 
 export const dynamic = "force-dynamic";
-import { Trash2, Plus } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import SkillForm from "./SkillForm";
 import ServiceForm from "./ServiceForm";
 

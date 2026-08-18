@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
 import { resumeExperienceSchema } from "@/lib/validations";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
-
-async function getPrisma() {
-  const { prisma } = await import("@/lib/prisma");
-  const db = prisma as any;
-  if (!db.resumeExperience) {
-    throw new Error(
-      "ResumeExperience model not available in Prisma client. Run `npx prisma generate` then restart the dev server."
-    );
-  }
-  return db;
-}
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -25,8 +15,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const parsed = resumeExperienceSchema.safeParse(body);
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
 
-    const db = await getPrisma();
-    const experience = await db.resumeExperience.update({
+    const experience = await prisma.resumeExperience.update({
       where: { id },
       data: parsed.data,
     });
@@ -43,8 +32,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const db = await getPrisma();
-    await db.resumeExperience.delete({ where: { id } });
+    await prisma.resumeExperience.delete({ where: { id } });
 
     return NextResponse.json({ success: true });
   } catch (e) {

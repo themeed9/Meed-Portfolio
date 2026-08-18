@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Portfolio Motion"
+  short_description: "Restrained motion standards for the portfolio"
+  default_prompt: "Use $product-portfolio-motion to review motion and interaction quality in this portfolio."

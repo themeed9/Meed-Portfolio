@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const skills = await prisma.skill.findMany({ orderBy: { order: "asc" } });
     return NextResponse.json(skills);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Failed to fetch skills" }, { status: 500 });
   }
 }

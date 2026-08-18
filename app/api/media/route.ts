@@ -1,0 +1,4 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+export async function GET(){if(!(await auth())?.user)return NextResponse.json({error:"Unauthorized"},{status:401});const[images,projects]=await Promise.all([prisma.projectImage.findMany({orderBy:{createdAt:"desc"},select:{id:true,url:true,alt:true,caption:true}}),prisma.project.findMany({select:{id:true,title:true,coverImage:true,homepageImage:true,heroImage:true}})]);const projectMedia=projects.flatMap(project=>[["cover",project.coverImage],["homepage",project.homepageImage],["hero",project.heroImage]].filter((item):item is [string,string]=>Boolean(item[1])).map(([role,url])=>({id:`${project.id}-${role}`,url,alt:`${project.title} ${role} image`,caption:null})));const unique=new Map([...images,...projectMedia].map(item=>[item.url,item]));return NextResponse.json([...unique.values()])}

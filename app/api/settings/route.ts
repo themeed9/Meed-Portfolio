@@ -7,12 +7,15 @@ export async function GET() {
   const defaults = {
     logoUrl: null,
     siteName: "MEED",
+    ownerName: "Abdulhameed Abdulsalam",
+    role: "Product Designer",
     ctaBgImage: null,
     footerBgImage: null,
     aboutImage: null,
     contactEmail: process.env.CONTACT_EMAIL || "",
   };
-  return NextResponse.json(entry?.value ?? defaults);
+  const stored = entry?.value && typeof entry.value === "object" && !Array.isArray(entry.value) ? entry.value : {};
+  return NextResponse.json({ ...defaults, ...stored });
 }
 
 export async function PUT(request: Request) {
@@ -26,6 +29,8 @@ export async function PUT(request: Request) {
     const value = {
       logoUrl: body.logoUrl || null,
       siteName: body.siteName || "MEED",
+      ownerName: body.ownerName || "Abdulhameed Abdulsalam",
+      role: body.role || "Product Designer",
       ctaBgImage: body.ctaBgImage || null,
       footerBgImage: body.footerBgImage || null,
       aboutImage: body.aboutImage || null,

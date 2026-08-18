@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { formResolver } from "@/lib/form-resolver";
 import { resumeExperienceSchema, type ResumeExperienceFormData } from "@/lib/validations";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
@@ -28,7 +28,7 @@ export default function ResumeExperienceForm({ experience }: Props) {
   const isEditing = !!experience;
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ResumeExperienceFormData>({
-    resolver: zodResolver(resumeExperienceSchema) as any,
+    resolver: formResolver(resumeExperienceSchema),
     defaultValues: experience ? {
       year: experience.year,
       title: experience.title,

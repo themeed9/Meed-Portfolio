@@ -16,8 +16,7 @@ function createPrismaClient() {
 function createMockPrisma(): PrismaClient {
   const modelHandler: ProxyHandler<object> = {
     get() {
-      return (...args: unknown[]) => {
-        const opts = args[0] as Record<string, unknown> | undefined;
+      return () => {
         return Promise.reject(new Error("No database configured. Set DATABASE_URL in .env"));
       };
     },

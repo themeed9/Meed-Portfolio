@@ -1,19 +1,26 @@
 import { z } from "zod";
 
 export const contactFormSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  subject: z.string().optional(),
-  message: z.string().min(10, "Message must be at least 10 characters"),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().trim().email("Please enter a valid email address").max(254),
+  subject: z.string().trim().max(160).optional(),
+  message: z.string().trim().min(10, "Message must be at least 10 characters").max(5000),
+  website: z.string().max(0).optional(),
 });
 
 export const projectSchema = z.object({
   title: z.string().min(2, "Title is required"),
   slug: z.string().min(2, "Slug is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
+  recruiterSummary: z.string().max(500).optional(),
+  status: z.string().max(100).optional(),
+  platform: z.string().max(160).optional(),
   category: z.string().min(1, "Category is required"),
   tags: z.string().optional(),
   coverImage: z.string().optional(),
+  homepageImage: z.string().optional(),
+  heroImage: z.string().optional(),
+  order: z.coerce.number().int().min(0).default(0),
   liveUrl: z.string().optional(),
   githubUrl: z.string().optional(),
   featured: z.boolean().optional().default(false),

@@ -1,29 +1,32 @@
 # Meed Portfolio
 
-A production-ready portfolio and CMS built with Next.js (App Router), Neon PostgreSQL, Prisma ORM, Auth.js, and Cloudinary.
+A production-ready portfolio and CMS built with Next.js (App Router), Supabase PostgreSQL, Prisma ORM, Auth.js, and Cloudinary.
 
 ## Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS v4
-- **Database:** Neon PostgreSQL (serverless)
+- **Database:** Supabase PostgreSQL
 - **ORM:** Prisma v7
 - **Auth:** Auth.js / NextAuth v5
 - **Forms:** React Hook Form + Zod
 - **Image Upload:** Cloudinary
-- **Animations:** GSAP + Lenis
+- **Animations:** Framer Motion
 - **Deployment:** Vercel
 
 ## Setup
 
-### 1. Create a Neon database
+### 1. Create a Supabase database
 
-Sign up at [neon.tech](https://neon.tech), create a project, and copy the connection string from the dashboard. It looks like:
+Sign up at [supabase.com](https://supabase.com), create a project, and copy the connection string from the
+dashboard (Settings → Database → Connection string). It looks like:
 
 ```
-postgresql://meed-portfolio_owner:password@ep-something.us-east-2.aws.neon.tech/meed-portfolio?sslmode=require
+postgresql://postgres.<project>:password@aws-0-region.pooler.supabase.com:6543/postgres?pgbouncer=true
 ```
+
+The current provider is Supabase-hosted PostgreSQL. See `docs/adr/ADR-008.md`.
 
 ### 2. Create Cloudinary account (optional)
 
@@ -41,7 +44,7 @@ Edit `.env` and set:
 
 | Variable | Required | Description |
 |---|---|---|
-| `DATABASE_URL` | Yes | Your Neon PostgreSQL connection string |
+| `DATABASE_URL` | Yes | Your Supabase PostgreSQL connection string |
 | `AUTH_SECRET` | Yes | Generate with `openssl rand -base64 32` |
 | `ADMIN_EMAIL` | Maintenance only | Exact admin email used by seed/password-rotation tooling; runtime login queries the database |
 | `ADMIN_PASSWORD` | Maintenance only | Input for explicit seed/password-rotation tooling; not a runtime authentication fallback |
@@ -81,10 +84,10 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### 8. Log in to the admin
 
-Go to [http://localhost:3000/admin/login](http://localhost:3000/admin/login) and sign in with:
-
-- **Email:** `admin@example.invalid`
-- **Password:** `REDACTED_PLACEHOLDER_PASSWORD`
+Go to [http://localhost:3000/admin/login](http://localhost:3000/admin/login). The seed creates an admin account
+**only when `ADMIN_EMAIL` and `ADMIN_PASSWORD` are both set** — otherwise no account is created (see `prisma/seed.ts`
+and `scripts/rotate-admin-password.ts`). Runtime login always queries the database; there is no
+environment-password fallback.
 
 ## Deploy to Vercel
 
@@ -108,7 +111,7 @@ Add the same variables from `.env` to your Vercel project dashboard:
 
 | Key | Value |
 |---|---|
-| `DATABASE_URL` | Your Neon connection string |
+| `DATABASE_URL` | Your Supabase connection string |
 | `AUTH_SECRET` | Your auth secret |
 | `AUTH_URL` | `https://your-domain.vercel.app` |
 | `NEXT_PUBLIC_SITE_URL` | `https://your-domain.vercel.app` |

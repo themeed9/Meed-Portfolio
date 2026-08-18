@@ -6,7 +6,6 @@ import "./globals.css";
 import AppShell from "@/components/layout/AppShell";
 import Footer from "@/components/layout/Footer";
 import Providers from "@/components/Providers";
-import PageTransition from "@/components/layout/PageTransition";
 
 const geistSans = localFont({
   src: "../node_modules/next/dist/next-devtools/server/font/geist-latin.woff2",
@@ -86,9 +85,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <Providers>
-          <AppShell footer={<Footer />}>
-            <PageTransition>{children}</PageTransition>
-          </AppShell>
+          <AppShell footer={<Footer />}>{children}</AppShell>
         </Providers>
         <script
           id="schema-person"

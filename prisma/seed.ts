@@ -11,33 +11,34 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL || "admin@example.invalid";
+  const email = process.env.ADMIN_EMAIL;
   const password = process.env.ADMIN_PASSWORD;
 
-  if (password) {
+  if (email && password) {
     await prisma.user.upsert({
       where: { email },
       update: {},
       create: { email, name: "Abdulhameed Abdulsalam", password: await bcrypt.hash(password, 12), role: "admin" },
     });
   } else {
-    console.warn("ADMIN_PASSWORD is not set; no admin account was created.");
+    console.warn("ADMIN_EMAIL or ADMIN_PASSWORD is not set; no admin account was created.");
   }
 
   for (const project of fallbackProjects) {
     const { images: _images, caseStudySections, ...data } = project;
+    void _images;
     await prisma.project.upsert({
       where: { slug: project.slug },
       update: {
         ...data,
         caseStudySections: {
           deleteMany: {},
-          create: caseStudySections.map(({ id: _id, ...section }) => section),
+          create: caseStudySections.map(({ id, ...section }) => { void id; return section; }),
         },
       },
       create: {
         ...data,
-        caseStudySections: { create: caseStudySections.map(({ id: _id, ...section }) => section) },
+        caseStudySections: { create: caseStudySections.map(({ id, ...section }) => { void id; return section; }) },
       },
     });
   }

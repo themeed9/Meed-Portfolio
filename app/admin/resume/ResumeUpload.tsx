@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Upload, FileText, CheckCircle, X } from "lucide-react";
-import Button from "@/components/ui/Button";
+import { FileText, CheckCircle, X } from "lucide-react";
 
 export default function ResumeUpload({ currentUrl }: { currentUrl: string | null }) {
   const [uploading, setUploading] = useState(false);
