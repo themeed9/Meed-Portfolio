@@ -1,19 +1,10 @@
-import nodemailer from "nodemailer";
+const RESEND_API_URL = "https://api.resend.com/emails";
 
-function getTransporter() {
-  const host = process.env.SMTP_HOST;
-  const port = process.env.SMTP_PORT;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-
-  if (!host || !port || !user || !pass) return null;
-
-  return nodemailer.createTransport({
-    host,
-    port: Number(port),
-    secure: Number(port) === 465,
-    auth: { user, pass },
-  });
+function getResendConfig() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return null;
+  const from = process.env.RESEND_FROM_EMAIL || "Meed Portfolio <onboarding@resend.dev>";
+  return { apiKey, from };
 }
 
 export async function sendContactNotification({
@@ -29,16 +20,20 @@ export async function sendContactNotification({
   message: string;
   recipientEmail: string;
 }) {
-  const transporter = getTransporter();
-  if (!transporter) return;
+  const config = getResendConfig();
+  if (!config) return;
 
-  const from = process.env.SMTP_FROM || process.env.SMTP_USER;
-
-  await transporter.sendMail({
-    from,
-    to: recipientEmail,
-    subject: `Portfolio Contact: ${subject || "New Message"} from ${name}`,
-    html: `
+  const res = await fetch(RESEND_API_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${config.apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: config.from,
+      to: recipientEmail,
+      subject: `Portfolio Contact: ${subject || "New Message"} from ${name}`,
+      html: `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
         <h2 style="color:#333;">New Contact Message</h2>
         <table style="width:100%;border-collapse:collapse;">
@@ -53,5 +48,10 @@ export async function sendContactNotification({
         <p style="font-size:12px;color:#999;">Sent from your portfolio contact form</p>
       </div>
     `,
+    }),
   });
+
+  if (!res.ok) {
+    throw new Error(`Failed to send email notification: ${res.status}`);
+  }
 }

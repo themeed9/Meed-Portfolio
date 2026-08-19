@@ -24,7 +24,7 @@ Verified from `package.json`, `package-lock.json`, and config files:
 - **Validation:** Zod v4 with `react-hook-form` + custom resolver
 - **Media:** Cloudinary (server-side signed uploads)
 - **Motion:** Framer Motion (GSAP/Lenis are not installed)
-- **Email:** Nodemailer (contact notifications)
+- **Email:** Resend HTTP API (contact notifications)
 - **Deployment:** GitHub (`master` production branch) → Vercel
 
 ## 3. Public Portfolio Architecture
@@ -126,7 +126,7 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
 - Hidden honeypot field (`website`): filled honeypots silently succeed without storing.
 - IP rate limit: 5 submissions / 15 minutes per running instance.
 - Duplicate suppression: 1 / minute per IP+email+message fingerprint.
-- Notifications are emailed via Nodemailer; stored messages are readable in the admin.
+- Notifications are emailed via the Resend HTTP API; stored messages are readable in the admin.
 
 ## 11. Design System Architecture
 
