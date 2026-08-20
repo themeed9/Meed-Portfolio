@@ -53,12 +53,13 @@ Owner-approved decision ("replace email transport"): do not suppress the conflic
 - `lib/email.ts` POSTs to `https://api.resend.com/emails` with a `Bearer` token from `RESEND_API_KEY`; it no-ops
   (logs a warning) when the key is unset and throws on non-2xx responses. The contact route keeps its non-fatal
   `.catch(...)`. No UI changed.
-- `.env.example` documents `RESEND_API_KEY` and `RESEND_FROM_EMAIL` (placeholder `onboarding@resend.dev`).
+- `.env.example` documents `RESEND_API_KEY`, `CONTACT_FROM_EMAIL` (sender; placeholder `onboarding@resend.dev`), and
+  `CONTACT_EMAIL` (server-controlled recipient; equivalent of `CONTACT_TO_EMAIL`).
 - `ARCHITECTURE.md` email line updated.
 
 Verification: clean `npm install` exits 0 with no `ERESOLVE`; `npm ls nodemailer` is empty; Prisma generate,
 `tsc --noEmit`, ESLint, tests 21/21, and the production build all pass. Full `npm audit` remains 3 high dev-only
 (see Addendum 2026-08-18); `npm audit --omit=dev --omit=optional` reports **0**.
 
-Follow-up (owner): add `RESEND_API_KEY` to Vercel environment variables, verify `RESEND_FROM_EMAIL`, and send a live
+Follow-up (owner): add `RESEND_API_KEY` to Vercel environment variables, verify `CONTACT_FROM_EMAIL`, and send a live
 contact-form message from the new Preview to confirm delivery.

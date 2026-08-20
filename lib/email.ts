@@ -3,7 +3,7 @@ const RESEND_API_URL = "https://api.resend.com/emails";
 function getResendConfig() {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return null;
-  const from = process.env.RESEND_FROM_EMAIL || "Meed Portfolio <onboarding@resend.dev>";
+  const from = process.env.CONTACT_FROM_EMAIL || "Meed Portfolio <onboarding@resend.dev>";
   return { apiKey, from };
 }
 
