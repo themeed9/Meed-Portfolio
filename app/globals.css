@@ -117,7 +117,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .featured-work { padding-block: 32px 96px; background: #f7f8f7; color: #07100b; }
 .featured-projects-list { margin-top: 40px; }
 .selected-work-label { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 500; color: var(--accent); text-transform: uppercase; }
-.project-headline { max-width: 18ch; font-size: clamp(2.5rem, 4.8vw, 5.25rem); line-height: 1.02; letter-spacing: -.05em; font-weight: 550; }
+.project-headline { max-width: 780px; font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; font-size: 48px; line-height: 1.08; letter-spacing: -.24px; font-weight: 500; }
+.brand-mark { position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center; }
+.brand-mark img { display: block; width: 100%; height: 100%; }
+.brand-mark .brand-mark-dark { display: block; }
+.brand-mark .brand-mark-light { display: none; }
+.brand-mark--hero .brand-mark-dark { display: none; }
+.brand-mark--hero .brand-mark-light { display: block; }
+.dark .brand-mark--surface .brand-mark-dark { display: none; }
+.dark .brand-mark--surface .brand-mark-light { display: block; }
 .project-evidence-alt { width: 92%; margin-left: auto; }
 #selected-work + section { background: var(--surface); }
 .project-evidence { border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
@@ -141,6 +149,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .skip-to-content:focus { transform: translateY(0); }
 
 @media (max-width: 767px) {
+  .project-headline { max-width: 343px; font-size: 28px; line-height: 1.15; letter-spacing: 0; }
+  .brand-mark--hero .brand-mark-light { display: none; }
+  .brand-mark--hero .brand-mark-dark { display: block; }
   .page-pad { padding-block: var(--space-9); }
   .section-pad { padding-block: var(--space-8); }
   .case-study-stream { gap: var(--space-9); }
