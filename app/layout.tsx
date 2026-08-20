@@ -3,6 +3,7 @@ import Script from "next/script";
 
 import localFont from "next/font/local";
 import "./globals.css";
+import "./hero-a.css";
 import AppShell from "@/components/layout/AppShell";
 import Footer from "@/components/layout/Footer";
 import Providers from "@/components/Providers";

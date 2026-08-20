@@ -1,0 +1,60 @@
+/*
+ * Hero A is kept in a discrete stylesheet so Git-based Preview builds cannot
+ * reuse a stale cached copy of the pre-Hero global stylesheet.
+ */
+.hero-a { background: #f7f8f7; color: #07100b; }
+.hero-masthead { height: 418px; background: #07100b; color: #fff; }
+.hero-masthead-inner { display: flex; width: min(calc(100% - 172px), 1268px); height: 100%; margin-inline: auto; align-items: flex-end; padding-bottom: 20px; }
+.hero-name { width: 100%; max-width: none; margin-inline: auto; font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; font-size: clamp(4rem, 7.5vw, 6.75rem); line-height: 1.05; letter-spacing: -.025em; font-weight: 600; text-transform: uppercase; }
+.hero-paper { padding-block: 86px 100px; background: #f7f8f7; }
+.hero-a-shell, .featured-work-shell { width: min(calc(100% - 192px), 1248px); margin-inline: auto; }
+.hero-a-grid { display: grid; grid-template-columns: minmax(0, 600px) minmax(0, 1fr); gap: 29px; align-items: stretch; }
+.hero-a-grid-single { grid-template-columns: minmax(0, 600px); }
+.hero-copy { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.hero-role, .hero-supporting, .hero-actions { font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif; }
+.hero-role { font-size: 14px; line-height: 1.45; font-weight: 400; }
+.hero-statement { display: flex; flex-direction: column; gap: 6px; }
+.hero-title { font-size: 48px; line-height: 1.08; letter-spacing: -.005em; font-weight: 500; }
+.hero-supporting { max-width: 600px; color: #465149; font-size: 14px; line-height: 1.45; }
+.hero-meta { color: #707a73; font-size: 12px; line-height: 1.35; }
+.hero-actions { display: flex; flex-wrap: wrap; gap: 12px 16px; font-size: 14px; line-height: 1.45; }
+.hero-action-primary, .hero-action-text { display: inline-flex; height: 48px; align-items: center; justify-content: center; white-space: nowrap; }
+.hero-action-primary { width: 164px; border-radius: 8px; background: #257a4c; color: #fff; padding-inline: 24px; }
+.hero-action-primary:hover { background: #1d623d; }
+.hero-action-text { width: 132px; background: #fff; color: #07100b; }
+.hero-evidence { position: relative; min-width: 0; min-height: 100%; overflow: hidden; background: #fff; }
+.hero-nav-shell { width: min(calc(100% - 172px), 1268px); margin-inline: auto; }
+.home-nav-links { gap: 24px; font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif; font-size: 14px; line-height: 1.45; color: #fff; }
+.home-nav-link { color: rgba(255,255,255,.88); }
+.home-nav-link:hover, .home-nav-link:focus-visible { color: #fff; }
+.featured-work { padding-block: 32px 96px; background: #f7f8f7; color: #07100b; }
+.featured-projects-list { margin-top: 40px; }
+.selected-work-label { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 500; color: var(--accent); text-transform: uppercase; }
+
+@media (max-width: 767px) {
+  .home-navbar { color: #07100b; }
+  .hero-nav-shell { width: calc(100% - 32px); }
+  .home-mark-light { display: none; }
+  .home-mark-dark { display: block; }
+  .home-menu-button { min-width: 44px; font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif; font-size: 14px; line-height: 1.45; color: #07100b; }
+  .hero-masthead { height: auto; background: #fff; color: #07100b; }
+  .hero-masthead-inner { width: calc(100% - 32px); padding: 148px 0 0; }
+  .hero-name { text-align: left; font-size: 28px; line-height: 1.15; letter-spacing: 0; font-weight: 500; white-space: normal; }
+  .hero-name span { display: block; }
+  .hero-paper { padding-block: 24px 56px; background: #fff; }
+  .hero-a-shell, .featured-work-shell { width: calc(100% - 32px); }
+  .hero-a-grid { display: block; }
+  .hero-copy { gap: 24px; }
+  .hero-role { color: #465149; font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; font-size: 28px; line-height: 1.15; font-weight: 500; }
+  .hero-title { font-size: 28px; line-height: 1.15; letter-spacing: 0; }
+  .hero-supporting { max-width: none; font-size: 16px; line-height: 1.55; }
+  .hero-evidence { display: none; }
+  .featured-work { border-top: 1px solid #cbd1cd; padding-block: 40px 80px; background: #fff; }
+  .selected-work-label { font-size: 12px; line-height: 1.2; letter-spacing: .08em; }
+  .featured-projects-list { margin-top: 16px; }
+}
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  .hero-a-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-evidence { min-height: 360px; aspect-ratio: 16 / 9; }
+}
