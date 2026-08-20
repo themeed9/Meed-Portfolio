@@ -4,16 +4,12 @@ import { ArrowUpRight } from "lucide-react";
 import EditorialReveal from "@/components/motion/EditorialReveal";
 interface Project{id:string;title:string;slug:string;description:string;category:string;tags:string[];coverImage:string|null}
 export default function FeaturedProjects({projects,intro}:{projects:Project[];intro?:{eyebrow?:string;title?:string;description?:string}|null}) {
-  return <section id="selected-work" className="scroll-mt-24 bg-bg-secondary section-pad" aria-label="Selected work">
-    <div className="shell">
-      <EditorialReveal as="header" className="border-b border-border-default pb-12">
+  return <section id="selected-work" className="featured-work scroll-mt-24" aria-label="Selected work">
+    <div className="featured-work-shell">
+      <EditorialReveal as="header">
         <p className="selected-work-label">{intro?.eyebrow || "Selected Work"}</p>
-        {(intro?.title || intro?.description) && <div className="mt-8 grid gap-5 lg:grid-cols-12">
-          {intro.title && <h2 className="type-h2 lg:col-span-8">{intro.title}</h2>}
-          {intro.description && <p className="type-body text-text-secondary lg:col-span-4">{intro.description}</p>}
-        </div>}
       </EditorialReveal>
-      <div>{projects.map((project,index) => <article key={project.id} className="project-row border-b border-border-default py-20 md:py-28">
+      <div className="featured-projects-list">{projects.map((project,index) => <article key={project.id} className="project-row border-b border-border-default pb-20 md:pb-28">
         <EditorialReveal>
           <p className="identity-wordmark">{String(index+1).padStart(2,"0")} / {project.title}</p>
           <h3 className="mt-8 project-headline">{project.description}</h3>

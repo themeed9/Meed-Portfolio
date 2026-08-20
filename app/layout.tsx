@@ -19,6 +19,13 @@ const geistMono = localFont({
   display: "swap",
 });
 
+const inter = localFont({
+  src: "./fonts/inter-latin-400.woff2",
+  weight: "400",
+  variable: "--font-inter",
+  display: "swap",
+});
+
 const siteTitle = "Abdulhameed Abdulsalam — Product Designer";
 const siteDescription =
   "Product Designer focused on fintech, SaaS, UX research, design systems, and technically feasible digital experiences across mobile and web.";
@@ -74,9 +81,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-on-background`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased bg-background text-on-background`}
       >
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{
           __html: `(function(){try{var t=localStorage.getItem("theme")||"system";if(t==="system"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.classList.remove("light","dark");document.documentElement.classList.add(t)}catch(e){}})()`
