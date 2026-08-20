@@ -7,7 +7,7 @@ export default function FeaturedProjects({projects,intro}:{projects:Project[];in
   return <section id="selected-work" className="scroll-mt-24 bg-bg-secondary section-pad" aria-label="Selected work">
     <div className="shell">
       <EditorialReveal as="header" className="border-b border-border-default pb-12">
-        <p className="selected-work-label">{intro?.eyebrow || "Selected Works"}</p>
+        <p className="selected-work-label">{intro?.eyebrow || "Selected Work"}</p>
         {(intro?.title || intro?.description) && <div className="mt-8 grid gap-5 lg:grid-cols-12">
           {intro.title && <h2 className="type-h2 lg:col-span-8">{intro.title}</h2>}
           {intro.description && <p className="type-body text-text-secondary lg:col-span-4">{intro.description}</p>}

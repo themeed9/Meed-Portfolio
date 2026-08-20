@@ -141,8 +141,8 @@ export const fallbackResumeCertifications: { name: string; issuer: string; year:
 export const fallbackHero = {
   identityName: "Abdulhameed Abdulsalam",
   role: "Product Designer",
-  title: "Designing clear, scalable\ndigital product from\ncomplex problems",
-  subtitle: "I combine UX research, product strategy, interaction design, design systems, and technical fluency to turn user needs and business constraints into products people can understand and use.",
+  title: "Designing clear, scalable digital products from complex problems.",
+  subtitle: "I combine product thinking, UX, interaction design, systems thinking and technical fluency to turn ambiguous problems into usable, implementable products.",
   ctaText: "View selected work",
   ctaLink: "#selected-work",
   secondaryCtaText: "About me",
