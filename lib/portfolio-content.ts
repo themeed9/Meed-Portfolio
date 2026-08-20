@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { prisma } from "@/lib/prisma";
+import { fallbackHero } from "@/lib/defaults";
 
 export type PublicProject = {
   id: string; title: string; slug: string; description: string; recruiterSummary: string | null;
@@ -54,11 +55,15 @@ export const getPublishedProject = cache(async (slug: string): Promise<PublicPro
 
 export const getSiteContent = cache(async <T>(key: string): Promise<T | null> => {
   const entry = await prisma.siteContent.findUnique({ where: { key } }).catch(() => null);
+  const stored = entry?.value && typeof entry.value === "object" ? (entry.value as object) : {};
   if (process.env.NODE_ENV === "development") {
     const fixture = (await import("@/lib/dev-portfolio-fixtures")).developmentContent[key];
-    if (fixture || entry?.value) return { ...(fixture ?? {}), ...((entry?.value && typeof entry.value === "object" ? entry.value : {}) as object) } as T;
+    if (fixture || entry?.value) return { ...(fixture ?? {}), ...stored } as T;
   }
-  if (entry?.value && typeof entry.value === "object") return entry.value as T;
+  if (entry?.value && typeof entry.value === "object") {
+    if (key === "homepage-hero") return { ...fallbackHero, ...stored } as T;
+    return entry.value as T;
+  }
   return null;
 });
 
