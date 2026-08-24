@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 interface SEOProps {
   title: string;
@@ -8,15 +8,30 @@ interface SEOProps {
   noIndex?: boolean;
 }
 
-const productionSiteUrl = "https://meedport.com";
+const productionSiteUrl = "https://meed-portfolio.vercel.app";
 
-export function getSiteUrl() {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+function normalizeSiteUrl(value: string) {
+  const withProtocol = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+  return withProtocol.replace(/\/$/, "");
+}
+
+type SiteEnvironment = {
+  readonly NODE_ENV?: string;
+  readonly NEXT_PUBLIC_SITE_URL?: string;
+  readonly VERCEL_PROJECT_PRODUCTION_URL?: string;
+};
+
+export function getSiteUrl(environment: SiteEnvironment = process.env) {
+  const vercelProductionUrl = environment.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (environment.NODE_ENV === "production" && vercelProductionUrl) {
+    return normalizeSiteUrl(vercelProductionUrl);
+  }
+  const configured = environment.NEXT_PUBLIC_SITE_URL?.trim();
   if (!configured) return productionSiteUrl;
-  if (process.env.NODE_ENV === "production" && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configured)) {
+  if (environment.NODE_ENV === "production" && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configured)) {
     return productionSiteUrl;
   }
-  return configured.replace(/\/$/, "");
+  return normalizeSiteUrl(configured);
 }
 
 export function generateMetadata({

@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import Hero from "@/components/home/Hero";
 import FeaturedProjects from "@/components/home/FeaturedProjects";
 import { getPublishedProjects, getSiteContent, getSkills } from "@/lib/portfolio-content";
+import { generateMetadata } from "@/lib/seo";
 
 type HeroContent = { title:string; subtitle:string; ctaText:string; ctaLink:string; secondaryCtaText:string; secondaryCtaLink:string; slides?:{src:string;alt:string}[]; eyebrow?:string; metaLine?:string; identityName?:string; role?:string };
 type WorkIntro = { eyebrow?:string; title?:string; description?:string };
@@ -11,6 +12,10 @@ type WorkflowContent = { title:string; description:string; steps:{number:string;
 type CtaContent = { eyebrow?:string; title:string; primaryLabel?:string; secondaryLabel?:string };
 
 export const dynamic = "force-dynamic";
+export const metadata = generateMetadata({
+  title: "Abdulhameed Abdulsalam — Product Designer",
+  description: "Product Designer focused on clear, scalable digital products across fintech, SaaS, mobile, and responsive web.",
+});
 
 export default async function HomePage() {
   const [hero, about, workflow, cta, workIntro, projects, skills] = await Promise.all([

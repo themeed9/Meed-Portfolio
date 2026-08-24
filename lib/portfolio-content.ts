@@ -53,6 +53,14 @@ export const getPublishedProject = cache(async (slug: string): Promise<PublicPro
   }
 });
 
+export const resolvePublishedProject = cache(async (slug: string): Promise<PublicProject | null> => {
+  const exact = await getPublishedProject(slug);
+  if (exact) return exact;
+  const prefix = `${slug}-`;
+  const matches = (await getPublishedProjects()).filter((project) => project.slug.startsWith(prefix));
+  return matches.length === 1 ? matches[0] : null;
+});
+
 export const getSiteContent = cache(async <T>(key: string): Promise<T | null> => {
   const entry = await prisma.siteContent.findUnique({ where: { key } }).catch(() => null);
   const stored = entry?.value && typeof entry.value === "object" ? (entry.value as object) : {};
