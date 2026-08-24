@@ -10,7 +10,7 @@ Core principle: **simplicity through discipline**. The portfolio should communic
 
 ## 2. Typography
 
-Use Geist Sans for interface and editorial copy, and Geist Mono only for compact technical metadata where it improves scanning. Use three weights: 400, 550/600, and 700 only when exceptional emphasis is necessary.
+Use Geist Sans for display typography and major interface headings. Use Archivo 400 for body and editorial copy, Archivo 500 for small text and captions, and Geist Mono for compact technical metadata and eyebrows where it improves scanning. Do not globally replace Geist; each family has a defined role.
 
 Typography carries hierarchy. Labels describe sections; headlines communicate decisions, tensions, insights, or outcomes.
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Archivo } from "next/font/google";
 
 import localFont from "next/font/local";
 import "./globals.css";
@@ -7,6 +8,7 @@ import "./hero-a.css";
 import AppShell from "@/components/layout/AppShell";
 import Footer from "@/components/layout/Footer";
 import Providers from "@/components/Providers";
+import { getSiteUrl } from "@/lib/seo";
 
 const geistSans = localFont({
   src: "../node_modules/next/dist/next-devtools/server/font/geist-latin.woff2",
@@ -20,10 +22,10 @@ const geistMono = localFont({
   display: "swap",
 });
 
-const inter = localFont({
-  src: "./fonts/inter-latin-400.woff2",
-  weight: "400",
-  variable: "--font-inter",
+const archivo = Archivo({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-archivo",
   display: "swap",
 });
 
@@ -31,7 +33,7 @@ const siteTitle = "Abdulhameed Abdulsalam — Product Designer";
 const siteDescription =
   "Product Designer focused on fintech, SaaS, UX research, design systems, and technically feasible digital experiences across mobile and web.";
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://meedport.com";
+const baseUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
@@ -67,12 +69,10 @@ const jsonLd = {
   name: "Abdulhameed Abdulsalam",
   jobTitle: "Product Designer",
   description: siteDescription,
-  url: "https://meedport.com",
+  url: baseUrl,
   sameAs: [
-    "https://linkedin.com/in/meedport",
-    "https://twitter.com/meedport",
-    "https://dribbble.com/meedport",
-    "https://github.com/meedport",
+    "https://www.linkedin.com/in/abdulhameed-abdulsalam-305568149/",
+    "https://github.com/themeed9",
   ],
 };
 
@@ -82,10 +82,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased bg-background text-on-background`}
-      >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable}`}
+    >
+      <body className="antialiased bg-background text-on-background">
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{
           __html: `(function(){try{var t=localStorage.getItem("theme")||"system";if(t==="system"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.classList.remove("light","dark");document.documentElement.classList.add(t)}catch(e){}})()`
         }} />

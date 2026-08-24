@@ -8,7 +8,7 @@
 - Borders: gray-100 / gray-800 (dark)
 
 ## Typography
-- Font: Inter (via Google Fonts)
+- Display: Geist. Body/editorial: Archivo 400. Small/caption: Archivo 500. Structured metadata and eyebrows: Geist Mono.
 - Weights: 400 (regular), 500 (medium), 600 (semibold), 700 (bold)
 - Scale: xs(12), sm(14), base(16), lg(18), xl(20), 2xl(24), 3xl(30), 4xl(36), 5xl(48)
 

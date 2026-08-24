@@ -13,8 +13,8 @@ function RichText({ content }: { content: string }) {
   })}</div>;
 }
 
-function MediaSet({ media }: { media: Media[] }) {
-  return <div className={`grid gap-6 ${media.length > 1 ? "md:grid-cols-2" : ""}`}>{media.map(item => <figure key={item.url}><div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-md)] bg-bg-tertiary"><Image src={item.url} alt={item.alt} fill sizes="(max-width: 768px) 100vw, 720px" className="object-cover" /></div>{item.caption && <figcaption className="mt-3 type-small text-text-tertiary">{item.caption}</figcaption>}</figure>)}</div>;
+function MediaSet({ media, preserveInterface = false }: { media: Media[]; preserveInterface?: boolean }) {
+  return <div className={`grid gap-6 ${media.length > 1 ? "md:grid-cols-2" : ""}`}>{media.map(item => <figure key={item.url}><div className={`relative overflow-hidden rounded-[var(--radius-md)] bg-bg-tertiary ${preserveInterface ? "aspect-[4/3]" : "aspect-[16/10]"}`}><Image src={item.url} alt={item.alt} fill sizes="(max-width: 768px) 100vw, 720px" className={preserveInterface ? "object-contain" : "object-cover"} /></div>{item.caption && <figcaption className="mt-3 type-small text-text-tertiary">{item.caption}</figcaption>}</figure>)}</div>;
 }
 
 function Structured({ payload }: { payload: Record<string, unknown> }) {
@@ -32,6 +32,14 @@ function Annotated({ payload }: { payload: Record<string, unknown> }) {
   return <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]"><MediaSet media={media}/>{annotations.length>0&&<ol className="divide-y divide-border-subtle border-y border-border-subtle">{annotations.map(item=><li key={item.number} className="py-5"><p className="type-micro text-text-accent">{item.number}</p><h3 className="mt-2 font-semibold">{item.title}</h3><p className="mt-2 type-small text-text-secondary">{item.detail}</p></li>)}</ol>}</div>;
 }
 
+function Evidence({ payload }: { payload: Record<string, unknown> }) {
+  const media = Array.isArray(payload.media) ? payload.media as Media[] : [];
+  return <div className="space-y-8">
+    <Structured payload={{ finding: payload.finding, evidence: payload.evidence, implication: payload.implication }} />
+    {media.length > 0 && <MediaSet media={media} preserveInterface />}
+  </div>;
+}
+
 function Outcome({ payload }: { payload: Record<string, unknown> }) {
   return <dl className="grid gap-8 md:grid-cols-3"><div><dt className="type-micro text-text-accent">Verified outcome</dt><dd className="mt-3 type-body-lg">{String(payload.result)}</dd></div>{typeof payload.evidence==="string"&&<div><dt className="type-micro text-text-tertiary">Product learning</dt><dd className="mt-3 type-body text-text-secondary">{payload.evidence}</dd></div>}{typeof payload.caveat==="string"&&<div><dt className="type-micro text-text-tertiary">Future hypothesis</dt><dd className="mt-3 type-body text-text-secondary">{payload.caveat}</dd></div>}</dl>;
 }
@@ -42,6 +50,7 @@ function render(section: Normalized) {
   if (!section.payloadValid || !payload) return <RichText content={section.content} />;
   if (section.type === "decision") return <Decision payload={payload} />;
   if (section.type === "annotated_screen" && Array.isArray(payload.media)) return <Annotated payload={payload} />;
+  if (section.type === "evidence") return <Evidence payload={payload} />;
   if (section.type === "outcome") return <Outcome payload={payload} />;
   if ("media" in payload && Array.isArray(payload.media)) return <MediaSet media={payload.media as Media[]} />;
   if ("events" in payload && Array.isArray(payload.events)) return <ol>{(payload.events as Array<{period:string;title:string;detail:string}>).map(event => <li key={`${event.period}-${event.title}`} className="grid gap-2 border-t border-border-subtle py-5 sm:grid-cols-[8rem_1fr]"><p className="type-small text-text-tertiary">{event.period}</p><div><h3 className="font-semibold">{event.title}</h3><p className="mt-2 type-body text-text-secondary">{event.detail}</p></div></li>)}</ol>;

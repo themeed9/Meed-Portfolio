@@ -8,6 +8,17 @@ interface SEOProps {
   noIndex?: boolean;
 }
 
+const productionSiteUrl = "https://meedport.com";
+
+export function getSiteUrl() {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!configured) return productionSiteUrl;
+  if (process.env.NODE_ENV === "production" && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(configured)) {
+    return productionSiteUrl;
+  }
+  return configured.replace(/\/$/, "");
+}
+
 export function generateMetadata({
   title,
   description,
@@ -15,7 +26,7 @@ export function generateMetadata({
   slug,
   noIndex,
 }: SEOProps): Metadata {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://meedport.com";
+  const baseUrl = getSiteUrl();
   const url = slug ? `${baseUrl}/${slug}` : baseUrl;
 
   return {

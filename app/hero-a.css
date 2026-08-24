@@ -11,7 +11,7 @@
 .hero-a-grid { display: grid; grid-template-columns: minmax(0, 600px) minmax(0, 1fr); gap: 29px; align-items: stretch; }
 .hero-a-grid-single { grid-template-columns: minmax(0, 600px); }
 .hero-copy { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
-.hero-role, .hero-supporting, .hero-actions { font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif; }
+.hero-role, .hero-supporting, .hero-actions { font-family: var(--font-family-body); }
 .hero-role { font-size: 14px; line-height: 1.45; font-weight: 400; }
 .hero-statement { display: flex; flex-direction: column; gap: 6px; }
 .hero-title { font-size: 48px; line-height: 1.08; letter-spacing: -.005em; font-weight: 500; }
@@ -24,7 +24,7 @@
 .hero-action-text { width: 132px; background: #fff; color: #07100b; }
 .hero-evidence { position: relative; min-width: 0; min-height: 100%; overflow: hidden; background: #fff; }
 .hero-nav-shell { width: min(calc(100% - 172px), 1268px); margin-inline: auto; }
-.home-nav-links { gap: 24px; font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif; font-size: 14px; line-height: 1.45; color: #fff; }
+.home-nav-links { gap: 24px; font-family: var(--font-family-body); font-size: 14px; line-height: 1.45; font-weight: 500; color: #fff; }
 .home-nav-link { color: rgba(255,255,255,.88); }
 .home-nav-link:hover, .home-nav-link:focus-visible { color: #fff; }
 .featured-work { padding-block: 32px 96px; background: #f7f8f7; color: #07100b; }
@@ -36,7 +36,7 @@
   .hero-nav-shell { width: calc(100% - 32px); }
   .home-mark-light { display: none; }
   .home-mark-dark { display: block; }
-  .home-menu-button { min-width: 44px; font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif; font-size: 14px; line-height: 1.45; color: #07100b; }
+  .home-menu-button { min-width: 44px; font-family: var(--font-family-body); font-size: 14px; line-height: 1.45; font-weight: 500; color: #07100b; }
   .hero-masthead { height: auto; background: #fff; color: #07100b; }
   .hero-masthead-inner { width: calc(100% - 32px); padding: 148px 0 0; }
   .hero-name { text-align: left; font-size: 28px; line-height: 1.15; letter-spacing: 0; font-weight: 500; white-space: normal; }
