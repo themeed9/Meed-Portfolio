@@ -62,7 +62,7 @@ export default function Hero({ content }: { content: HeroContent }) {
 
           {image && (
             <EditorialReveal evidence delay={0.18} className="hero-evidence">
-              <Image src={image.src} alt={image.alt} fill preload sizes="(max-width: 767px) 0px, (max-width: 1439px) 48vw, 619px" className="object-cover object-center" />
+              <Image src={image.src} alt={image.alt} fill preload sizes="(max-width: 767px) 100vw, (max-width: 1439px) 48vw, 619px" className="object-cover object-center" />
             </EditorialReveal>
           )}
         </div>
