@@ -117,7 +117,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .featured-work { padding-block: 32px 96px; background: #f7f8f7; color: #07100b; }
 .featured-projects-list { margin-top: 40px; }
 .selected-work-label { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 500; color: var(--accent); text-transform: uppercase; }
-.project-headline { max-width: 1080px; font-family: var(--font-family-sans); font-size: 28px; line-height: 1.22; letter-spacing: 0; font-weight: 500; }
+.project-headline { max-width: 780px; font-family: var(--font-family-body); font-size: 30px; line-height: 1.22; letter-spacing: 0; font-weight: 500; }
 .brand-mark { position: relative; display: inline-flex; flex: none; align-items: center; justify-content: center; }
 .brand-mark img { display: block; width: 100%; height: 100%; }
 .brand-mark .brand-mark-dark { display: block; }
