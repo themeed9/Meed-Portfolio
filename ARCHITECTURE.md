@@ -176,4 +176,4 @@ See `docs/security/security-regression-contract.md` for the executable security 
 | `docs/adr/ADR-007.md` | Services is not a primary product surface |
 | `docs/adr/ADR-008.md` | Database / deployment architecture (Supabase + Vercel) |
 | `docs/adr/ADR-009.md` | Motion is purposeful and restrained |
-| `docs/adr/ADR-010.md` | **Proposed:** typed homepage project cards and the Beyond section (not implemented) |
+| `docs/adr/ADR-010.md` | Typed homepage project cards and the Beyond section (accepted, not implemented) |
