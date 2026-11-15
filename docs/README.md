@@ -7,7 +7,7 @@ report before starting normal work.
 
 1. `ARCHITECTURE.md` (repository root) — current architecture reality
 2. `AGENTS.md` (repository root) — agent rules, authority hierarchy, stop conditions
-3. `docs/adr/` — approved architecture decisions (ADR-001 … ADR-009)
+3. `docs/adr/` — approved architecture decisions (ADR-001 … ADR-010). ADR-010 is accepted but not implemented, with open conflicts C1–C5
 4. `docs/product/content-architecture.md` — what a project/case study is
 5. `docs/security/security-regression-contract.md` — security invariants (SEC-INV-001 … 010)
 6. Current approved phase/task specification
@@ -15,6 +15,7 @@ report before starting normal work.
 
 ## Reference (consult when relevant)
 
+- Figma "Landing — Desktop" (https://www.figma.com/design/chDzSt7d1Nu0QLBwVcwhHc/Untitled?node-id=5-2) — approved structure for the homepage redesign (`docs/adr/ADR-010.md`); type, palette, card treatment and motion pending C1–C3 and C5
 - `docs/security/security-credential-containment.md` — redacted record of exposed credential inventory and rotation
 - `docs/security/security-dependency-remediation.md` — record of dependency remediation and the audit result
 - `docs/portfolio-ui-audit.md` — UI audit against the taste/motion skills (useful checklist, not current state)
