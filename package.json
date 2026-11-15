@@ -12,7 +12,7 @@
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
-    "test": "node --test --experimental-strip-types \"tests/security/*.test.ts\"",
+    "test": "node --test --experimental-strip-types \"tests/**/*.test.ts\"",
     "admin:rotate-password": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --experimental-strip-types scripts/rotate-admin-password.ts"
   },
   "dependencies": {

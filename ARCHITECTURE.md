@@ -56,8 +56,8 @@ Database models (`prisma/schema.prisma`):
 |---|---|
 | `User` | Admin identity: `email`, bcrypt `password`, `role` (default `"admin"`) |
 | `SiteContent` | Keyed JSON records (`key` unique, `value` JSON) for editable copy/settings |
-| `Project` | Portfolio project + case study record (`slug` unique, `published`, `featured`, metadata, order) |
-| `ProjectImage` | Ordered image gallery per project |
+| `Project` | Portfolio project + case study record (`slug` unique, `published`, `featured`, metadata, order); homepage card fields `primaryColor`, `cardTemplate`, `cardPayload` and `collection` (`product` or `brand`) per ADR-010 |
+| `ProjectImage` | Ordered image gallery per project; optional `width`, `height` and `role` (`cover`, `screen`, `detail`) |
 | `CaseStudySection` | Ordered typed content blocks per project (`type`, `payload` JSON, `metadata`, `imageUrl`, `order`) |
 | `Skill` / `Service` | Capability and service records with order |
 | `Testimonial` | Client testimonials |
@@ -104,7 +104,8 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
 ## 8. Database
 
 - PostgreSQL via Supabase. Prisma 7 with `PrismaPg` adapter; `DATABASE_URL` is read from environment at runtime.
-- Migrations are checked into `prisma/migrations/` (`init`, `add_resume_experience`, `evolve_case_study_sections`).
+- Migrations are checked into `prisma/migrations/` (`init`, `add_resume_experience`, `evolve_case_study_sections`,
+  `add_project_card_fields`). The last is additive (ADR-010) and is applied to production only with separate owner approval.
 - Migration rules: additive/reviewed migrations only; no destructive migration without approval; never use production
   as a destructive test database.
 
@@ -176,4 +177,4 @@ See `docs/security/security-regression-contract.md` for the executable security 
 | `docs/adr/ADR-007.md` | Services is not a primary product surface |
 | `docs/adr/ADR-008.md` | Database / deployment architecture (Supabase + Vercel) |
 | `docs/adr/ADR-009.md` | Motion is purposeful and restrained |
-| `docs/adr/ADR-010.md` | Typed homepage project cards and the Beyond section (accepted, not implemented) |
+| `docs/adr/ADR-010.md` | Typed homepage project cards and the Beyond section (accepted; phase 2 data model and validation implemented in `lib/project-card.ts`) |
