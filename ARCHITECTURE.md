@@ -14,10 +14,10 @@ API routes; the public site never depends on hard-coded production content.
 
 Verified from `package.json`, `package-lock.json`, and config files:
 
-- **Framework:** Next.js 16.3.1 (App Router), React 19.2.4
+- **Framework:** Next.js 16.4.6 (App Router), React 19.2.4
 - **Language:** TypeScript 5 (strict mode), path alias `@/*`
 - **Styling:** Tailwind CSS v4, semantic design tokens in `tokens/design-tokens.css`
-- **ORM:** Prisma 7.9.1 with `@prisma/adapter-pg` (PrismaPg); datasource provider `postgresql`
+- **ORM:** Prisma 7.10.1 with `@prisma/adapter-pg` (PrismaPg); datasource provider `postgresql`
 - **Database:** Supabase-hosted PostgreSQL (runtime `DATABASE_URL`)
 - **Auth:** Auth.js / NextAuth v5.0.0-beta.32 (Credentials provider, JWT session)
 - **Password hashing:** bcryptjs (cost 12)
@@ -176,3 +176,4 @@ See `docs/security/security-regression-contract.md` for the executable security 
 | `docs/adr/ADR-007.md` | Services is not a primary product surface |
 | `docs/adr/ADR-008.md` | Database / deployment architecture (Supabase + Vercel) |
 | `docs/adr/ADR-009.md` | Motion is purposeful and restrained |
+| `docs/adr/ADR-010.md` | **Proposed:** typed homepage project cards and the Beyond section (not implemented) |
