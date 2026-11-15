@@ -149,7 +149,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .skip-to-content:focus { transform: translateY(0); }
 
 @media (max-width: 767px) {
-  .project-headline { max-width: 343px; font-size: 21px; line-height: 1.18; }
+  .project-headline { max-width: 343px; font-size: 20px; line-height: 1.18; }
   .brand-mark--hero .brand-mark-light { display: none; }
   .brand-mark--hero .brand-mark-dark { display: block; }
   .page-pad { padding-block: var(--space-9); }
@@ -181,7 +181,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 @media (min-width: 768px) and (max-width: 1100px) {
-  .project-headline { max-width: 640px; font-size: 23px; line-height: 1.15; }
+  .project-headline { max-width: 640px; font-size: 24px; line-height: 1.15; }
   .hero-a-grid { grid-template-columns: 1fr; gap: 48px; }
   .hero-evidence { min-height: 360px; aspect-ratio: 16 / 9; }
 }

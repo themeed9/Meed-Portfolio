@@ -17,9 +17,9 @@ export default function FeaturedProjects({projects,intro}:{projects:Project[];in
             <p className="type-micro text-text-tertiary">{project.category}</p>
             {project.tags.slice(0,3).map(tag => <span key={tag} className="type-small text-text-tertiary">{tag}</span>)}
           </div>
-          <Link href={`/work/${project.slug}`} className="project-link mt-5 inline-flex min-h-11 items-center gap-2 font-semibold text-text-accent">View case study <ArrowUpRight size={17} aria-hidden="true"/></Link>
+          <Link href={`/work/${project.slug}`} className="project-link mt-6 inline-flex min-h-11 items-center gap-2 font-semibold text-text-accent">View case study <ArrowUpRight size={17} aria-hidden="true"/></Link>
         </EditorialReveal>
-        {project.coverImage && <EditorialReveal evidence className="mt-10 md:mt-12">
+        {project.coverImage && <EditorialReveal evidence className="mt-12">
           <Link href={`/work/${project.slug}`} aria-label={`View ${project.title} case study`} className="project-evidence group relative block aspect-[16/8] overflow-hidden bg-bg-tertiary">
             <Image src={project.coverImage} alt={`${project.title} interface preview`} fill preload={index===0} sizes="(max-width:1200px) 100vw,1200px" className="object-cover transition-transform duration-[var(--duration-editorial)] ease-[var(--ease-standard)] group-hover:scale-[1.015]"/>
           </Link>
