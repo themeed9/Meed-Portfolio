@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { cardTemplates, hexColorSchema, projectCollections } from "./project-card.ts";
 
 export const contactFormSchema = z.object({
   name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
@@ -36,6 +37,12 @@ export const projectSchema = z.object({
   results: z.string().optional(),
   testimonial: z.string().optional(),
   testimonialAuthor: z.string().optional(),
+  // Homepage card fields (ADR-010). Optional so existing forms keep working;
+  // the card payload itself is validated per template by lib/project-card.ts.
+  primaryColor: z.union([hexColorSchema, z.literal("")]).optional(),
+  cardTemplate: z.enum(cardTemplates).optional(),
+  cardPayload: z.json().optional(),
+  collection: z.enum(projectCollections).optional(),
 });
 
 export const siteContentSchema = z.object({
