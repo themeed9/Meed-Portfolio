@@ -3,7 +3,7 @@
   --surface-subtle: #f0efe9;
   --surface-muted: #e8e7e0;
   --surface-inverse: #07100b;
-  --text-primary: #07100b;
+  --text-primary: #0b3d2e; /* deep forest main text, 12.2:1 on white (owner decision, ADR-010 C1) */
   --text-secondary: #465149;
   --text-muted: #5e6862; /* >= 5.0:1 on every light surface (was #707a73, 3.9-4.4:1) */
   --text-inverse: #f7faf8;
@@ -16,6 +16,7 @@
   --error: #a52a2a;
 
   --font-family-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-family-display: var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-family-body: var(--font-archivo), Archivo, ui-sans-serif, system-ui, sans-serif;
   --font-family-mono: var(--font-geist-mono), ui-monospace, monospace;
   --type-display: clamp(3rem, 7vw, 6.75rem);

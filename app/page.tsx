@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Hero from "@/components/home/Hero";
 import FeaturedProjects from "@/components/home/FeaturedProjects";
-import { getPublishedProjects, getSiteContent, getSkills } from "@/lib/portfolio-content";
+import { getPublishedProductProjects, getSiteContent, getSkills } from "@/lib/portfolio-content";
 import { generateMetadata } from "@/lib/seo";
 
 type HeroContent = { title:string; subtitle:string; ctaText:string; ctaLink:string; secondaryCtaText:string; secondaryCtaLink:string; slides?:{src:string;alt:string}[]; eyebrow?:string; metaLine?:string; identityName?:string; role?:string };
@@ -21,7 +21,7 @@ export default async function HomePage() {
   const [hero, about, workflow, cta, workIntro, projects, skills] = await Promise.all([
     getSiteContent<HeroContent>("homepage-hero"), getSiteContent<AboutContent>("homepage-about"),
     getSiteContent<WorkflowContent>("homepage-workflow"), getSiteContent<CtaContent>("homepage-cta"), getSiteContent<WorkIntro>("work-page"),
-    getPublishedProjects(), getSkills(),
+    getPublishedProductProjects(), getSkills(),
   ]);
   const featured = projects.filter(project => project.featured);
   return <>

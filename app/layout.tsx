@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Archivo } from "next/font/google";
+import { Archivo, Plus_Jakarta_Sans } from "next/font/google";
 
 import localFont from "next/font/local";
 import "./globals.css";
@@ -26,6 +26,14 @@ const archivo = Archivo({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-archivo",
+  display: "swap",
+});
+
+// Display face for headings (owner decision, ADR-010 C1).
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-jakarta",
   display: "swap",
 });
 
@@ -86,7 +94,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${archivo.variable} ${jakarta.variable}`}
     >
       <body className="antialiased bg-background text-on-background">
         <Script id="theme-init" strategy="beforeInteractive" dangerouslySetInnerHTML={{

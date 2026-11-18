@@ -10,7 +10,9 @@ export type PublicProject = {
   year: string | null; client: string | null; role: string | null; duration: string | null;
   tools: string[]; overview: string | null; challenge: string | null; approach: string | null;
   results: string | null; testimonial: string | null; testimonialAuthor: string | null; order: number;
-  images: { id: string; url: string; alt: string | null; caption: string | null; order: number }[];
+  // Homepage card fields (ADR-010). Optional: legacy reads and development fixtures may not have them.
+  primaryColor?: string | null; cardTemplate?: string | null; cardPayload?: unknown; collection?: string | null;
+  images: { id: string; url: string; alt: string | null; caption: string | null; order: number; width?: number | null; height?: number | null; role?: string | null }[];
   caseStudySections: { id: string; type?: string | null; title: string | null; eyebrow?: string | null; content: string; payload?: unknown; metadata?: unknown; imageUrl?: string | null; imageAlt?: string | null; order: number }[];
 };
 
@@ -39,6 +41,10 @@ export const getPublishedProjects = cache(async (): Promise<PublicProject[]> => 
     return projects;
   }
 });
+
+/** Published product projects for Selected work and the work index; brand work is listed separately (ADR-010). */
+export const getPublishedProductProjects = cache(async (): Promise<PublicProject[]> =>
+  (await getPublishedProjects()).filter((project) => (project.collection ?? "product") === "product"));
 
 export const getPublishedProject = cache(async (slug: string): Promise<PublicProject | null> => {
   try {

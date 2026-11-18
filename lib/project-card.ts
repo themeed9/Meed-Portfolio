@@ -163,7 +163,8 @@ export function resolveCardInput(input: CardInput): { ok: true; data: CardWriteD
 
 // ---- Colour helpers (WCAG 2.x relative luminance and contrast) ----
 
-export const TEXT_ON_COLOR_CANDIDATES = ["#FFFFFF", "#07100B", "#000000"] as const;
+// Brand main text (deep forest) is preferred over near-black and black wherever it passes.
+export const TEXT_ON_COLOR_CANDIDATES = ["#FFFFFF", "#0B3D2E", "#07100B", "#000000"] as const;
 export const MIN_TEXT_CONTRAST = 4.5;
 
 function channels(hex: string): [number, number, number] {
@@ -184,7 +185,7 @@ export function contrastRatio(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-/** First of white, near-black or black that reaches 4.5:1. Black or white always can. */
+/** First of white, deep forest, near-black or black that reaches 4.5:1. Black or white always can. */
 export function pickTextColor(background: string): { color: string; ratio: number } {
   for (const color of TEXT_ON_COLOR_CANDIDATES) {
     const ratio = contrastRatio(background, color);

@@ -10,7 +10,7 @@ Core principle: **simplicity through discipline**. The portfolio should communic
 
 ## 2. Typography
 
-Use Geist Sans for display typography and major interface headings. Use Archivo 400 for body and editorial copy, Archivo 500 for small text and captions, and Geist Mono for compact technical metadata and eyebrows where it improves scanning. Do not globally replace Geist; each family has a defined role.
+Use Plus Jakarta Sans (600) for display typography and headings: page and project titles, the homepage name, and card statements (owner decision, 2026-11-18, ADR-010 C1). Use Geist Sans for interface text such as navigation and wordmarks, Archivo 400 for body and editorial copy, Archivo 500 for small text and captions, and Geist Mono for compact technical metadata and eyebrows where it improves scanning. Each family has a defined role.
 
 Typography carries hierarchy. Labels describe sections; headlines communicate decisions, tensions, insights, or outcomes.
 
@@ -56,17 +56,19 @@ Whitespace separates ideas. Do not add spacing merely to make a section feel pre
 
 ## 6. Colour system
 
-Use a neutral shell and one restrained green accent.
+Use a neutral shell, deep forest main text and one restrained green accent.
 
 - Background: #FFFFFF / dark #07100B.
 - Secondary surface: #F7F8F7 / dark #0D1510.
-- Primary text: #07100B / dark #F7FAF8.
+- Primary text: #0B3D2E deep forest (12.2:1 on white) / dark #F7FAF8. Owner decision, 2026-11-18.
 - Secondary text: #465149 / dark #CBD2CD.
-- Muted text: #707A73 / dark #98A29B.
+- Muted text: #5E6862 (at least 5.0:1 on every light surface; was #707A73, which failed AA on off-white) / dark #98A29B.
 - Subtle border: #E7EAE8 / dark #202A23.
-- Accent: #257A4C / dark #62C88F.
+- Accent: #257A4C / dark #62C88F. A band whose background stays light in both themes keeps the light accent.
 
-Project brand colours may appear inside screenshots and tightly controlled evidence frames. Avoid gradients and section-by-section colour themes.
+**Project colours (owner decision, 2026-11-18, ADR-010 C2).** On the homepage, each featured project's card may fill its full-width band with that project's primary colour, set in the CMS. Text on the band is never chosen by hand: it is the first of white, deep forest, near-black or black that reaches 4.5:1, at full strength with no opacity. Inner panels use a light tint of the colour with deep forest text. Elsewhere, project colours stay inside screenshots and evidence frames. Avoid gradients.
+
+All text must meet WCAG 2.1 AA contrast (4.5:1 body, 3:1 large) in both themes; check with an automated contrast audit before release.
 
 ## 7. Radius system
 
