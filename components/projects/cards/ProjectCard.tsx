@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
 import { galleryColumns, mediaView, screenRatio, type CardMediaView, type CardView } from "@/lib/project-card-view";
 
@@ -15,7 +15,10 @@ type Props = { view: CardView; fallbackImage?: string | null };
 
 export default function ProjectCard({ view, fallbackImage }: Props) {
   const colored = view.colors !== null;
-  const style: CSSProperties | undefined = view.colors ? { background: view.colors.background, color: view.colors.text } : undefined;
+  // Card button (Figma): filled with the card's text colour; label in white, or ink on a white button.
+  const style: CSSProperties | undefined = view.colors
+    ? ({ background: view.colors.background, color: view.colors.text, "--cta-bg": view.colors.text, "--cta-fg": view.colors.text === "#FFFFFF" ? "#07100B" : "#FFFFFF" } as CSSProperties)
+    : undefined;
   return (
     <article
       className={`project-card group ${colored ? "" : "bg-bg-primary text-text-primary"} border-b border-border-subtle`}
@@ -157,7 +160,7 @@ function Facts({ view }: { view: CardView }) {
 function Cta({ view }: { view: CardView }) {
   return (
     <Link href={view.href} className="project-card-cta">
-      {view.cta} <ArrowUpRight size={18} aria-hidden="true" />
+      {view.cta} <ArrowRight size={18} aria-hidden="true" />
     </Link>
   );
 }

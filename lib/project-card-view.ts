@@ -89,7 +89,7 @@ export function buildCardView(project: CardProjectInput, index: number): CardVie
     title: project.title,
     summary: project.recruiterSummary || project.description,
     facts,
-    cta: ("ctaLabel" in card.payload && card.payload.ctaLabel) || "View case study",
+    cta: ("ctaLabel" in card.payload && card.payload.ctaLabel) || "Read the case study",
     colors: cardColors(project.primaryColor),
     card,
   };

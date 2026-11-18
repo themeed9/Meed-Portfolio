@@ -149,7 +149,7 @@ function SharedSlots({ raw, set }: { raw: Payload; set: (key: string, value: unk
   return <>
     <RowList label="Facts (optional, up to 4)" help="Short label and value pairs, for example Role · Product Designer." rows={asArray(raw.facts)} max={4} empty={{ label: "", value: "" }} fields={[["label", "Label", 40], ["value", "Value", 160]]} onChange={(rows) => set("facts", rows)} />
     <label className="block text-sm">Link label (optional)
-      <input className={field} maxLength={40} placeholder="View case study" value={asText(raw.ctaLabel)} onChange={(event) => set("ctaLabel", event.target.value)} />
+      <input className={field} maxLength={40} placeholder="Read the case study" value={asText(raw.ctaLabel)} onChange={(event) => set("ctaLabel", event.target.value)} />
     </label>
   </>;
 }
@@ -277,7 +277,7 @@ function CardPreview({ template, payload, color, textColor, title, summary, fall
   const style = color ? { background: color, color: textColor ?? undefined } : { background: "var(--color-bg-primary, #fff)" };
   const inner = color ? { background: tint(color, 0.85) } : undefined;
   const facts = asArray(payload.facts);
-  const heading = <div className="space-y-2"><p className="text-lg font-semibold">{title}</p><p className="text-xs opacity-80">{summary}</p>{facts.length > 0 && <p className="text-xs opacity-80">{facts.map((f) => `${asText(f.label)} · ${asText(f.value)}`).join("  ·  ")}</p>}<p className="text-xs font-semibold underline">{asText(payload.ctaLabel) || "View case study"} →</p></div>;
+  const heading = <div className="space-y-2"><p className="text-lg font-semibold">{title}</p><p className="text-xs opacity-80">{summary}</p>{facts.length > 0 && <p className="text-xs opacity-80">{facts.map((f) => `${asText(f.label)} · ${asText(f.value)}`).join("  ·  ")}</p>}<p className="text-xs font-semibold underline">{asText(payload.ctaLabel) || "Read the case study"} →</p></div>;
   let body: React.ReactNode;
   switch (template) {
     case "device_stage":

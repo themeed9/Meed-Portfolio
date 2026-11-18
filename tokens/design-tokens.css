@@ -1,17 +1,17 @@
 :root {
-  --surface: #f7f6f1;
-  --surface-subtle: #f0efe9;
-  --surface-muted: #e8e7e0;
+  --surface: #ffffff; /* Figma color/bg and color/surface */
+  --surface-subtle: #f2f4f3; /* Figma color/tile */
+  --surface-muted: #e6e9e7;
   --surface-inverse: #07100b;
   --text-primary: #0b3d2e; /* deep forest main text, 12.2:1 on white (owner decision, ADR-010 C1) */
-  --text-secondary: #465149;
+  --text-secondary: #4a554e; /* Figma color/muted */
   --text-muted: #5e6862; /* >= 5.0:1 on every light surface (was #707a73, 3.9-4.4:1) */
   --text-inverse: #f7faf8;
   --accent: #257a4c;
   --accent-strong: #1d623d;
-  --accent-subtle: #eaf5ef;
-  --border-subtle: #dfded7;
-  --border-strong: #c8c8c0;
+  --accent-subtle: #e7f3ec; /* Figma color/tint */
+  --border-subtle: #e3e7e5;
+  --border-strong: #d4d9d6; /* Figma color/line */
   --focus: #257a4c;
   --error: #a52a2a;
 

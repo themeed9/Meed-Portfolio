@@ -209,8 +209,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .project-card-figure { font-family: var(--font-family-display); font-size: 2rem; line-height: 1.1; letter-spacing: -.03em; font-weight: 600; }
 .project-card-facts { margin-top: 24px; display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: 16px; row-gap: 8px; font-size: .9375rem; line-height: 1.5; }
 .project-card-facts dt { font-family: var(--font-family-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding-top: 2px; }
-.project-card-cta { margin-top: 28px; display: inline-flex; min-height: 44px; align-items: center; gap: 8px; padding: 10px 18px; border: 1.5px solid currentColor; border-radius: 8px; font-weight: 600; font-size: .9375rem; color: inherit; transition: background-color var(--duration-ui, 220ms) var(--ease-standard, ease); }
-.project-card-cta:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+/* Filled like the Figma: the button takes the card's text colour, its label the contrasting colour. */
+.project-card-cta { margin-top: 28px; display: inline-flex; min-height: 48px; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: .9375rem; background: var(--cta-bg, var(--color-text-primary)); color: var(--cta-fg, var(--color-bg-primary)); transition: opacity var(--duration-ui, 220ms) var(--ease-standard, ease); }
+.project-card-cta:hover { opacity: .88; }
 .project-card-cta:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .project-card-label { padding: 6px 12px; border: 1.5px solid currentColor; border-radius: 8px; font-size: .875rem; line-height: 1.4; }
 .project-card-step { padding: 20px; border-radius: 12px; background: var(--color-bg-secondary); }
@@ -225,7 +226,9 @@ button, a { -webkit-tap-highlight-color: transparent; }
    Every colour comes from theme tokens, so the Theme toggle works on every section. */
 .home-shell { width: min(1136px, calc(100% - 40px)); margin-inline: auto; }
 section.featured-work { background: var(--color-bg-primary); color: var(--color-text-primary); padding-block: 0; }
-.featured-work-shell { padding-block: 96px 32px; }
+.featured-work-shell { padding-block: 72px 8px; }
+/* Selected work title: larger, with less space before the first project (owner feedback). */
+.featured-work .home-label { font-family: var(--font-family-display); font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.05; letter-spacing: -.035em; font-weight: 600; }
 
 .site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: var(--color-bg-primary); border-bottom: 1px solid var(--color-border-subtle); }
 .site-header-inner { width: min(1136px, calc(100% - 40px)); margin-inline: auto; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
@@ -297,8 +300,6 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
 .home-contact { margin-top: 96px; padding-block: 88px; background: #07100b; color: #f7faf8; }
 .home-contact-title { max-width: 46rem; font-family: var(--font-family-display); font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.15; letter-spacing: -.03em; font-weight: 600; text-wrap: balance; }
 .home-contact-actions { margin-top: 40px; display: flex; flex-wrap: wrap; gap: 16px; }
-.home-contact .home-button-primary { background: #2f9e62; color: #07100b; }
-.home-contact .home-button-primary:hover { background: #3fb373; }
 
 .site-footer { border-top: 1px solid var(--color-border-subtle); padding-block: 28px; font-size: 14px; color: var(--color-text-secondary); }
 .site-footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }

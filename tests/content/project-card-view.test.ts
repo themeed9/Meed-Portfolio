@@ -23,7 +23,7 @@ describe("homepage card view model (ADR-010 phase 4)", () => {
     assert.equal(buildCardView(base, 11).label, "12 / Fintech");
     assert.equal(view.summary, "Logging spending fast.");
     assert.equal(view.href, "/work/gofinancial");
-    assert.equal(view.cta, "View case study");
+    assert.equal(view.cta, "Read the case study");
   });
 
   it("falls back to media_split with role and status facts for a legacy project", () => {
