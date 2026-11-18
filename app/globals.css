@@ -222,3 +222,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 /* The Selected work band is always light, so its label keeps the light-theme accent in both themes
    (#257A4C on #F7F8F7 is 5.0:1; the dark-theme accent there was 1.9:1). */
 .featured-work .selected-work-label { color: #257a4c; }
+/* Secondary text inside the always-light Selected work band keeps the light-theme muted grey in dark mode. */
+.featured-work .text-text-tertiary { color: #5e6862; }
+.featured-work .text-text-accent { color: #257a4c; }
