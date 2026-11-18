@@ -9,7 +9,7 @@ export default function FeaturedProjects({ projects, intro }: { projects: Featur
   return (
     <section id="selected-work" className="featured-work scroll-mt-24" aria-labelledby="selected-work-title">
       <div className="featured-work-shell">
-        <h2 id="selected-work-title" className="selected-work-label">{intro?.eyebrow || "Selected Work"}</h2>
+        <h2 id="selected-work-title" className="home-label">{intro?.eyebrow || "Selected Work"}</h2>
       </div>
       <div className="featured-projects-list">
         {projects.map((project, index) => (

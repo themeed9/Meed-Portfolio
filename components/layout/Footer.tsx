@@ -1,6 +1,14 @@
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
-import { getSiteContent, getSocialLinks } from "@/lib/portfolio-content";
-const links=[["Work","/work"],["About","/about"],["Resume","/resume"],["Contact","/contact"]] as const;
-type Settings={siteName?:string;ownerName?:string};type FooterContent={description?:string;copyright?:string};
-export default async function Footer(){const[settings,content,socials]=await Promise.all([getSiteContent<Settings>("site-settings"),getSiteContent<FooterContent>("footer-content"),getSocialLinks()]);const name=settings?.ownerName||settings?.siteName||"MEED";return <footer className="border-t border-border-subtle py-14"><div className="shell grid gap-12 md:grid-cols-12 md:items-end"><div className="md:col-span-6"><Link href="/" className="identity-wordmark">{name}</Link>{content?.description&&<p className="mt-5 max-w-md type-small text-text-secondary">{content.description}</p>}</div><nav className="flex flex-wrap gap-x-6 gap-y-3 md:col-span-6 md:justify-end" aria-label="Footer navigation">{links.map(([label,href])=><Link key={href} href={href} className="inline-flex min-h-11 items-center type-small font-medium hover:text-text-accent">{label}</Link>)}</nav><p className="type-small text-text-tertiary md:col-span-6">{content?.copyright||`© ${new Date().getFullYear()} ${name}`}</p><div className="flex flex-wrap gap-5 md:col-span-6 md:justify-end">{socials.map(social=><a key={social.id} href={social.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-1 type-small font-medium">{social.platform}<ArrowUpRight size={14} aria-hidden="true"/></a>)}</div></div></footer>}
+import { getFooterContent } from "@/lib/home-content-server";
+
+// Figma "Footer": copyright left, portfolio version right (ADR-010 phase 5).
+export default async function Footer() {
+  const footer = await getFooterContent();
+  return (
+    <footer className="site-footer">
+      <div className="home-shell site-footer-inner">
+        <p>© {new Date().getFullYear()} {footer.copyrightName}</p>
+        {footer.version && <p>{footer.version}</p>}
+      </div>
+    </footer>
+  );
+}
