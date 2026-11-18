@@ -30,7 +30,7 @@ const TEMPLATE_INFO: Record<CardTemplate, { label: string; hint: string }> = {
   statement: { label: "Statement", hint: "One large sentence, with a small image or none. For idea-led projects." },
 };
 
-const TEXT_NAMES: Record<string, string> = { "#FFFFFF": "White", "#07100B": "Near-black", "#000000": "Black" };
+const TEXT_NAMES: Record<string, string> = { "#FFFFFF": "White", "#0B3D2E": "Deep forest", "#07100B": "Near-black", "#000000": "Black" };
 
 const field = "mt-1 block w-full border border-border-default bg-bg-primary p-2 text-sm";
 const smallButton = "min-h-11 px-3 text-sm border border-border-default";

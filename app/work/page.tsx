@@ -1,5 +1,5 @@
 import ProjectCard from "@/components/projects/ProjectCard";
-import { getPublishedProjects, getSiteContent } from "@/lib/portfolio-content";
+import { getPublishedProductProjects, getSiteContent } from "@/lib/portfolio-content";
 import { generateMetadata } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -7,7 +7,7 @@ export const metadata = generateMetadata({ title: "Selected Product Work", descr
 type WorkIntro = { eyebrow?:string; title:string; description:string; supportingTitle?:string };
 
 export default async function WorkPage() {
-  const [projects, intro] = await Promise.all([getPublishedProjects(), getSiteContent<WorkIntro>("work-page")]);
+  const [projects, intro] = await Promise.all([getPublishedProductProjects(), getSiteContent<WorkIntro>("work-page")]);
   const featured = projects.filter(project => project.featured);
   const supporting = projects.filter(project => !project.featured);
   return <div className="page-pad"><div className="shell">{intro ? <><p className="eyebrow">{intro.eyebrow}</p><div className="mt-4 grid gap-6 border-b border-border-default pb-10 lg:grid-cols-[1fr_0.7fr] lg:items-end"><h1 className="type-h1">{intro.title}</h1><p className="type-body-lg text-text-secondary">{intro.description}</p></div></> : <div className="border-b border-border-default pb-10"><p className="eyebrow">Work</p><h1 className="mt-4 type-h1">Selected product work</h1></div>}

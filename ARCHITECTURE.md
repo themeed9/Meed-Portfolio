@@ -134,6 +134,9 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
 
 - Visual contract: `docs/portfolio-brand-system.md` — editorial, evidence-led, restrained; the work is the subject.
 - Design tokens: single semantic source `tokens/design-tokens.css` (color, type roles, spacing, radii, motion).
+- Homepage Selected work renders each product project through `components/projects/cards/ProjectCard.tsx`, driven by
+  `lib/project-card-view.ts` (template, auto-contrast colours, media shapes). Brand-collection projects are excluded
+  from Selected work and the work index via `getPublishedProductProjects()`.
 - Project-local skills (authoritative for taste/motion decisions):
   - `skills/product-portfolio-taste/SKILL.md`
   - `skills/product-portfolio-motion/SKILL.md`
@@ -178,4 +181,4 @@ See `docs/security/security-regression-contract.md` for the executable security 
 | `docs/adr/ADR-007.md` | Services is not a primary product surface |
 | `docs/adr/ADR-008.md` | Database / deployment architecture (Supabase + Vercel) |
 | `docs/adr/ADR-009.md` | Motion is purposeful and restrained |
-| `docs/adr/ADR-010.md` | Typed homepage project cards and the Beyond section (accepted; data model, validation and admin card editor implemented; public renderer pending) |
+| `docs/adr/ADR-010.md` | Typed homepage project cards and the Beyond section (accepted; data model, admin editor and public renderer `components/projects/cards/ProjectCard.tsx` implemented) |

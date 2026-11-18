@@ -69,7 +69,8 @@ body::before {
     repeating-linear-gradient(94deg, rgba(7, 16, 11, .18) 0 .35px, transparent .5px 9px);
   background-size: 5px 5px, 13px 13px;
 }
-a { color: inherit; text-decoration: none; }
+/* In the base layer so Tailwind colour utilities on links (text-black, text-text-inverse) can apply. */
+@layer base { a { color: inherit; text-decoration: none; } }
 button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
@@ -79,20 +80,20 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .reading { width: min(100%, var(--content-reading)); }
 .page-pad { padding-block: var(--space-10); }
 .section-pad { padding-block: var(--space-9); }
-.type-display { font-family: var(--font-family-sans); font-size: var(--type-display); line-height: .99; letter-spacing: -.055em; font-weight: 600; }
-.type-h1 { font-family: var(--font-family-sans); font-size: var(--type-h1); line-height: 1.04; letter-spacing: -.045em; font-weight: 600; }
-.type-h2 { font-family: var(--font-family-sans); font-size: var(--type-h2); line-height: 1.1; letter-spacing: -.035em; font-weight: 600; }
-.type-h3 { font-family: var(--font-family-sans); font-size: var(--type-h3); line-height: 1.3; letter-spacing: -.018em; font-weight: 600; }
+.type-display { font-family: var(--font-family-display); font-size: var(--type-display); line-height: .99; letter-spacing: -.055em; font-weight: 600; }
+.type-h1 { font-family: var(--font-family-display); font-size: var(--type-h1); line-height: 1.04; letter-spacing: -.045em; font-weight: 600; }
+.type-h2 { font-family: var(--font-family-display); font-size: var(--type-h2); line-height: 1.1; letter-spacing: -.035em; font-weight: 600; }
+.type-h3 { font-family: var(--font-family-display); font-size: var(--type-h3); line-height: 1.3; letter-spacing: -.018em; font-weight: 600; }
 .type-body-lg { font-family: var(--font-family-body); font-size: var(--type-body-lg); line-height: 1.55; font-weight: 400; }
 .type-body { font-family: var(--font-family-body); font-size: var(--type-body); line-height: 1.65; font-weight: 400; }
 .type-small { font-family: var(--font-family-body); font-size: var(--type-small); line-height: 1.5; font-weight: 500; }
 .type-micro, .eyebrow { font-family: var(--font-family-mono); font-size: var(--type-micro); line-height: 1.4; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; }
 .text-balance { text-wrap: balance; }
 .identity-wordmark { font-family: var(--font-family-sans); font-size: clamp(.9rem, 1.2vw, 1.125rem); line-height: 1.2; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; }
-.hero-a { background: #f7f8f7; color: #07100b; }
+.hero-a { background: #f7f8f7; color: #0b3d2e; }
 .hero-masthead { height: 418px; background: #07100b; color: #fff; }
 .hero-masthead-inner { display: flex; width: min(calc(100% - 172px), 1268px); height: 100%; margin-inline: auto; align-items: flex-end; padding-bottom: 20px; }
-.hero-name { width: 100%; margin-inline: auto; font-family: var(--font-family-sans); font-size: clamp(4rem, 7.5vw, 6.75rem); line-height: 1.05; letter-spacing: -.025em; font-weight: 600; text-transform: uppercase; }
+.hero-name { width: 100%; margin-inline: auto; font-family: var(--font-family-display); font-size: clamp(4rem, 7.5vw, 6.75rem); line-height: 1.05; letter-spacing: -.025em; font-weight: 600; text-transform: uppercase; }
 .hero-paper { padding-block: 86px 100px; background: #f7f8f7; }
 .hero-a-shell, .featured-work-shell { width: min(calc(100% - 192px), 1248px); margin-inline: auto; }
 .hero-a-grid { display: grid; grid-template-columns: minmax(0, 600px) minmax(0, 1fr); gap: 29px; align-items: stretch; }
@@ -101,20 +102,20 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .hero-role, .hero-supporting, .hero-actions { font-family: var(--font-family-body); }
 .hero-role { font-size: 14px; line-height: 1.45; font-weight: 400; }
 .hero-statement { display: flex; flex-direction: column; gap: 6px; }
-.hero-title { font-family: var(--font-family-sans); font-size: 48px; line-height: 1.08; letter-spacing: -.005em; font-weight: 500; }
+.hero-title { font-family: var(--font-family-display); font-size: 48px; line-height: 1.08; letter-spacing: -.005em; font-weight: 500; }
 .hero-supporting { max-width: 600px; color: #465149; font-size: 14px; line-height: 1.45; }
-.hero-meta { color: #707a73; font-size: 12px; line-height: 1.35; }
+.hero-meta { color: #5e6862; font-size: 12px; line-height: 1.35; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px 16px; font-size: 14px; line-height: 1.45; }
 .hero-action-primary, .hero-action-text { display: inline-flex; height: 48px; align-items: center; justify-content: center; white-space: nowrap; }
 .hero-action-primary { width: 164px; border-radius: 8px; background: #257a4c; color: #fff; padding-inline: 24px; }
 .hero-action-primary:hover { background: #1d623d; }
-.hero-action-text { width: 132px; background: #fff; color: #07100b; }
+.hero-action-text { width: 132px; background: #fff; color: #0b3d2e; }
 .hero-evidence { position: relative; min-width: 0; min-height: 100%; overflow: hidden; background: #fff; }
 .hero-nav-shell { width: min(calc(100% - 172px), 1268px); margin-inline: auto; }
 .home-nav-links { gap: 24px; font-family: var(--font-family-body); font-size: 14px; line-height: 1.45; font-weight: 500; color: #fff; }
 .home-nav-link { color: rgba(255,255,255,.88); }
 .home-nav-link:hover, .home-nav-link:focus-visible { color: #fff; }
-.featured-work { padding-block: 32px 96px; background: #f7f8f7; color: #07100b; }
+.featured-work { padding-block: 32px 96px; background: #f7f8f7; color: #0b3d2e; }
 .featured-projects-list { margin-top: 40px; }
 .selected-work-label { font-family: var(--font-geist-mono), ui-monospace, monospace; font-size: clamp(1.75rem, 3vw, 2.25rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 500; color: var(--accent); text-transform: uppercase; }
 .project-headline { max-width: 640px; font-family: var(--font-family-body); font-size: 24px; line-height: 1.12; letter-spacing: 0; font-weight: 500; }
@@ -158,12 +159,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .case-block { grid-template-columns: 1fr; }
   .case-block > .case-heading, .case-block > .case-content { grid-column: 1; }
   .project-evidence-alt { width: 100%; }
-  .home-navbar { color: #07100b; }
+  .home-navbar { color: #0b3d2e; }
   .hero-nav-shell { width: calc(100% - 32px); }
   .home-mark-light { display: none; }
   .home-mark-dark { display: block; }
-  .home-menu-button { min-width: 44px; font-family: var(--font-family-body); font-size: 14px; line-height: 1.45; font-weight: 500; color: #07100b; }
-  .hero-masthead { height: auto; background: #fff; color: #07100b; }
+  .home-menu-button { min-width: 44px; font-family: var(--font-family-body); font-size: 14px; line-height: 1.45; font-weight: 500; color: #0b3d2e; }
+  .hero-masthead { height: auto; background: #fff; color: #0b3d2e; }
   .hero-masthead-inner { width: calc(100% - 32px); padding: 148px 0 0; }
   .hero-name { text-align: left; font-size: 28px; line-height: 1.15; letter-spacing: 0; font-weight: 500; white-space: normal; }
   .hero-name span { display: block; }
@@ -195,3 +196,29 @@ button, a { -webkit-tap-highlight-color: transparent; }
     scroll-behavior: auto !important;
   }
 }
+
+/* ---- Homepage project cards (ADR-010 phase 4) ----
+   Full-width bands. On a coloured band all text inherits the auto-picked colour at full
+   strength (no opacity), so the contrast checked in lib/project-card-view.ts always holds. */
+.project-card { padding-block: 96px; }
+.project-card-shell { width: min(1200px, calc(100% - 64px)); margin-inline: auto; }
+.project-card-meta { font-family: var(--font-family-mono); font-size: 12px; line-height: 1.4; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
+.project-card-title { margin-top: 16px; font-family: var(--font-family-display); font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
+.project-card-summary { margin-top: 16px; max-width: 34rem; font-family: var(--font-family-body); font-size: 1.125rem; line-height: 1.6; }
+.project-card-statement { max-width: 22ch; font-family: var(--font-family-display); font-size: clamp(2rem, 4.5vw, 3.75rem); line-height: 1.06; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
+.project-card-figure { font-family: var(--font-family-display); font-size: 2rem; line-height: 1.1; letter-spacing: -.03em; font-weight: 600; }
+.project-card-facts { margin-top: 24px; display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: 16px; row-gap: 8px; font-size: .9375rem; line-height: 1.5; }
+.project-card-facts dt { font-family: var(--font-family-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding-top: 2px; }
+.project-card-cta { margin-top: 28px; display: inline-flex; min-height: 44px; align-items: center; gap: 8px; padding: 10px 18px; border: 1.5px solid currentColor; border-radius: 8px; font-weight: 600; font-size: .9375rem; color: inherit; transition: background-color var(--duration-ui, 220ms) var(--ease-standard, ease); }
+.project-card-cta:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+.project-card-cta:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.project-card-label { padding: 6px 12px; border: 1.5px solid currentColor; border-radius: 8px; font-size: .875rem; line-height: 1.4; }
+.project-card-step { padding: 20px; border-radius: 12px; background: var(--color-bg-secondary); }
+@media (max-width: 767px) {
+  .project-card { padding-block: 64px; }
+  .project-card-shell { width: calc(100% - 40px); }
+}
+@media (prefers-reduced-motion: reduce) { .project-card-cta { transition: none; } }
+/* The Selected work band is always light, so its label keeps the light-theme accent in both themes
+   (#257A4C on #F7F8F7 is 5.0:1; the dark-theme accent there was 1.9:1). */
+.featured-work .selected-work-label { color: #257a4c; }
