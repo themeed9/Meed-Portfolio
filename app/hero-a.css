@@ -16,7 +16,7 @@
 .hero-statement { display: flex; flex-direction: column; gap: 6px; }
 .hero-title { font-size: 48px; line-height: 1.08; letter-spacing: -.005em; font-weight: 500; }
 .hero-supporting { max-width: 600px; color: #465149; font-size: 14px; line-height: 1.45; }
-.hero-meta { color: #707a73; font-size: 12px; line-height: 1.35; }
+.hero-meta { color: #5e6862; font-size: 12px; line-height: 1.35; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px 16px; font-size: 14px; line-height: 1.45; }
 .hero-action-primary, .hero-action-text { display: inline-flex; height: 48px; align-items: center; justify-content: center; white-space: nowrap; }
 .hero-action-primary { width: 164px; border-radius: 8px; background: #257a4c; color: #fff; padding-inline: 24px; }
