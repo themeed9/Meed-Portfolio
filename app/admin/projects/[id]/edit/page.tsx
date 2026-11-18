@@ -9,6 +9,7 @@ import AdminHeader from "@/components/layout/AdminHeader";
 import ProjectForm from "@/components/admin/ProjectForm";
 import CaseStudySectionEditor, { type EditableSection } from "@/components/admin/CaseStudySectionEditor";
 import ProjectMediaEditor from "@/components/admin/ProjectMediaEditor";
+import { isCardTemplate } from "@/lib/project-card";
 
 export default function EditProjectPage() {
   const router = useRouter();
@@ -16,7 +17,7 @@ export default function EditProjectPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [sections, setSections] = useState<EditableSection[]>([]);
-  const [images, setImages] = useState<Array<{id:string;url:string;alt:string|null;caption:string|null;order:number}>>([]);
+  const [images, setImages] = useState<Array<{id:string;url:string;alt:string|null;caption:string|null;order:number;role?:string|null;width?:number|null;height?:number|null}>>([]);
   const form = useForm<ProjectFormData>({
     resolver: formResolver(projectSchema),
   });
@@ -28,7 +29,7 @@ export default function EditProjectPage() {
         if (!data || typeof data !== "object") throw new Error("Invalid project response");
         const project = data as Record<string, unknown>;
         setSections(Array.isArray(project.caseStudySections) ? project.caseStudySections as EditableSection[] : []);
-        setImages(Array.isArray(project.images) ? project.images as Array<{id:string;url:string;alt:string|null;caption:string|null;order:number}> : []);
+        setImages(Array.isArray(project.images) ? project.images as Array<{id:string;url:string;alt:string|null;caption:string|null;order:number;role?:string|null;width?:number|null;height?:number|null}> : []);
         const text = (key: string) => typeof project[key] === "string" ? project[key] : "";
         const list = (key: string) => Array.isArray(project[key]) ? (project[key] as unknown[]).filter((item): item is string => typeof item === "string").join(", ") : "";
         form.reset({
@@ -37,6 +38,10 @@ export default function EditProjectPage() {
           featured: project.featured === true, published: project.published === true, year: text("year"), client: text("client"),
           role: text("role"), duration: text("duration"), tools: list("tools"), overview: text("overview"), challenge: text("challenge"),
           approach: text("approach"), results: text("results"), testimonial: text("testimonial"), testimonialAuthor: text("testimonialAuthor"), order: typeof project.order === "number" ? project.order : 0,
+          primaryColor: text("primaryColor"),
+          cardTemplate: isCardTemplate(project.cardTemplate) ? project.cardTemplate : "media_split",
+          cardPayload: project.cardPayload && typeof project.cardPayload === "object" ? project.cardPayload as ProjectFormData["cardPayload"] : undefined,
+          collection: project.collection === "brand" ? "brand" : "product",
         });
         setIsLoading(false);
       });

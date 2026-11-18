@@ -82,11 +82,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Durable media upload failed." }, { status: 502 });
     }
 
+    // Image dimensions come from Cloudinary's own response (ADR-010); nothing extra is signed.
+    const dimension = (key: "width" | "height") => {
+      const value = (result as Record<string, unknown>)[key];
+      return typeof value === "number" && Number.isInteger(value) && value > 0 ? value : undefined;
+    };
+
     return NextResponse.json({
       url: result.secure_url,
       filename: `${publicId}.${extension}`,
       size: file.size,
       type: file.type,
+      width: isPdf ? undefined : dimension("width"),
+      height: isPdf ? undefined : dimension("height"),
     });
   } catch (error) {
     console.error("Upload failed", error instanceof Error ? error.message : "Unknown upload error");

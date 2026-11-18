@@ -116,7 +116,8 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
   never leaves the server.
 - Restrictions: authenticated access, allowed types (JPG/JPEG/PNG/WebP/AVIF, PDF), MIME + extension agreement,
   magic-byte signature checks, size caps (12 MB images, 5 MB PDFs), random UUID public IDs.
-- CMS media is replaceable via the admin; uploads return `{ url }` consumed by existing clients.
+- CMS media is replaceable via the admin; uploads return `{ url }` consumed by existing clients, plus `width` and `height`
+  for images, read from Cloudinary's response (no extra signed parameters; ADR-010).
 
 ## 10. Contact
 
@@ -177,4 +178,4 @@ See `docs/security/security-regression-contract.md` for the executable security 
 | `docs/adr/ADR-007.md` | Services is not a primary product surface |
 | `docs/adr/ADR-008.md` | Database / deployment architecture (Supabase + Vercel) |
 | `docs/adr/ADR-009.md` | Motion is purposeful and restrained |
-| `docs/adr/ADR-010.md` | Typed homepage project cards and the Beyond section (accepted; phase 2 data model and validation implemented in `lib/project-card.ts`) |
+| `docs/adr/ADR-010.md` | Typed homepage project cards and the Beyond section (accepted; data model, validation and admin card editor implemented; public renderer pending) |

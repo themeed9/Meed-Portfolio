@@ -72,6 +72,95 @@ export function normalizeCard(project: ProjectCardRecord): NormalizedCard {
   };
 }
 
+// ---- Editor helpers ----
+
+/** Empty payload for a template, keeping shared slots (facts, CTA) when switching templates. */
+export function cardSkeleton(template: CardTemplate, previous?: Record<string, unknown> | null): Record<string, unknown> {
+  const shared: Record<string, unknown> = {};
+  if (previous?.facts) shared.facts = previous.facts;
+  if (previous?.ctaLabel) shared.ctaLabel = previous.ctaLabel;
+  switch (template) {
+    case "device_stage": return { ...shared, screens: [], targets: [] };
+    case "gallery_grid": return { ...shared, items: [], labels: [] };
+    case "process_flow": return { ...shared, steps: [{ name: "" }, { name: "" }, { name: "" }] };
+    case "statement": return { ...shared, statement: "" };
+    default: return { ...shared };
+  }
+}
+
+const blank = (value: unknown) => typeof value !== "string" || value.trim() === "";
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
+
+/**
+ * Removes rows the editor left empty (blank facts, targets, labels, media without a URL,
+ * an unused CTA) so half-filled optional slots do not fail validation. Required slots
+ * such as steps and statement are kept so their errors still show.
+ */
+export function cleanCardPayload(payload: unknown): Record<string, unknown> {
+  if (!isRecord(payload)) return {};
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(payload)) {
+    if (key === "ctaLabel") { if (!blank(value)) out.ctaLabel = value; continue; }
+    if ((key === "image") && isRecord(value)) { if (!blank(value.url)) out.image = value; continue; }
+    if (!Array.isArray(value)) { out[key] = value; continue; }
+    const rows = value.filter((row) => {
+      if (key === "labels") return !blank(row);
+      if (!isRecord(row)) return false;
+      if (key === "facts") return !(blank(row.label) && blank(row.value));
+      if (key === "targets") return !(blank(row.value) && blank(row.caption));
+      if (key === "screens" || key === "items") return !blank(row.url);
+      return true;
+    }).map((row) => (key === "steps" && isRecord(row) && isRecord(row.media) && blank(row.media.url) ? { name: row.name } : row));
+    const optional = key === "facts" || key === "targets" || key === "labels";
+    if (rows.length || !optional) out[key] = rows;
+  }
+  return out;
+}
+
+// ---- Write-side resolution for the project API (create and update) ----
+
+export type CardInput = {
+  primaryColor?: string;
+  cardTemplate?: CardTemplate;
+  cardPayload?: unknown;
+  collection?: ProjectCollection;
+};
+
+export type CardWriteData = {
+  primaryColor?: string | null;
+  cardTemplate?: CardTemplate;
+  cardPayload?: unknown;
+  collection?: ProjectCollection;
+};
+
+/**
+ * Turns validated form input into fields for Prisma. `undefined` means "leave unchanged",
+ * so older clients that never send card fields cannot wipe them. A non-null payload must
+ * come with its template and pass that template's schema, so invalid card content is
+ * rejected on save rather than silently falling back on the public site.
+ */
+export function resolveCardInput(input: CardInput): { ok: true; data: CardWriteData } | { ok: false; error: string } {
+  const data: CardWriteData = {};
+  if (input.primaryColor !== undefined) data.primaryColor = input.primaryColor === "" ? null : input.primaryColor.trim().toUpperCase();
+  if (input.collection !== undefined) data.collection = input.collection;
+  if (input.cardTemplate !== undefined) data.cardTemplate = input.cardTemplate;
+  if (input.cardPayload !== undefined) {
+    if (input.cardPayload === null) {
+      data.cardPayload = null;
+    } else {
+      if (!input.cardTemplate) return { ok: false, error: "Choose a card template before adding card content." };
+      const parsed = cardPayloadSchemas[input.cardTemplate].safeParse(input.cardPayload);
+      if (!parsed.success) {
+        const issue = parsed.error.issues[0];
+        const where = issue?.path.length ? issue.path.join(".") : "card";
+        return { ok: false, error: `Homepage card (${input.cardTemplate}): ${where} — ${issue?.message ?? "invalid"}` };
+      }
+      data.cardPayload = parsed.data;
+    }
+  }
+  return { ok: true, data };
+}
+
 // ---- Colour helpers (WCAG 2.x relative luminance and contrast) ----
 
 export const TEXT_ON_COLOR_CANDIDATES = ["#FFFFFF", "#07100B", "#000000"] as const;

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { projectSchema } from "@/lib/validations";
+import { Prisma } from "@prisma/client";
+import { resolveCardInput } from "@/lib/project-card";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -22,6 +24,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const parsed = projectSchema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: "Invalid data", details: parsed.error.flatten() }, { status: 400 });
   const body = parsed.data;
+  const card = resolveCardInput(body);
+  if (!card.ok) return NextResponse.json({ error: card.error }, { status: 400 });
+  const { cardPayload, ...cardFields } = card.data;
 
   const project = await prisma.project.update({
     where: { id },
@@ -53,6 +58,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       results: body.results || null,
       testimonial: body.testimonial || null,
       testimonialAuthor: body.testimonialAuthor || null,
+      ...cardFields,
+      ...(cardPayload === undefined ? {} : { cardPayload: cardPayload === null ? Prisma.JsonNull : (cardPayload as Prisma.InputJsonValue) }),
     },
   });
 

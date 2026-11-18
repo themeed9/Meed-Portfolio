@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { projectSchema } from "@/lib/validations";
 import { auth } from "@/lib/auth";
+import { Prisma } from "@prisma/client";
+import { resolveCardInput } from "@/lib/project-card";
 
 export async function GET() {
   try {
@@ -32,6 +34,9 @@ export async function POST(request: Request) {
     }
 
     const data = validated.data;
+    const card = resolveCardInput(data);
+    if (!card.ok) return NextResponse.json({ error: card.error }, { status: 400 });
+    const { cardPayload, ...cardFields } = card.data;
     const project = await prisma.project.create({
       data: {
         title: data.title,
@@ -61,6 +66,8 @@ export async function POST(request: Request) {
         results: data.results || null,
         testimonial: data.testimonial || null,
         testimonialAuthor: data.testimonialAuthor || null,
+        ...cardFields,
+        ...(cardPayload === undefined ? {} : { cardPayload: cardPayload === null ? Prisma.JsonNull : (cardPayload as Prisma.InputJsonValue) }),
       },
     });
 

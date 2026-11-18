@@ -8,6 +8,7 @@ import { slugify } from "@/lib/utils";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Textarea from "@/components/ui/Textarea";
+import ProjectCardEditor from "@/components/admin/ProjectCardEditor";
 
 interface ProjectFormProps {
   form: UseFormReturn<ProjectFormData>;
@@ -137,6 +138,8 @@ export default function ProjectForm({ form, onSubmit, isSubmitting }: ProjectFor
 
       <Textarea label="Testimonial" placeholder="Client testimonial" rows={3} {...register("testimonial")} />
       <Input label="Testimonial Author" placeholder="Jane Doe, CEO at Company" {...register("testimonialAuthor")} />
+
+      <ProjectCardEditor form={form} />
 
       <div className="flex items-center gap-6">
         <label className="flex items-center gap-2 cursor-pointer group">
