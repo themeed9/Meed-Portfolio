@@ -5,7 +5,7 @@
   --surface-inverse: #07100b;
   --text-primary: #07100b;
   --text-secondary: #465149;
-  --text-muted: #707a73;
+  --text-muted: #5e6862; /* >= 5.0:1 on every light surface (was #707a73, 3.9-4.4:1) */
   --text-inverse: #f7faf8;
   --accent: #257a4c;
   --accent-strong: #1d623d;
