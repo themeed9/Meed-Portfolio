@@ -1,11 +1,14 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  cardSkeleton,
   cardTemplates,
+  cleanCardPayload,
   contrastRatio,
   normalizeCard,
   pickTextColor,
   relativeLuminance,
+  resolveCardInput,
   tint,
   TEXT_ON_COLOR_CANDIDATES,
 } from "../../lib/project-card.ts";
@@ -122,6 +125,60 @@ describe("homepage card normalization and fallback (ADR-010)", () => {
   it("requires alt text on every card image", () => {
     const cardPayload = { screens: [{ url: "https://res.cloudinary.com/x/a.png", alt: "" }] };
     assert.equal(normalizeCard({ ...base, cardTemplate: "device_stage", cardPayload }).fallback, true);
+  });
+});
+
+describe("card editor helpers", () => {
+  it("keeps facts and CTA when switching templates", () => {
+    const next = cardSkeleton("statement", { facts: [{ label: "Role", value: "Designer" }], ctaLabel: "Read it", screens: media(2) });
+    assert.deepEqual(next, { facts: [{ label: "Role", value: "Designer" }], ctaLabel: "Read it", statement: "" });
+  });
+
+  it("drops blank optional rows but keeps required slots so their errors show", () => {
+    const cleaned = cleanCardPayload({
+      ctaLabel: " ",
+      facts: [{ label: "", value: "" }, { label: "Role", value: "Designer" }],
+      targets: [{ value: "", caption: "" }],
+      screens: [{ url: "", alt: "" }, media(1)[0]],
+      steps: [{ name: "Signup", media: { url: "", alt: "" } }],
+    });
+    assert.deepEqual(cleaned, { facts: [{ label: "Role", value: "Designer" }], screens: [media(1)[0]], steps: [{ name: "Signup" }] });
+  });
+
+  it("produces a payload that validates once required slots are filled", () => {
+    const raw = { ...cardSkeleton("device_stage"), screens: [...media(2), { url: "", alt: "" }], targets: [{ value: "", caption: "" }] };
+    assert.equal(resolveCardInput({ cardTemplate: "device_stage", cardPayload: cleanCardPayload(raw) }).ok, true);
+  });
+});
+
+describe("resolveCardInput for API writes (ADR-010 phase 3)", () => {
+  it("leaves every card field unchanged when the client sends none", () => {
+    assert.deepEqual(resolveCardInput({}), { ok: true, data: {} });
+  });
+
+  it("normalizes the colour to upper case and clears it with an empty string", () => {
+    assert.deepEqual(resolveCardInput({ primaryColor: "#1872f5" }), { ok: true, data: { primaryColor: "#1872F5" } });
+    assert.deepEqual(resolveCardInput({ primaryColor: "" }), { ok: true, data: { primaryColor: null } });
+  });
+
+  it("accepts a valid payload with its template and returns the parsed payload", () => {
+    const result = resolveCardInput({ cardTemplate: "statement", cardPayload: { statement: "  One idea.  " }, collection: "brand" });
+    assert.deepEqual(result, { ok: true, data: { cardTemplate: "statement", cardPayload: { statement: "One idea." }, collection: "brand" } });
+  });
+
+  it("clears the payload with null", () => {
+    assert.deepEqual(resolveCardInput({ cardTemplate: "device_stage", cardPayload: null }), { ok: true, data: { cardTemplate: "device_stage", cardPayload: null } });
+  });
+
+  it("rejects a payload sent without a template", () => {
+    const result = resolveCardInput({ cardPayload: { statement: "x" } });
+    assert.equal(result.ok, false);
+  });
+
+  it("rejects an invalid payload with a message that names the field", () => {
+    const result = resolveCardInput({ cardTemplate: "gallery_grid", cardPayload: { items: media(1) } });
+    assert.equal(result.ok, false);
+    assert.match(result.ok ? "" : result.error, /gallery_grid.*items/);
   });
 });
 

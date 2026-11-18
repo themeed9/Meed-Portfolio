@@ -41,7 +41,8 @@ export const projectSchema = z.object({
   // the card payload itself is validated per template by lib/project-card.ts.
   primaryColor: z.union([hexColorSchema, z.literal("")]).optional(),
   cardTemplate: z.enum(cardTemplates).optional(),
-  cardPayload: z.json().optional(),
+  // Any value here; the API validates it against the chosen template (resolveCardInput).
+  cardPayload: z.unknown().optional(),
   collection: z.enum(projectCollections).optional(),
 });
 

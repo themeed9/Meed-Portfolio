@@ -13,7 +13,7 @@ export default function NewProjectPage() {
   const [error, setError] = useState("");
   const form = useForm<ProjectFormData>({
     resolver: formResolver(projectSchema),
-    defaultValues: { featured: false, published: false, order: 0 },
+    defaultValues: { featured: false, published: false, order: 0, cardTemplate: "media_split", collection: "product", primaryColor: "" },
   });
 
   const onSubmit = async (data: ProjectFormData) => {
