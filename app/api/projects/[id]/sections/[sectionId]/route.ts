@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { caseStudySectionInputSchema } from "@/lib/case-study";
+import { checkBlock } from "@/lib/case-study-blocks";
 import { Prisma } from "@prisma/client";
 
 type Context = { params: Promise<{ id: string; sectionId: string }> };
@@ -13,6 +14,9 @@ export async function PUT(request: Request, { params }: Context) {
   const parsed = caseStudySectionInputSchema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: "Invalid section", details: parsed.error.flatten() }, { status: 400 });
   const { payload, metadata, ...data } = parsed.data;
+  // Typed fields must be complete for a public block; hidden blocks are drafts. Settings and media are always checked.
+  const check = checkBlock(data.type, payload, metadata);
+  if (!check.ok) return NextResponse.json({ error: check.error }, { status: 400 });
   const result = await prisma.caseStudySection.updateMany({ where: { id: sectionId, projectId }, data: {
     ...data,
     payload: payload === undefined ? undefined : payload === null ? Prisma.JsonNull : payload as Prisma.InputJsonValue,

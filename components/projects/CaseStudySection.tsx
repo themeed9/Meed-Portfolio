@@ -1,8 +1,14 @@
-import Image from "next/image";
+import type { CSSProperties } from "react";
 import { normalizeSection, type CaseStudySectionRecord } from "@/lib/case-study";
+import { readBlockSettings } from "@/lib/case-study-blocks";
+import { CaseMediaSet, type CaseMediaItem } from "./CaseMedia";
+
+// ADR-003 typed blocks, with the ADR-011 CMS layer: every block can carry its own media (or be text
+// only), and the editor picks the media layout, width, background and visibility per block.
 
 type Normalized = ReturnType<typeof normalizeSection>;
-type Media = { url: string; alt: string; caption?: string };
+type Media = CaseMediaItem;
+export type BlockColors = { background: string; text: string } | null;
 
 function RichText({ content }: { content: string }) {
   return <div className="space-y-4">{content.split("\n").map((line, index) => {
@@ -14,7 +20,7 @@ function RichText({ content }: { content: string }) {
 }
 
 function MediaSet({ media, preserveInterface = false }: { media: Media[]; preserveInterface?: boolean }) {
-  return <div className={`grid gap-6 ${media.length > 1 ? "md:grid-cols-2" : ""}`}>{media.map(item => <figure key={item.url}><div className={`relative overflow-hidden rounded-[var(--radius-md)] bg-bg-tertiary ${preserveInterface ? "aspect-[4/3]" : "aspect-[16/10]"}`}><Image src={item.url} alt={item.alt} fill sizes="(max-width: 768px) 100vw, 720px" className={preserveInterface ? "object-contain" : "object-cover"} /></div>{item.caption && <figcaption className="mt-3 type-small text-text-tertiary">{item.caption}</figcaption>}</figure>)}</div>;
+  return <CaseMediaSet media={media} defaultFit={preserveInterface ? "contain" : "cover"} columns={media.length > 1 ? 2 : 1} />;
 }
 
 function Structured({ payload }: { payload: Record<string, unknown> }) {
@@ -46,8 +52,9 @@ function Outcome({ payload }: { payload: Record<string, unknown> }) {
 
 function render(section: Normalized) {
   const payload = section.payload as Record<string, unknown> | null;
-  if (section.imageUrl && (!payload || !section.payloadValid)) return <MediaSet media={[{ url: section.imageUrl, alt: section.imageAlt || section.title || "Case-study evidence", caption: section.imageAlt || undefined }]} />;
-  if (!section.payloadValid || !payload) return <RichText content={section.content} />;
+  if (section.type === "rich_text" || !section.payloadValid || !payload) return section.content.trim() ? <RichText content={section.content} /> : null;
+  // Single-paragraph blocks read as prose, not as a labelled field.
+  if ((section.type === "problem_statement" || section.type === "reflection") && typeof payload.body === "string") return <RichText content={payload.body} />;
   if (section.type === "decision") return <Decision payload={payload} />;
   if (section.type === "annotated_screen" && Array.isArray(payload.media)) return <Annotated payload={payload} />;
   if (section.type === "evidence") return <Evidence payload={payload} />;
@@ -60,11 +67,30 @@ function render(section: Normalized) {
   return <Structured payload={payload} />;
 }
 
-export default function CaseStudySection({ section }: { section: CaseStudySectionRecord }) {
+export default function CaseStudySection({ section, preview = false, colors = null }: { section: CaseStudySectionRecord; preview?: boolean; colors?: BlockColors }) {
   const normalized = normalizeSection(section);
+  const settings = readBlockSettings(section.metadata, { url: section.imageUrl, alt: section.imageAlt });
+  if (settings.hidden && !preview) return null;
   const emphasized = ["project_tldr", "decision", "evidence", "outcome"].includes(normalized.type);
-  return <section data-section-type={normalized.type} className={`case-block case-block-${normalized.type} ${emphasized ? "py-4" : ""}`}>
-    <header className="case-heading">{normalized.eyebrow && <p className="eyebrow">{normalized.eyebrow}</p>}{normalized.title && <h2 className="mt-4 type-h2">{normalized.title}</h2>}</header>
-    <div className={`case-content ${normalized.title || normalized.eyebrow ? "mt-8" : ""}`}>{render(normalized)}</div>
+  const intro = normalized.type !== "rich_text" && normalized.content.trim() ? <RichText content={normalized.content} /> : null;
+  const body = render(normalized);
+  const media = settings.media;
+  const layout = media.length ? settings.mediaLayout : "none";
+  const brand = settings.background === "brand" && colors;
+  const style = brand ? ({ "--case-brand-bg": colors.background, "--case-brand-fg": colors.text } as CSSProperties) : undefined;
+  const classes = [
+    "case-block", `case-block-${normalized.type}`, emphasized ? "py-4" : "",
+    settings.width !== "default" ? `case-w-${settings.width}` : "",
+    settings.background === "tint" ? "case-bg-tint" : brand ? "case-bg-brand" : "",
+    settings.hidden ? "case-block-hidden" : "",
+  ].filter(Boolean).join(" ");
+  const hasHeading = Boolean(normalized.title || normalized.eyebrow);
+  return <section id={`section-${section.id}`} data-section-type={normalized.type} className={classes} style={style} aria-labelledby={normalized.title ? `section-${section.id}-title` : undefined}>
+    {preview && settings.hidden && <p className="case-draft-badge">Hidden draft: only you can see this block</p>}
+    {hasHeading && <header className="case-heading">{normalized.eyebrow && <p className="eyebrow">{normalized.eyebrow}</p>}{normalized.title && <h2 id={`section-${section.id}-title`} className="mt-4 type-h2">{normalized.title}</h2>}</header>}
+    <div className={`case-content case-layout-${layout} ${hasHeading ? "mt-8" : ""}`}>
+      {(intro || body) && <div className="case-text">{intro}{intro && body ? <div className="mt-8">{body}</div> : body}</div>}
+      {media.length > 0 && <div className="case-block-media"><CaseMediaSet media={media} columns={layout === "left" || layout === "right" ? 1 : undefined} /></div>}
+    </div>
   </section>;
 }

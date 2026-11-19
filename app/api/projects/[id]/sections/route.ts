@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { caseStudySectionInputSchema } from "@/lib/case-study";
+import { checkBlock } from "@/lib/case-study-blocks";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 
@@ -15,6 +16,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!parsed.success) return NextResponse.json({ error: "Invalid section", details: parsed.error.flatten() }, { status: 400 });
 
   const { payload, metadata, ...data } = parsed.data;
+  // Typed fields must be complete for a public block; hidden blocks are drafts. Settings and media are always checked.
+  const check = checkBlock(data.type, payload, metadata);
+  if (!check.ok) return NextResponse.json({ error: check.error }, { status: 400 });
   const section = await prisma.caseStudySection.create({ data: {
     projectId, ...data,
     payload: payload === undefined ? undefined : payload === null ? Prisma.JsonNull : payload as Prisma.InputJsonValue,

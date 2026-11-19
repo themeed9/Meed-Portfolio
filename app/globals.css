@@ -405,3 +405,59 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
   .home-hero-bg::after { background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.5)); }
   .dark .home-hero-bg::after { background: linear-gradient(180deg, rgba(4,14,9,.82), rgba(4,14,9,.7)); }
 }
+
+/* Case-study CMS layer (ADR-011): per-block media, layout, width and background. */
+.case-media-frame { position: relative; overflow: hidden; border-radius: var(--radius-md); background: var(--color-bg-tertiary); }
+.case-media-set { display: grid; gap: 24px; }
+@media (min-width: 768px) {
+  .case-media-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .case-media-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.case-content { display: grid; gap: 32px; }
+.case-layout-above > .case-block-media { order: -1; }
+@media (min-width: 1024px) {
+  .case-layout-left, .case-layout-right { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: 48px; }
+  .case-layout-left > .case-text, .case-layout-right > .case-text { position: sticky; top: 112px; }
+  .case-layout-left > .case-block-media { order: -1; }
+}
+/* Width overrides. "default" keeps each block type's own width (rules above). */
+.case-block.case-w-text > .case-heading, .case-block.case-w-text > .case-content { grid-column: 2 / span 7; }
+.case-block.case-w-wide > .case-heading, .case-block.case-w-wide > .case-content,
+.case-block.case-w-full > .case-heading, .case-block.case-w-full > .case-content { grid-column: 1 / -1; }
+.case-block.case-w-full { margin-inline: calc(50% - 50vw); padding-inline: max(20px, calc((100vw - 1200px) / 2)); }
+/* Side-by-side media needs room: give it at least the wide width. */
+.case-block:has(> .case-layout-left) > .case-content, .case-block:has(> .case-layout-right) > .case-content { grid-column: 1 / -1; }
+.case-block:has(> .case-layout-left) > .case-heading, .case-block:has(> .case-layout-right) > .case-heading { grid-column: 1 / -1; }
+/* Backgrounds: a soft tinted panel, or the project colour with its auto-picked AA text colour. */
+.case-bg-tint, .case-bg-brand { padding-block: 56px; border-radius: 24px; }
+.case-bg-tint { background: var(--color-bg-secondary); }
+.case-bg-brand { background: var(--case-brand-bg); color: var(--case-brand-fg); }
+.case-bg-brand :is(.eyebrow, .text-text-primary, .text-text-secondary, .text-text-tertiary, .text-text-accent, .type-micro, figcaption) { color: inherit; }
+.case-bg-brand :is(.border-border-subtle, .border-border-default) { border-color: color-mix(in srgb, currentColor 35%, transparent); }
+.case-bg-brand .bg-bg-primary { background: color-mix(in srgb, var(--case-brand-bg) 88%, #000); }
+.case-bg-tint:not(.case-w-full), .case-bg-brand:not(.case-w-full) { padding-inline: 40px; }
+@media (max-width: 1023px) { .case-bg-tint, .case-bg-brand { padding: 40px 20px; border-radius: 18px; } .case-block.case-w-full { padding-inline: 20px; } }
+/* Draft blocks are only rendered in the admin preview. */
+.case-block-hidden { outline: 2px dashed var(--color-border-default); outline-offset: 12px; }
+.case-draft-badge { grid-column: 1 / -1; justify-self: start; margin-bottom: 16px; padding: 4px 10px; border-radius: 999px; background: #FFF4CC; color: #5C4300; font-size: 13px; font-weight: 600; }
+/* "On this page" */
+.case-contents { display: grid; gap: 12px; padding-block: 20px; border-block: 1px solid var(--color-border-subtle); }
+.case-contents ol { display: flex; flex-wrap: wrap; gap: 8px 24px; list-style: none; margin: 0; padding: 0; counter-reset: case-contents; }
+.case-contents li { counter-increment: case-contents; }
+.case-contents a { display: inline-flex; min-height: 32px; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; color: var(--color-text-primary); text-underline-offset: 4px; }
+.case-contents a::before { content: counter(case-contents, decimal-leading-zero); font-family: var(--font-family-mono); font-size: 12px; color: var(--color-text-tertiary); }
+.case-contents a:hover { text-decoration: underline; }
+.case-contents a:focus-visible, .case-next:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 4px; }
+.case-study-stream > .case-block { scroll-margin-top: 96px; }
+.case-legacy { max-width: 46rem; margin-inline: auto; }
+/* Next project */
+.case-next { display: grid; gap: 6px; text-align: right; color: var(--color-text-primary); }
+.case-next-title { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-family-display); font-size: clamp(1.5rem, 2.6vw, 2.25rem); font-weight: 600; letter-spacing: -.03em; }
+.case-next svg { transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
+.case-next:hover svg { transform: translateX(4px); }
+@media (prefers-reduced-motion: reduce) { .case-next svg { transition: none; } .case-next:hover svg { transform: none; } }
+/* Admin preview bar */
+.case-preview-bar { position: sticky; top: 0; z-index: 40; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; background: #FFF4CC; color: #3D2D00; font-size: 14px; }
+.case-preview-bar a { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+/* Phones: every block is one column, whatever its width or layout setting. */
+@media (max-width: 767px) { .case-block.case-block.case-block > .case-heading, .case-block.case-block.case-block > .case-content { grid-column: 1 / -1; } }
