@@ -5,6 +5,7 @@ import {
   cardTemplates,
   cleanCardPayload,
   contrastRatio,
+  mediaKind,
   normalizeCard,
   pickTextColor,
   relativeLuminance,
@@ -202,5 +203,30 @@ describe("project validation accepts the new optional card fields", () => {
     assert.equal(projectSchema.safeParse({ ...valid, primaryColor: "blue" }).success, false);
     assert.equal(projectSchema.safeParse({ ...valid, cardTemplate: "carousel" }).success, false);
     assert.equal(projectSchema.safeParse({ ...valid, collection: "archive" }).success, false);
+  });
+});
+
+describe("media kind detection (video, GIF, image)", () => {
+  it("detects videos by extension and Cloudinary video URLs", () => {
+    assert.equal(mediaKind("https://res.cloudinary.com/demo/video/upload/v1/clip.mp4"), "video");
+    assert.equal(mediaKind("https://res.cloudinary.com/demo/video/upload/v1/clip"), "video");
+    assert.equal(mediaKind("/uploads/walkthrough.webm?x=1"), "video");
+    assert.equal(mediaKind("/uploads/walkthrough.MOV"), "video");
+  });
+
+  it("detects GIFs and treats everything else as a still image", () => {
+    assert.equal(mediaKind("/uploads/flow.gif"), "gif");
+    assert.equal(mediaKind("https://res.cloudinary.com/demo/image/upload/f_gif/v1/flow"), "gif");
+    assert.equal(mediaKind("/uploads/screen.png"), "image");
+    assert.equal(mediaKind("https://res.cloudinary.com/demo/image/upload/v1/screen.webp"), "image");
+  });
+
+  it("lets an explicit kind override detection", () => {
+    assert.equal(mediaKind("/uploads/screen.png", "video"), "video");
+  });
+
+  it("accepts kind, fit and poster on card media", () => {
+    const card = normalizeCard({ title: "X", cardTemplate: "media_split", cardPayload: { image: { url: "/v.mp4", alt: "Demo", kind: "video", fit: "cover", poster: "/p.jpg" } } });
+    assert.equal(card.fallback, false);
   });
 });

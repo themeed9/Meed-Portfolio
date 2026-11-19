@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
+import ScrollReveal from "./ScrollReveal";
 
 export default function AppShell({ children, footer }: { children: React.ReactNode; footer?: React.ReactNode }) {
   const pathname = usePathname();
@@ -13,6 +14,7 @@ export default function AppShell({ children, footer }: { children: React.ReactNo
     <>
       <Navbar />
       <main id="main-content" className="min-h-screen outline-none">{children}</main>
+      <ScrollReveal />
       {footer}
     </>
   );

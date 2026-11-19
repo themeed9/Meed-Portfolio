@@ -201,14 +201,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
    Full-width bands. On a coloured band all text inherits the auto-picked colour at full
    strength (no opacity), so the contrast checked in lib/project-card-view.ts always holds. */
 .project-card { padding-block: 96px; }
-.project-card-shell { width: min(1200px, calc(100% - 64px)); margin-inline: auto; }
-.project-card-meta { font-family: var(--font-family-mono); font-size: 12px; line-height: 1.4; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
-.project-card-title { margin-top: 16px; font-family: var(--font-family-display); font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
-.project-card-summary { margin-top: 16px; max-width: 34rem; font-family: var(--font-family-body); font-size: 1.125rem; line-height: 1.6; }
+.project-card-meta { font-family: var(--font-family-mono); font-size: 11px; line-height: 1.4; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; }
+.project-card-title { margin-top: 14px; font-family: var(--font-family-display); font-size: clamp(1.625rem, 2.4vw, 2.25rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
+.project-card-summary { margin-top: 14px; max-width: 32rem; font-family: var(--font-family-body); font-size: .9375rem; line-height: 1.6; }
 .project-card-statement { max-width: 22ch; font-family: var(--font-family-display); font-size: clamp(2rem, 4.5vw, 3.75rem); line-height: 1.06; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
 .project-card-figure { font-family: var(--font-family-display); font-size: 2rem; line-height: 1.1; letter-spacing: -.03em; font-weight: 600; }
-.project-card-facts { margin-top: 24px; display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: 16px; row-gap: 8px; font-size: .9375rem; line-height: 1.5; }
-.project-card-facts dt { font-family: var(--font-family-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding-top: 2px; }
+.project-card-facts { margin-top: 20px; display: grid; gap: 10px; font-size: .875rem; line-height: 1.5; }
+.project-card-fact { display: grid; grid-template-columns: 16px minmax(0, 1fr); column-gap: 10px; align-items: start; }
+.project-card-fact dt { display: inline-flex; padding-top: 2px; }
+.project-card-fact dd { margin: 0; }
 /* Filled like the Figma: the button takes the card's text colour, its label the contrasting colour. */
 .project-card-cta { margin-top: 28px; display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; padding: 0 22px; border-radius: 999px; font-size: 15px; font-weight: 600; background: var(--cta-bg, var(--color-text-primary)); color: var(--cta-fg, var(--color-bg-primary)); transition: opacity var(--duration-ui, 220ms) var(--ease-standard, ease); }
 .project-card-cta:hover { opacity: .88; }
@@ -217,7 +218,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .project-card-step { padding: 20px; border-radius: 12px; background: var(--color-bg-secondary); }
 @media (max-width: 767px) {
   .project-card { padding-block: 64px; }
-  .project-card-shell { width: calc(100% - 40px); }
 }
 @media (prefers-reduced-motion: reduce) { .project-card-cta { transition: none; } }
 
@@ -226,9 +226,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
    Every colour comes from theme tokens, so the Theme toggle works on every section. */
 .home-shell { width: min(1136px, calc(100% - 40px)); margin-inline: auto; }
 section.featured-work { background: var(--color-bg-primary); color: var(--color-text-primary); padding-block: 0; }
-.featured-work-shell { padding-block: 72px 8px; }
-/* Selected work title: larger, with less space before the first project (owner feedback). */
-.featured-work .home-label { font-family: var(--font-family-display); font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.05; letter-spacing: -.035em; font-weight: 600; }
 
 .site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: var(--color-bg-primary); border-bottom: 1px solid var(--color-border-subtle); }
 .site-header-inner { width: min(1136px, calc(100% - 40px)); margin-inline: auto; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
@@ -269,17 +266,19 @@ section.featured-work { background: var(--color-bg-primary); color: var(--color-
 .home-strip-controls { display: flex; justify-content: flex-end; gap: 8px; }
 .home-strip-arrow { display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid var(--color-border-default); background: var(--color-bg-primary); color: var(--color-text-primary); }
 .home-strip-arrow:hover:not(:disabled) { background: var(--color-bg-secondary); }
-.home-strip-arrow:disabled { opacity: .35; cursor: default; }
 .home-strip-arrow:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
-.home-strip-list { display: flex; gap: 20px; overflow-x: auto; padding-inline: max(20px, calc((100% - 1136px) / 2)); padding-bottom: 8px; scroll-snap-type: x mandatory; scroll-padding-inline: max(20px, calc((100% - 1136px) / 2)); scrollbar-width: thin; }
-.home-strip-list:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: -2px; }
+.home-strip-viewport { overflow-x: auto; padding-inline: max(20px, calc((100% - 1136px) / 2)); padding-bottom: 4px; scrollbar-width: none; -ms-overflow-style: none; }
+.home-strip-viewport::-webkit-scrollbar { display: none; }
+.home-strip-track { display: flex; gap: 20px; width: max-content; }
+.home-strip-list { display: flex; gap: 20px; }
+.home-strip-viewport:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: -2px; }
 .home-strip-wireframe { display: flex; flex-direction: column; gap: 10px; padding: 20px; }
 .home-strip-wireframe span { display: block; height: 8px; border-radius: 4px; background: var(--color-border-default); }
 .home-strip-wireframe span:nth-child(1) { width: 60%; }
 .home-strip-wireframe span:nth-child(2) { width: 88%; }
 .home-strip-wireframe span:nth-child(3) { width: 85%; height: 44px; border-radius: 6px; background: var(--accent-subtle); }
 .home-strip-note { margin-left: 6px; font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
-.home-strip-item { flex: none; width: min(260px, 70vw); scroll-snap-align: start; }
+.home-strip-item { flex: none; width: min(260px, 70vw); }
 .home-strip-link { display: block; }
 .home-strip-preview { position: relative; display: block; aspect-ratio: 260 / 170; border-radius: 12px; overflow: hidden; background: var(--color-bg-secondary); border: 1px solid var(--color-border-subtle); }
 .home-strip-label { display: block; margin-top: 10px; font-size: 14px; font-weight: 500; }
@@ -330,3 +329,79 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
 .brand-card-context { display: block; margin-top: 4px; font-size: 14px; color: var(--color-text-secondary); }
 .brand-card:hover .brand-card-title { text-decoration: underline; text-underline-offset: 4px; }
 .brand-empty { padding: 48px 24px; border: 1px dashed var(--color-border-default); border-radius: 12px; color: var(--color-text-secondary); text-align: center; }
+
+/* Selected work text reveal (CardTextReveal): only items below the fold at load are ever pending. */
+/* Scroll reveal (components/layout/ScrollReveal.tsx). Uses `translate`, not `transform`, so hover
+   effects on the same element keep their own quick timing. Only blocks below the fold at load are
+   ever pending. */
+.reveal-block { transition: opacity 720ms cubic-bezier(.22, 1, .36, 1), translate 720ms cubic-bezier(.22, 1, .36, 1); }
+.reveal-block.reveal-pending { opacity: 0; translate: 0 40px; }
+.reveal-item { transition: opacity 520ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms), translate 520ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms); }
+.reveal-item.reveal-pending { opacity: 0; translate: 0 16px; }
+/* Selected work card: the media pane unmasks from the middle and settles from a slight zoom. */
+.project-card.reveal-block .project-card-media { clip-path: inset(0); transition: clip-path 900ms cubic-bezier(.22, 1, .36, 1) 80ms; }
+.project-card.reveal-pending .project-card-media { clip-path: inset(9% 0 9% 0); }
+.project-card.reveal-block .project-card-media > * { transition: scale 1100ms cubic-bezier(.22, 1, .36, 1) 80ms; }
+.project-card.reveal-pending .project-card-media > * { scale: 1.08; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-block, .reveal-block.reveal-pending, .reveal-item, .reveal-item.reveal-pending { transition: none; opacity: 1; translate: none; }
+  .project-card .project-card-media, .project-card .project-card-media > * { transition: none; clip-path: none; scale: none; }
+}
+
+/* Selected work as separate cards (owner request): 100px from the screen edges, 40px apart.
+   Phones use 20px margins and 24px gaps so the content keeps a readable width. */
+.featured-projects-list { margin-top: 0; display: flex; flex-direction: column; gap: 40px; padding: 100px; }
+.project-card { border-radius: 24px; overflow: hidden; padding-block: 0; }
+@media (max-width: 1023px) {
+  .featured-projects-list { padding: 48px 32px; gap: 32px; }
+}
+@media (max-width: 767px) {
+  .featured-projects-list { padding: 32px 20px; gap: 24px; }
+  .project-card { border-radius: 18px; padding-block: 0; }
+}
+
+/* Card = two containers (owner request): text pane + media pane at the card's full height.
+   Phones stack them (text first) and give the media pane a 4:3 box. */
+.project-card-split { display: grid; grid-template-columns: minmax(0, 1fr); }
+.project-card-text { display: flex; flex-direction: column; justify-content: center; padding: 40px 24px; min-width: 0; }
+.project-card-media { position: relative; overflow: hidden; aspect-ratio: 4 / 3; background: color-mix(in srgb, currentColor 7%, transparent); }
+.project-card-media-inner { position: absolute; inset: 0; padding: 24px; overflow: hidden; }
+@media (min-width: 900px) {
+  .project-card-split { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); min-height: 560px; }
+  .project-card-split--single { grid-template-columns: minmax(0, 1fr); }
+  .project-card-text { padding: 72px 56px; }
+  .project-card-media { aspect-ratio: auto; min-height: 100%; }
+  .project-card-media-inner { padding: 48px; }
+}
+.card-media-toggle { position: absolute; right: 12px; bottom: 12px; z-index: 1; display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 999px; background: rgba(7, 16, 11, .72); color: #ffffff; }
+.card-media-toggle:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+
+/* Selected work interactions: the card lifts with a soft shadow on hover or keyboard focus,
+   the button arrow nudges forward, and the button presses down. Hover only on real pointers. */
+.project-card { isolation: isolate; transition: transform 380ms cubic-bezier(.22, 1, .36, 1), box-shadow 380ms cubic-bezier(.22, 1, .36, 1); }
+.project-card-cta { transition: opacity var(--duration-ui, 220ms) var(--ease-standard, ease), transform 160ms cubic-bezier(.22, 1, .36, 1); }
+.project-card-cta svg { transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
+.project-card-cta:active { transform: scale(.97); }
+.project-card:focus-within { transform: translateY(-6px); box-shadow: 0 28px 56px -28px rgba(7, 16, 11, .45); }
+.project-card-cta:focus-visible svg { transform: translateX(4px); }
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover { transform: translateY(-6px); box-shadow: 0 28px 56px -28px rgba(7, 16, 11, .45); }
+  .project-card:hover .project-card-cta svg { transform: translateX(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-card, .project-card-cta, .project-card-cta svg { transition: none; }
+  .project-card:hover, .project-card:focus-within, .project-card-cta:active, .project-card:hover .project-card-cta svg, .project-card-cta:focus-visible svg { transform: none; }
+}
+
+/* Hero on a sky photo (owner request). The photo is decorative; a white wash that is strongest
+   behind the text (left) keeps the deep-forest and secondary text above AA in light mode, and a
+   deep scrim does the same for white text in dark mode. Checked in the hero contrast audit. */
+.home-hero--photo { position: relative; isolation: isolate; overflow: hidden; border-bottom: 1px solid var(--color-border-subtle); }
+.home-hero-bg { position: absolute; inset: 0; z-index: -1; }
+.home-hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.55) 45%, rgba(255,255,255,.12) 100%); }
+.dark .home-hero-bg::after { background: linear-gradient(90deg, rgba(4,14,9,.84) 0%, rgba(4,14,9,.74) 45%, rgba(4,14,9,.5) 100%); }
+.home-hero--photo .home-hero-media { box-shadow: 0 24px 60px -28px rgba(11, 61, 46, .45); border-color: rgba(255,255,255,.7); }
+@media (max-width: 899px) {
+  .home-hero-bg::after { background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.5)); }
+  .dark .home-hero-bg::after { background: linear-gradient(180deg, rgba(4,14,9,.82), rgba(4,14,9,.7)); }
+}

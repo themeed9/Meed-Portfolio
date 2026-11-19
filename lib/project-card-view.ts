@@ -1,4 +1,4 @@
-import { hexColorSchema, normalizeCard, pickTextColor, tint, type CardTemplate, type NormalizedCard } from "./project-card.ts";
+import { hexColorSchema, mediaKind, normalizeCard, pickTextColor, tint, type CardTemplate, type MediaKind, type NormalizedCard } from "./project-card.ts";
 
 // Presentation model for one homepage card (ADR-010 phase 4). Pure, so the renderer
 // stays simple and the decisions (colours, label, media shapes) are unit-tested.
@@ -20,7 +20,7 @@ export type CardProjectInput = {
   cardPayload?: unknown;
 };
 
-export type CardMediaView = { url: string; alt: string; aspectRatio: string };
+export type CardMediaView = { url: string; alt: string; aspectRatio: string; kind: MediaKind; fit?: "cover" | "contain"; poster?: string };
 export type CardColors = { background: string; text: string; ratio: number; surface: string; rule: string };
 
 export type CardView = {
@@ -42,7 +42,10 @@ export type CardView = {
  * in the CMS takes the next one in order, so Selected work always has the designed colour bands.
  * Setting a colour in Admin → Homepage card overrides this.
  */
-export const DEFAULT_CARD_PALETTE = ["#1872F5", "#FF6900", "#0F7A44"] as const;
+// White is the primary text on these bands (owner decision, 2026-11-19). The Figma blue and orange
+// are darkened just enough for white to pass WCAG AA: #1872F5 -> #1870F0 (4.55:1), #FF6900 -> #C75200
+// (4.53:1). SecureGate green #0F7A44 is unchanged (5.40:1).
+export const DEFAULT_CARD_PALETTE = ["#1870F0", "#C75200", "#0F7A44"] as const;
 
 const DEFAULT_SCREEN_RATIO = "9 / 19.5";
 const DEFAULT_IMAGE_RATIO = "16 / 10";
@@ -71,8 +74,10 @@ export function cardColors(primaryColor?: string | null): CardColors | null {
   };
 }
 
-export function mediaView(media: { url: string; alt: string; width?: number; height?: number }, fallback?: string): CardMediaView {
-  return { url: media.url, alt: media.alt, aspectRatio: aspectRatioFor(media, fallback) };
+type MediaInput = { url: string; alt: string; width?: number; height?: number; kind?: MediaKind; fit?: "cover" | "contain"; poster?: string };
+
+export function mediaView(media: MediaInput, fallback?: string): CardMediaView {
+  return { url: media.url, alt: media.alt, aspectRatio: aspectRatioFor(media, fallback), kind: mediaKind(media.url, media.kind), fit: media.fit, poster: media.poster };
 }
 
 export function screenRatio(): string {
@@ -100,4 +105,20 @@ export function buildCardView(project: CardProjectInput, index: number): CardVie
     colors: cardColors(project.primaryColor || DEFAULT_CARD_PALETTE[index % DEFAULT_CARD_PALETTE.length]),
     card,
   };
+}
+
+export type FactIcon = "role" | "platform" | "status" | "stack" | "scope" | "year" | "client" | "duration" | "info";
+
+/** Icon for a card fact, chosen from its label (owner request: icons instead of visible labels). */
+export function factIcon(label: string): FactIcon {
+  const key = label.trim().toLowerCase();
+  if (/^role|responsib/.test(key)) return "role";
+  if (/^platform|device/.test(key)) return "platform";
+  if (/^status|stage/.test(key)) return "status";
+  if (/^stack|tools?$|tech/.test(key)) return "stack";
+  if (/^scope|focus/.test(key)) return "scope";
+  if (/^year|date|when/.test(key)) return "year";
+  if (/^client|company|team/.test(key)) return "client";
+  if (/^duration|timeline|length/.test(key)) return "duration";
+  return "info";
 }
