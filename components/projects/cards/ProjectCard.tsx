@@ -21,7 +21,7 @@ export default function ProjectCard({ view, fallbackImage }: Props) {
     : undefined;
   return (
     <article
-      className={`project-card group ${colored ? "" : "bg-bg-primary text-text-primary"} border-b border-border-subtle`}
+      className={`project-card group ${colored ? "" : "bg-bg-secondary text-text-primary"}`}
       style={style}
       aria-labelledby={`project-${view.id}-title`}
       data-template={view.template}

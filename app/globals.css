@@ -336,3 +336,17 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
 .reveal-item { transition: opacity 480ms cubic-bezier(.2, .7, .2, 1) var(--reveal-delay, 0ms), transform 480ms cubic-bezier(.2, .7, .2, 1) var(--reveal-delay, 0ms); }
 .reveal-item.reveal-pending { opacity: 0; transform: translateY(16px); }
 @media (prefers-reduced-motion: reduce) { .reveal-item, .reveal-item.reveal-pending { transition: none; opacity: 1; transform: none; } }
+
+/* Selected work as separate cards (owner request): 100px from the screen edges, 40px apart.
+   Phones use 20px margins and 24px gaps so the content keeps a readable width. */
+.featured-projects-list { margin-top: 0; display: flex; flex-direction: column; gap: 40px; padding: 100px; }
+.project-card { border-radius: 24px; overflow: hidden; padding-block: 80px; }
+.project-card .project-card-shell { width: min(1136px, calc(100% - 96px)); }
+@media (max-width: 1023px) {
+  .featured-projects-list { padding: 48px 32px; gap: 32px; }
+}
+@media (max-width: 767px) {
+  .featured-projects-list { padding: 32px 20px; gap: 24px; }
+  .project-card { border-radius: 18px; padding-block: 48px; }
+  .project-card .project-card-shell { width: calc(100% - 40px); }
+}
