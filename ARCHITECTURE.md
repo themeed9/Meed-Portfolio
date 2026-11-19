@@ -134,6 +134,9 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
 
 - Visual contract: `docs/portfolio-brand-system.md` — editorial, evidence-led, restrained; the work is the subject.
 - Design tokens: single semantic source `tokens/design-tokens.css` (color, type roles, spacing, radii, motion).
+- The homepage (`app/page.tsx`) composes the Figma sections from `components/home/HomeSections.tsx` and
+  `FeaturedProjects`; section copy is loaded by `lib/home-content-server.ts` from `SiteContent` keys validated in
+  `lib/home-content.ts`, with Figma copy as fallback. `/brand` lists `collection = "brand"` projects.
 - Homepage Selected work renders each product project through `components/projects/cards/ProjectCard.tsx`, driven by
   `lib/project-card-view.ts` (template, auto-contrast colours, media shapes). Brand-collection projects are excluded
   from Selected work and the work index via `getPublishedProductProjects()`.

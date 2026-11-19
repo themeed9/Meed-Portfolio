@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { aspectRatioFor, buildCardView, cardColors, galleryColumns } from "../../lib/project-card-view.ts";
+import { aspectRatioFor, buildCardView, cardColors, DEFAULT_CARD_PALETTE, galleryColumns } from "../../lib/project-card-view.ts";
 import { contrastRatio } from "../../lib/project-card.ts";
 
 const base = {
@@ -23,7 +23,7 @@ describe("homepage card view model (ADR-010 phase 4)", () => {
     assert.equal(buildCardView(base, 11).label, "12 / Fintech");
     assert.equal(view.summary, "Logging spending fast.");
     assert.equal(view.href, "/work/gofinancial");
-    assert.equal(view.cta, "View case study");
+    assert.equal(view.cta, "Read the case study");
   });
 
   it("falls back to media_split with role and status facts for a legacy project", () => {
@@ -31,7 +31,6 @@ describe("homepage card view model (ADR-010 phase 4)", () => {
     assert.equal(view.template, "media_split");
     assert.equal(view.fallback, true);
     assert.deepEqual(view.facts, [{ label: "Role", value: "Product Designer" }, { label: "Status", value: "In development" }]);
-    assert.equal(view.colors, null);
   });
 
   it("uses card facts and CTA from the payload when set", () => {
@@ -50,6 +49,12 @@ describe("homepage card view model (ADR-010 phase 4)", () => {
     }
     assert.equal(cardColors("#1872f5")?.text, "#000000");
     assert.equal(cardColors("#62C88F")?.text, "#0B3D2E");
+  });
+
+  it("gives cards without a saved colour the Figma palette in order", () => {
+    assert.deepEqual([0, 1, 2, 3].map((i) => buildCardView(base, i).colors?.background), ["#1872F5", "#FF6900", "#0F7A44", "#1872F5"]);
+    assert.equal(buildCardView({ ...base, primaryColor: "#62C88F" }, 0).colors?.background, "#62C88F");
+    for (const hex of DEFAULT_CARD_PALETTE) assert.ok((cardColors(hex)?.ratio ?? 0) >= 4.5, hex);
   });
 
   it("ignores a missing or malformed colour instead of guessing", () => {
