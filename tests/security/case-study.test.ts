@@ -39,3 +39,21 @@ describe("typed case-study section normalization (ADR-003 content integrity)", (
     assert.equal(section.payloadValid, true);
   });
 });
+
+describe("case-study block media URLs (ADR-011, CSP alignment)", async () => {
+  const { isAllowedMediaUrl, checkBlock } = await import("../../lib/case-study-blocks.ts");
+
+  it("allows uploads, own files and the hosts the CSP allows", () => {
+    for (const url of ["/images/hero-sky.webp", "https://res.cloudinary.com/demo/image/upload/v1/a.png", "https://images.unsplash.com/photo-1"]) assert.equal(isAllowedMediaUrl(url), true, url);
+  });
+
+  it("rejects script URLs, other hosts, plain http and protocol-relative links", () => {
+    for (const url of ["javascript:alert(1)", "data:image/png;base64,AAAA", "https://evil.example/a.png", "http://res.cloudinary.com/a.png", "//evil.example/a.png", "https://res.cloudinary.com.evil.example/a.png"]) {
+      assert.equal(isAllowedMediaUrl(url), false, url);
+    }
+  });
+
+  it("refuses to save a block whose media points elsewhere, even as a draft", () => {
+    assert.equal(checkBlock("rich_text", null, { hidden: true, media: [{ url: "https://evil.example/a.png", alt: "x" }] }).ok, false);
+  });
+});

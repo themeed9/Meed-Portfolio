@@ -17,6 +17,7 @@ export default function EditProjectPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [sections, setSections] = useState<EditableSection[]>([]);
+  const [legacy, setLegacy] = useState<Record<string, string | null>>({});
   const [images, setImages] = useState<Array<{id:string;url:string;alt:string|null;caption:string|null;order:number;role?:string|null;width?:number|null;height?:number|null}>>([]);
   const form = useForm<ProjectFormData>({
     resolver: formResolver(projectSchema),
@@ -31,6 +32,7 @@ export default function EditProjectPage() {
         setSections(Array.isArray(project.caseStudySections) ? project.caseStudySections as EditableSection[] : []);
         setImages(Array.isArray(project.images) ? project.images as Array<{id:string;url:string;alt:string|null;caption:string|null;order:number;role?:string|null;width?:number|null;height?:number|null}> : []);
         const text = (key: string) => typeof project[key] === "string" ? project[key] : "";
+        setLegacy(Object.fromEntries(["overview", "challenge", "approach", "results", "testimonial", "testimonialAuthor"].map((key) => [key, text(key) || null])));
         const list = (key: string) => Array.isArray(project[key]) ? (project[key] as unknown[]).filter((item): item is string => typeof item === "string").join(", ") : "";
         form.reset({
           title: text("title"), slug: text("slug"), description: text("description"), recruiterSummary: text("recruiterSummary"), status: text("status"), platform: text("platform"), category: text("category"),
@@ -79,7 +81,7 @@ export default function EditProjectPage() {
         {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{error}</div>}
         <ProjectForm form={form} onSubmit={onSubmit} isSubmitting={form.formState.isSubmitting} />
         <ProjectMediaEditor projectId={String(params.id)} initialImages={images} />
-        <CaseStudySectionEditor projectId={String(params.id)} initialSections={sections} />
+        <CaseStudySectionEditor projectId={String(params.id)} initialSections={sections} legacy={legacy} />
       </div>
     </div>
   );
