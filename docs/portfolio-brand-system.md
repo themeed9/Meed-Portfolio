@@ -130,3 +130,11 @@ Use semantic landmarks and ordered headings, keyboard-operable navigation, visib
 - Wide long-form copy, arbitrary section widths, and one-off spacing.
 - Decorative UX artifacts or screenshots without explanatory value.
 - Motion that delays reading, hijacks scrolling, or exists only to impress.
+
+## Hero background (2026-11-19)
+
+The homepage hero sits on a pale sky-and-clouds photo (`public/images/hero-sky.webp`, Unsplash
+photo-1499346030926, free under the Unsplash License, self-hosted at 68 KB). It is decorative
+(`alt=""`, `aria-hidden`). A white wash in light mode and a deep forest scrim in dark mode keep every
+line of hero text at WCAG AA, measured against the worst single background pixel behind each line
+(lowest 5.4:1). The CMS `home-hero` content can override it with a `background` image.

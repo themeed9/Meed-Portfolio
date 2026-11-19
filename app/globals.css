@@ -392,3 +392,16 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
   .project-card, .project-card-cta, .project-card-cta svg { transition: none; }
   .project-card:hover, .project-card:focus-within, .project-card-cta:active, .project-card:hover .project-card-cta svg, .project-card-cta:focus-visible svg { transform: none; }
 }
+
+/* Hero on a sky photo (owner request). The photo is decorative; a white wash that is strongest
+   behind the text (left) keeps the deep-forest and secondary text above AA in light mode, and a
+   deep scrim does the same for white text in dark mode. Checked in the hero contrast audit. */
+.home-hero--photo { position: relative; isolation: isolate; overflow: hidden; border-bottom: 1px solid var(--color-border-subtle); }
+.home-hero-bg { position: absolute; inset: 0; z-index: -1; }
+.home-hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.55) 45%, rgba(255,255,255,.12) 100%); }
+.dark .home-hero-bg::after { background: linear-gradient(90deg, rgba(4,14,9,.84) 0%, rgba(4,14,9,.74) 45%, rgba(4,14,9,.5) 100%); }
+.home-hero--photo .home-hero-media { box-shadow: 0 24px 60px -28px rgba(11, 61, 46, .45); border-color: rgba(255,255,255,.7); }
+@media (max-width: 899px) {
+  .home-hero-bg::after { background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.5)); }
+  .dark .home-hero-bg::after { background: linear-gradient(180deg, rgba(4,14,9,.82), rgba(4,14,9,.7)); }
+}

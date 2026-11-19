@@ -17,6 +17,8 @@ export const homeHeroSchema = z.object({
   rolesText: text(160).optional(),
   rolesLink: href.optional(),
   image: image.optional(),
+  /** Full-bleed photo behind the hero text and image. Falls back to HERO_BACKGROUND. */
+  background: image.optional(),
 });
 
 export const homeStripSchema = z.object({
@@ -67,6 +69,13 @@ export type Beyond = z.infer<typeof beyondSchema>;
 export type HomeContact = z.infer<typeof homeContactSchema>;
 export type SiteFooter = z.infer<typeof siteFooterSchema>;
 export type BrandPage = z.infer<typeof brandPageSchema>;
+
+/**
+ * Default hero background: pale blue sky over white clouds (Unsplash photo-1499346030926, free under
+ * the Unsplash License, self-hosted). Chosen because it is light and even where the text sits, so
+ * the hero text keeps WCAG AA contrast; a soft wash in CSS guarantees it (see .home-hero-bg).
+ */
+export const HERO_BACKGROUND = { src: "/images/hero-sky.webp", alt: "" } as const;
 
 export const OWNER_EMAIL = "contacthameedhere9@gmail.com";
 
