@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { aspectRatioFor, buildCardView, cardColors, DEFAULT_CARD_PALETTE, galleryColumns } from "../../lib/project-card-view.ts";
+import { aspectRatioFor, buildCardView, cardColors, DEFAULT_CARD_PALETTE, factIcon, galleryColumns } from "../../lib/project-card-view.ts";
 import { contrastRatio } from "../../lib/project-card.ts";
 
 const base = {
@@ -72,5 +72,10 @@ describe("homepage card view model (ADR-010 phase 4)", () => {
 
   it("chooses gallery columns that avoid a lone item where possible", () => {
     assert.deepEqual([3, 4, 5, 6, 7, 8, 9].map(galleryColumns), [3, 2, 3, 3, 3, 3, 3]);
+  });
+
+  it("maps fact labels to icons, with a neutral fallback", () => {
+    assert.deepEqual(["Role", "Platform", "Status", "Stack", "Scope", "Year", "Client", "Duration", "Anything"].map(factIcon),
+      ["role", "platform", "status", "stack", "scope", "year", "client", "duration", "info"]);
   });
 });

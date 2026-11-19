@@ -104,3 +104,19 @@ export function buildCardView(project: CardProjectInput, index: number): CardVie
     card,
   };
 }
+
+export type FactIcon = "role" | "platform" | "status" | "stack" | "scope" | "year" | "client" | "duration" | "info";
+
+/** Icon for a card fact, chosen from its label (owner request: icons instead of visible labels). */
+export function factIcon(label: string): FactIcon {
+  const key = label.trim().toLowerCase();
+  if (/^role|responsib/.test(key)) return "role";
+  if (/^platform|device/.test(key)) return "platform";
+  if (/^status|stage/.test(key)) return "status";
+  if (/^stack|tools?$|tech/.test(key)) return "stack";
+  if (/^scope|focus/.test(key)) return "scope";
+  if (/^year|date|when/.test(key)) return "year";
+  if (/^client|company|team/.test(key)) return "client";
+  if (/^duration|timeline|length/.test(key)) return "duration";
+  return "info";
+}

@@ -202,13 +202,15 @@ button, a { -webkit-tap-highlight-color: transparent; }
    strength (no opacity), so the contrast checked in lib/project-card-view.ts always holds. */
 .project-card { padding-block: 96px; }
 .project-card-shell { width: min(1200px, calc(100% - 64px)); margin-inline: auto; }
-.project-card-meta { font-family: var(--font-family-mono); font-size: 12px; line-height: 1.4; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
+.project-card-meta { font-family: var(--font-family-mono); font-size: 11px; line-height: 1.4; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; }
 .project-card-title { margin-top: 16px; font-family: var(--font-family-display); font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
-.project-card-summary { margin-top: 16px; max-width: 34rem; font-family: var(--font-family-body); font-size: 1.125rem; line-height: 1.6; }
+.project-card-summary { margin-top: 14px; max-width: 32rem; font-family: var(--font-family-body); font-size: .9375rem; line-height: 1.6; }
 .project-card-statement { max-width: 22ch; font-family: var(--font-family-display); font-size: clamp(2rem, 4.5vw, 3.75rem); line-height: 1.06; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
 .project-card-figure { font-family: var(--font-family-display); font-size: 2rem; line-height: 1.1; letter-spacing: -.03em; font-weight: 600; }
-.project-card-facts { margin-top: 24px; display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: 16px; row-gap: 8px; font-size: .9375rem; line-height: 1.5; }
-.project-card-facts dt { font-family: var(--font-family-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding-top: 2px; }
+.project-card-facts { margin-top: 20px; display: grid; gap: 10px; font-size: .875rem; line-height: 1.5; }
+.project-card-fact { display: grid; grid-template-columns: 16px minmax(0, 1fr); column-gap: 10px; align-items: start; }
+.project-card-fact dt { display: inline-flex; padding-top: 2px; }
+.project-card-fact dd { margin: 0; }
 /* Filled like the Figma: the button takes the card's text colour, its label the contrasting colour. */
 .project-card-cta { margin-top: 28px; display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; padding: 0 22px; border-radius: 999px; font-size: 15px; font-weight: 600; background: var(--cta-bg, var(--color-text-primary)); color: var(--cta-fg, var(--color-bg-primary)); transition: opacity var(--duration-ui, 220ms) var(--ease-standard, ease); }
 .project-card-cta:hover { opacity: .88; }
@@ -226,9 +228,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
    Every colour comes from theme tokens, so the Theme toggle works on every section. */
 .home-shell { width: min(1136px, calc(100% - 40px)); margin-inline: auto; }
 section.featured-work { background: var(--color-bg-primary); color: var(--color-text-primary); padding-block: 0; }
-.featured-work-shell { padding-block: 72px 8px; }
-/* Selected work title: larger, with less space before the first project (owner feedback). */
-.featured-work .home-label { font-family: var(--font-family-display); font-size: clamp(2rem, 3.6vw, 3rem); line-height: 1.05; letter-spacing: -.035em; font-weight: 600; }
 
 .site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 40; background: var(--color-bg-primary); border-bottom: 1px solid var(--color-border-subtle); }
 .site-header-inner { width: min(1136px, calc(100% - 40px)); margin-inline: auto; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Building2, Calendar, CircleDot, Clock, Info, Layers, MonitorSmartphone, Target, UserRound, type LucideIcon } from "lucide-react";
 import type { CSSProperties, ReactNode } from "react";
-import { galleryColumns, mediaView, screenRatio, type CardMediaView, type CardView } from "@/lib/project-card-view";
+import { factIcon, galleryColumns, mediaView, screenRatio, type CardMediaView, type CardView, type FactIcon } from "@/lib/project-card-view";
 
 // ADR-010 phase 4: one renderer for every homepage card template. Each project is a
 // full-width band. With a primary colour the band is filled and every piece of text uses
@@ -143,16 +143,28 @@ function Text({ view, wide, children }: { view: CardView; wide?: boolean; childr
   );
 }
 
+const FACT_ICONS: Record<FactIcon, LucideIcon> = {
+  role: UserRound, platform: MonitorSmartphone, status: CircleDot, stack: Layers, scope: Target,
+  year: Calendar, client: Building2, duration: Clock, info: Info,
+};
+
+// Facts as icon + value (owner request). The label stays in the markup for screen readers.
 function Facts({ view }: { view: CardView }) {
   if (!view.facts.length) return null;
   return (
     <dl className="project-card-facts">
-      {view.facts.map((fact) => (
-        <div key={fact.label + fact.value} className="contents">
-          <dt>{fact.label}</dt>
-          <dd>{fact.value}</dd>
-        </div>
-      ))}
+      {view.facts.map((fact) => {
+        const Icon = FACT_ICONS[factIcon(fact.label)];
+        return (
+          <div key={fact.label + fact.value} className="project-card-fact">
+            <dt title={fact.label}>
+              <Icon size={16} strokeWidth={1.75} aria-hidden="true" />
+              <span className="sr-only">{fact.label}</span>
+            </dt>
+            <dd>{fact.value}</dd>
+          </div>
+        );
+      })}
     </dl>
   );
 }
