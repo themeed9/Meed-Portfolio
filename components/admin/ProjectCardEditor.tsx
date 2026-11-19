@@ -11,6 +11,7 @@ import {
   cleanCardPayload,
   hexColorSchema,
   isCardTemplate,
+  mediaKind,
   pickTextColor,
   tint,
   type CardTemplate,
@@ -167,6 +168,15 @@ async function uploadImage(file: File): Promise<Media | { error: string }> {
   }
 }
 
+const KIND_LABEL = { image: "still image", gif: "animated GIF", video: "video" } as const;
+
+function MediaThumb({ url }: { url: string }) {
+  if (!url) return null;
+  const kind = mediaKind(url);
+  if (kind === "video") return <video src={url} muted loop playsInline autoPlay className="absolute inset-0 h-full w-full object-contain" aria-hidden="true" />;
+  return <Image src={url} alt="" fill sizes="96px" unoptimized={kind === "gif"} className="object-contain" />;
+}
+
 function MediaList({ label, help, items, max, onChange }: { label: string; help?: string; items: Row[]; max: number; onChange: (items: Row[]) => void }) {
   const [busy, setBusy] = useState<number | null>(null);
   const [error, setError] = useState("");
@@ -184,9 +194,9 @@ function MediaList({ label, help, items, max, onChange }: { label: string; help?
       {help && <p className="text-xs text-text-tertiary">{help}</p>}
       {items.map((item, index) => (
         <div key={index} className="grid gap-3 border-t border-border-subtle pt-3 sm:grid-cols-[6rem_1fr]">
-          <div className="relative aspect-square overflow-hidden bg-bg-tertiary">{asText(item.url) && <Image src={asText(item.url)} alt="" fill sizes="96px" className="object-contain" />}</div>
+          <div className="relative aspect-square overflow-hidden bg-bg-tertiary"><MediaThumb url={asText(item.url)} /></div>
           <div className="space-y-2">
-            <input type="file" accept="image/*" aria-label={`Upload image ${index + 1}`} className="block w-full text-sm" disabled={busy !== null} onChange={async (event) => {
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/avif,image/gif" aria-label={`Upload image or GIF ${index + 1}`} className="block w-full text-sm" disabled={busy !== null} onChange={async (event) => {
               const file = event.target.files?.[0];
               if (!file) return;
               setBusy(index); setError("");
@@ -195,7 +205,16 @@ function MediaList({ label, help, items, max, onChange }: { label: string; help?
               setBusy(null);
             }} />
             {busy === index && <p className="text-xs text-text-tertiary">Uploading…</p>}
-            <label className="block text-xs">Image URL<input className={field} value={asText(item.url)} onChange={(event) => update(index, { url: event.target.value, width: undefined, height: undefined })} /></label>
+            <label className="block text-xs">Media URL (image, GIF or video)<input className={field} value={asText(item.url)} onChange={(event) => update(index, { url: event.target.value, width: undefined, height: undefined })} /></label>
+            {asText(item.url) && <p className="text-xs text-text-tertiary">Detected: {KIND_LABEL[mediaKind(asText(item.url))]}. Videos play muted on a loop with a pause button; upload them to Cloudinary and paste the link.</p>}
+            <label className="block text-xs">Display
+              <select className={`${field} min-h-11`} value={asText(item.fit)} onChange={(event) => update(index, { fit: event.target.value || undefined })}>
+                <option value="">Default for this layout</option>
+                <option value="cover">Fill the container (may crop edges)</option>
+                <option value="contain">Show the whole image or video</option>
+              </select>
+            </label>
+            {mediaKind(asText(item.url)) === "video" && <label className="block text-xs">Poster image URL (optional, shown before the video plays)<input className={field} value={asText(item.poster)} onChange={(event) => update(index, { poster: event.target.value || undefined })} /></label>}
             <label className="block text-xs">Alternative text (required)<input className={field} maxLength={300} value={asText(item.alt)} onChange={(event) => update(index, { alt: event.target.value })} /></label>
             {typeof item.width === "number" && typeof item.height === "number" && <p className="text-xs text-text-tertiary">{item.width} × {item.height}px</p>}
             <div className="flex flex-wrap gap-2">
@@ -270,7 +289,7 @@ function StepList({ steps, onChange }: { steps: Row[]; onChange: (steps: Row[]) 
 
 function PreviewImage({ media, className }: { media?: Row; className: string }) {
   const url = asText(media?.url);
-  return <div className={`relative overflow-hidden ${className}`} style={{ background: "rgba(127,127,127,.18)" }}>{url && <Image src={url} alt={asText(media?.alt)} fill sizes="240px" className="object-contain" />}</div>;
+  return <div className={`relative overflow-hidden ${className}`} style={{ background: "rgba(127,127,127,.18)" }}><MediaThumb url={url} /></div>;
 }
 
 function CardPreview({ template, payload, color, textColor, title, summary, fallbackImage }: { template: CardTemplate; payload: Payload; color: string | null; textColor: string | null; title: string; summary: string; fallbackImage: string }) {

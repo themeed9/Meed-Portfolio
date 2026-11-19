@@ -1,4 +1,4 @@
-import { hexColorSchema, normalizeCard, pickTextColor, tint, type CardTemplate, type NormalizedCard } from "./project-card.ts";
+import { hexColorSchema, mediaKind, normalizeCard, pickTextColor, tint, type CardTemplate, type MediaKind, type NormalizedCard } from "./project-card.ts";
 
 // Presentation model for one homepage card (ADR-010 phase 4). Pure, so the renderer
 // stays simple and the decisions (colours, label, media shapes) are unit-tested.
@@ -20,7 +20,7 @@ export type CardProjectInput = {
   cardPayload?: unknown;
 };
 
-export type CardMediaView = { url: string; alt: string; aspectRatio: string };
+export type CardMediaView = { url: string; alt: string; aspectRatio: string; kind: MediaKind; fit?: "cover" | "contain"; poster?: string };
 export type CardColors = { background: string; text: string; ratio: number; surface: string; rule: string };
 
 export type CardView = {
@@ -74,8 +74,10 @@ export function cardColors(primaryColor?: string | null): CardColors | null {
   };
 }
 
-export function mediaView(media: { url: string; alt: string; width?: number; height?: number }, fallback?: string): CardMediaView {
-  return { url: media.url, alt: media.alt, aspectRatio: aspectRatioFor(media, fallback) };
+type MediaInput = { url: string; alt: string; width?: number; height?: number; kind?: MediaKind; fit?: "cover" | "contain"; poster?: string };
+
+export function mediaView(media: MediaInput, fallback?: string): CardMediaView {
+  return { url: media.url, alt: media.alt, aspectRatio: aspectRatioFor(media, fallback), kind: mediaKind(media.url, media.kind), fit: media.fit, poster: media.poster };
 }
 
 export function screenRatio(): string {

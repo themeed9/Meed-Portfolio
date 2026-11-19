@@ -114,7 +114,7 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
 - Cloudinary owns production uploads (`app/api/upload/route.ts`).
 - Server-side signed uploads: server computes the SHA-1 signature and uploads directly to Cloudinary; the API secret
   never leaves the server.
-- Restrictions: authenticated access, allowed types (JPG/JPEG/PNG/WebP/AVIF, PDF), MIME + extension agreement,
+- Restrictions: authenticated access, allowed types (JPG/JPEG/PNG/WebP/AVIF/GIF, PDF; rules in `lib/upload-signature.ts`), MIME + extension agreement,
   magic-byte signature checks, size caps (12 MB images, 5 MB PDFs), random UUID public IDs.
 - CMS media is replaceable via the admin; uploads return `{ url }` consumed by existing clients, plus `width` and `height`
   for images, read from Cloudinary's response (no extra signed parameters; ADR-010).

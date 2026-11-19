@@ -201,7 +201,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
    Full-width bands. On a coloured band all text inherits the auto-picked colour at full
    strength (no opacity), so the contrast checked in lib/project-card-view.ts always holds. */
 .project-card { padding-block: 96px; }
-.project-card-shell { width: min(1200px, calc(100% - 64px)); margin-inline: auto; }
 .project-card-meta { font-family: var(--font-family-mono); font-size: 11px; line-height: 1.4; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; }
 .project-card-title { margin-top: 16px; font-family: var(--font-family-display); font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
 .project-card-summary { margin-top: 14px; max-width: 32rem; font-family: var(--font-family-body); font-size: .9375rem; line-height: 1.6; }
@@ -219,7 +218,6 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .project-card-step { padding: 20px; border-radius: 12px; background: var(--color-bg-secondary); }
 @media (max-width: 767px) {
   .project-card { padding-block: 64px; }
-  .project-card-shell { width: calc(100% - 40px); }
 }
 @media (prefers-reduced-motion: reduce) { .project-card-cta { transition: none; } }
 
@@ -340,13 +338,27 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
 /* Selected work as separate cards (owner request): 100px from the screen edges, 40px apart.
    Phones use 20px margins and 24px gaps so the content keeps a readable width. */
 .featured-projects-list { margin-top: 0; display: flex; flex-direction: column; gap: 40px; padding: 100px; }
-.project-card { border-radius: 24px; overflow: hidden; padding-block: 80px; }
-.project-card .project-card-shell { width: min(1136px, calc(100% - 96px)); }
+.project-card { border-radius: 24px; overflow: hidden; padding-block: 0; }
 @media (max-width: 1023px) {
   .featured-projects-list { padding: 48px 32px; gap: 32px; }
 }
 @media (max-width: 767px) {
   .featured-projects-list { padding: 32px 20px; gap: 24px; }
-  .project-card { border-radius: 18px; padding-block: 48px; }
-  .project-card .project-card-shell { width: calc(100% - 40px); }
+  .project-card { border-radius: 18px; padding-block: 0; }
 }
+
+/* Card = two containers (owner request): text pane + media pane at the card's full height.
+   Phones stack them (text first) and give the media pane a 4:3 box. */
+.project-card-split { display: grid; grid-template-columns: minmax(0, 1fr); }
+.project-card-text { display: flex; flex-direction: column; justify-content: center; padding: 40px 24px; min-width: 0; }
+.project-card-media { position: relative; overflow: hidden; aspect-ratio: 4 / 3; background: color-mix(in srgb, currentColor 7%, transparent); }
+.project-card-media-inner { position: absolute; inset: 0; padding: 24px; overflow: hidden; }
+@media (min-width: 900px) {
+  .project-card-split { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); min-height: 560px; }
+  .project-card-split--single { grid-template-columns: minmax(0, 1fr); }
+  .project-card-text { padding: 72px 56px; }
+  .project-card-media { aspect-ratio: auto; min-height: 100%; }
+  .project-card-media-inner { padding: 48px; }
+}
+.card-media-toggle { position: absolute; right: 12px; bottom: 12px; z-index: 1; display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 999px; background: rgba(7, 16, 11, .72); color: #ffffff; }
+.card-media-toggle:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
