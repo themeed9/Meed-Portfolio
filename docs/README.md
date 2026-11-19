@@ -21,6 +21,7 @@ report before starting normal work.
 - `docs/portfolio-ui-audit.md` — UI audit against the taste/motion skills (useful checklist, not current state)
 - `docs/screenshots/**` — visual evidence from past phases
 - `skills/product-portfolio-taste/SKILL.md`, `skills/product-portfolio-motion/SKILL.md` — authoritative taste/motion rules
+- `.claude/skills/` — four vendored third-party design and motion skills (advisory; rank below the project skills and ADRs; see `.claude/skills/README.md`)
 - `docs/DEFINITION_OF_DONE.md` — definition of done
 - `docs/RELEASE_CHECKLIST.md` — release flow
 
