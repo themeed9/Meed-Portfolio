@@ -202,7 +202,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
    strength (no opacity), so the contrast checked in lib/project-card-view.ts always holds. */
 .project-card { padding-block: 96px; }
 .project-card-meta { font-family: var(--font-family-mono); font-size: 11px; line-height: 1.4; letter-spacing: .06em; text-transform: uppercase; font-weight: 500; }
-.project-card-title { margin-top: 16px; font-family: var(--font-family-display); font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
+.project-card-title { margin-top: 14px; font-family: var(--font-family-display); font-size: clamp(1.625rem, 2.4vw, 2.25rem); line-height: 1.1; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
 .project-card-summary { margin-top: 14px; max-width: 32rem; font-family: var(--font-family-body); font-size: .9375rem; line-height: 1.6; }
 .project-card-statement { max-width: 22ch; font-family: var(--font-family-display); font-size: clamp(2rem, 4.5vw, 3.75rem); line-height: 1.06; letter-spacing: -.035em; font-weight: 600; text-wrap: balance; }
 .project-card-figure { font-family: var(--font-family-display); font-size: 2rem; line-height: 1.1; letter-spacing: -.03em; font-weight: 600; }
@@ -331,9 +331,22 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
 .brand-empty { padding: 48px 24px; border: 1px dashed var(--color-border-default); border-radius: 12px; color: var(--color-text-secondary); text-align: center; }
 
 /* Selected work text reveal (CardTextReveal): only items below the fold at load are ever pending. */
-.reveal-item { transition: opacity 480ms cubic-bezier(.2, .7, .2, 1) var(--reveal-delay, 0ms), transform 480ms cubic-bezier(.2, .7, .2, 1) var(--reveal-delay, 0ms); }
-.reveal-item.reveal-pending { opacity: 0; transform: translateY(16px); }
-@media (prefers-reduced-motion: reduce) { .reveal-item, .reveal-item.reveal-pending { transition: none; opacity: 1; transform: none; } }
+/* Scroll reveal (components/layout/ScrollReveal.tsx). Uses `translate`, not `transform`, so hover
+   effects on the same element keep their own quick timing. Only blocks below the fold at load are
+   ever pending. */
+.reveal-block { transition: opacity 720ms cubic-bezier(.22, 1, .36, 1), translate 720ms cubic-bezier(.22, 1, .36, 1); }
+.reveal-block.reveal-pending { opacity: 0; translate: 0 40px; }
+.reveal-item { transition: opacity 520ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms), translate 520ms cubic-bezier(.22, 1, .36, 1) var(--reveal-delay, 0ms); }
+.reveal-item.reveal-pending { opacity: 0; translate: 0 16px; }
+/* Selected work card: the media pane unmasks from the middle and settles from a slight zoom. */
+.project-card.reveal-block .project-card-media { clip-path: inset(0); transition: clip-path 900ms cubic-bezier(.22, 1, .36, 1) 80ms; }
+.project-card.reveal-pending .project-card-media { clip-path: inset(9% 0 9% 0); }
+.project-card.reveal-block .project-card-media > * { transition: scale 1100ms cubic-bezier(.22, 1, .36, 1) 80ms; }
+.project-card.reveal-pending .project-card-media > * { scale: 1.08; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-block, .reveal-block.reveal-pending, .reveal-item, .reveal-item.reveal-pending { transition: none; opacity: 1; translate: none; }
+  .project-card .project-card-media, .project-card .project-card-media > * { transition: none; clip-path: none; scale: none; }
+}
 
 /* Selected work as separate cards (owner request): 100px from the screen edges, 40px apart.
    Phones use 20px margins and 24px gaps so the content keeps a readable width. */
@@ -362,3 +375,20 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
 }
 .card-media-toggle { position: absolute; right: 12px; bottom: 12px; z-index: 1; display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 999px; background: rgba(7, 16, 11, .72); color: #ffffff; }
 .card-media-toggle:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+
+/* Selected work interactions: the card lifts with a soft shadow on hover or keyboard focus,
+   the button arrow nudges forward, and the button presses down. Hover only on real pointers. */
+.project-card { isolation: isolate; transition: transform 380ms cubic-bezier(.22, 1, .36, 1), box-shadow 380ms cubic-bezier(.22, 1, .36, 1); }
+.project-card-cta { transition: opacity var(--duration-ui, 220ms) var(--ease-standard, ease), transform 160ms cubic-bezier(.22, 1, .36, 1); }
+.project-card-cta svg { transition: transform 260ms cubic-bezier(.22, 1, .36, 1); }
+.project-card-cta:active { transform: scale(.97); }
+.project-card:focus-within { transform: translateY(-6px); box-shadow: 0 28px 56px -28px rgba(7, 16, 11, .45); }
+.project-card-cta:focus-visible svg { transform: translateX(4px); }
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover { transform: translateY(-6px); box-shadow: 0 28px 56px -28px rgba(7, 16, 11, .45); }
+  .project-card:hover .project-card-cta svg { transform: translateX(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-card, .project-card-cta, .project-card-cta svg { transition: none; }
+  .project-card:hover, .project-card:focus-within, .project-card-cta:active, .project-card:hover .project-card-cta svg, .project-card-cta:focus-visible svg { transform: none; }
+}

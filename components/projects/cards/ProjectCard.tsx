@@ -8,7 +8,8 @@ import { factIcon, galleryColumns, mediaView, screenRatio, type CardMediaView, t
 // ADR-010 phase 4: one renderer for every homepage card template. Each project is a
 // full-width band. With a primary colour the band is filled and every piece of text uses
 // the auto-picked text colour at full strength (no opacity), so contrast always holds.
-// Content is visible on first paint; the only motion is the existing 1.5% image hover.
+// Motion: each card rises in on scroll (ScrollReveal, [data-reveal]) with its media unmasking,
+// lifts on hover/focus, and the image eases in a little. All of it is off with reduced motion.
 
 const DEEP_FOREST = "#0B3D2E";
 
@@ -26,6 +27,7 @@ export default function ProjectCard({ view, fallbackImage }: Props) {
       style={style}
       aria-labelledby={`project-${view.id}-title`}
       data-template={view.template}
+      data-reveal=""
     >
       <Layout view={view} fallbackImage={fallbackImage} />
     </article>
@@ -201,7 +203,7 @@ function Cta({ view }: { view: CardView }) {
 /**
  * The card's media container: a still image, an animated GIF or a video, chosen from the URL
  * (or the media's explicit kind). `fill` makes it cover the whole media pane; otherwise it keeps
- * the media's own aspect ratio. Still images keep the gentle 1.5% hover; GIFs are served
+ * the media's own aspect ratio. Images and GIFs ease in slightly on hover; GIFs are served
  * unoptimised so they stay animated; videos get their own Pause/Play control.
  */
 function Media({ media, className = "", fill }: { media: CardMediaView; className?: string; fill?: boolean }) {
@@ -219,7 +221,7 @@ function Media({ media, className = "", fill }: { media: CardMediaView; classNam
           fill
           unoptimized={media.kind === "gif"}
           sizes="(max-width: 767px) 92vw, 55vw"
-          className={`${fitClass} transition-transform duration-[var(--duration-editorial)] ease-[var(--ease-standard)] ${media.kind === "image" ? "group-hover:scale-[1.015]" : ""} motion-reduce:transition-none motion-reduce:group-hover:scale-100`}
+          className={`${fitClass} transition-transform duration-[var(--duration-editorial)] ease-[var(--ease-standard)] group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100`}
         />
       )}
     </div>
