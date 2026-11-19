@@ -210,7 +210,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .project-card-facts { margin-top: 24px; display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: 16px; row-gap: 8px; font-size: .9375rem; line-height: 1.5; }
 .project-card-facts dt { font-family: var(--font-family-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding-top: 2px; }
 /* Filled like the Figma: the button takes the card's text colour, its label the contrasting colour. */
-.project-card-cta { margin-top: 28px; display: inline-flex; min-height: 48px; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: .9375rem; background: var(--cta-bg, var(--color-text-primary)); color: var(--cta-fg, var(--color-bg-primary)); transition: opacity var(--duration-ui, 220ms) var(--ease-standard, ease); }
+.project-card-cta { margin-top: 28px; display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; padding: 0 22px; border-radius: 999px; font-size: 15px; font-weight: 600; background: var(--cta-bg, var(--color-text-primary)); color: var(--cta-fg, var(--color-bg-primary)); transition: opacity var(--duration-ui, 220ms) var(--ease-standard, ease); }
 .project-card-cta:hover { opacity: .88; }
 .project-card-cta:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .project-card-label { padding: 6px 12px; border: 1.5px solid currentColor; border-radius: 8px; font-size: .875rem; line-height: 1.4; }
@@ -244,6 +244,8 @@ section.featured-work { background: var(--color-bg-primary); color: var(--color-
 @media (min-width: 768px) { .site-nav-links { display: flex; } .site-menu-button { display: none; } }
 
 .home-label { font-family: var(--font-family-body); font-size: 14px; line-height: 1.4; font-weight: 500; color: var(--color-text-accent); letter-spacing: 0; text-transform: none; }
+/* One button style site-wide (owner feedback): 48px pill, 15px semibold, 22px side padding.
+   .project-card-cta uses the same metrics with the card's colours. */
 .home-button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; padding: 0 22px; border-radius: 999px; font-size: 15px; font-weight: 600; border: 1.5px solid transparent; }
 .home-button-primary { background: #257a4c; color: #ffffff; }
 .home-button-primary:hover { background: #1e6b42; }
@@ -263,7 +265,20 @@ section.featured-work { background: var(--color-bg-primary); color: var(--color-
 @media (min-width: 900px) { .home-hero-grid { grid-template-columns: 519fr 561fr; gap: 56px; } }
 
 .home-strip { border-block: 1px solid var(--color-border-subtle); padding-block: 24px; }
-.home-strip-list { display: flex; gap: 20px; overflow-x: auto; padding-inline: max(20px, calc((100% - 1136px) / 2)); scroll-snap-type: x proximity; scrollbar-width: thin; }
+.home-strip-scroller { display: grid; gap: 16px; }
+.home-strip-controls { display: flex; justify-content: flex-end; gap: 8px; }
+.home-strip-arrow { display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid var(--color-border-default); background: var(--color-bg-primary); color: var(--color-text-primary); }
+.home-strip-arrow:hover:not(:disabled) { background: var(--color-bg-secondary); }
+.home-strip-arrow:disabled { opacity: .35; cursor: default; }
+.home-strip-arrow:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: 2px; }
+.home-strip-list { display: flex; gap: 20px; overflow-x: auto; padding-inline: max(20px, calc((100% - 1136px) / 2)); padding-bottom: 8px; scroll-snap-type: x mandatory; scroll-padding-inline: max(20px, calc((100% - 1136px) / 2)); scrollbar-width: thin; }
+.home-strip-list:focus-visible { outline: 2px solid var(--color-text-primary); outline-offset: -2px; }
+.home-strip-wireframe { display: flex; flex-direction: column; gap: 10px; padding: 20px; }
+.home-strip-wireframe span { display: block; height: 8px; border-radius: 4px; background: var(--color-border-default); }
+.home-strip-wireframe span:nth-child(1) { width: 60%; }
+.home-strip-wireframe span:nth-child(2) { width: 88%; }
+.home-strip-wireframe span:nth-child(3) { width: 85%; height: 44px; border-radius: 6px; background: var(--accent-subtle); }
+.home-strip-note { margin-left: 6px; font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
 .home-strip-item { flex: none; width: min(260px, 70vw); scroll-snap-align: start; }
 .home-strip-link { display: block; }
 .home-strip-preview { position: relative; display: block; aspect-ratio: 260 / 170; border-radius: 12px; overflow: hidden; background: var(--color-bg-secondary); border: 1px solid var(--color-border-subtle); }

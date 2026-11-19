@@ -19,6 +19,11 @@ export const homeHeroSchema = z.object({
   image: image.optional(),
 });
 
+export const homeStripSchema = z.object({
+  // Placeholder tiles shown after the real projects until their case studies are published.
+  placeholders: z.array(z.object({ title: text(80), note: text(40) })).max(12),
+});
+
 export const moreWorkSchema = z.object({
   label: text(60),
   items: z.array(z.object({ title: text(80), description: text(160), href: href.optional() })).max(12),
@@ -56,6 +61,7 @@ export const brandPageSchema = z.object({
 
 export type HomeHero = z.infer<typeof homeHeroSchema>;
 export type MoreWork = z.infer<typeof moreWorkSchema>;
+export type HomeStrip = z.infer<typeof homeStripSchema>;
 export type HomeAbout = z.infer<typeof homeAboutSchema>;
 export type Beyond = z.infer<typeof beyondSchema>;
 export type HomeContact = z.infer<typeof homeContactSchema>;
@@ -74,6 +80,16 @@ export const homeDefaults = {
     rolesText: "Open to senior Product Designer and AI Product Designer roles",
     rolesLink: "/contact",
   } satisfies HomeHero,
+  strip: {
+    placeholders: [
+      { title: "Solar-8", note: "Coming soon" },
+      { title: "ClinIQ", note: "Coming soon" },
+      { title: "KudiPouch", note: "Coming soon" },
+      { title: "AI-built WordPress site", note: "Coming soon" },
+      { title: "Meed Cordwainer", note: "Coming soon" },
+      { title: "Next case study", note: "In progress" },
+    ],
+  } satisfies HomeStrip,
   moreWork: {
     label: "More work",
     items: [
@@ -127,6 +143,7 @@ export const homeDefaults = {
 
 export const homeContentKeys = {
   hero: "home-hero",
+  strip: "home-strip",
   moreWork: "home-more-work",
   about: "home-about",
   beyond: "home-beyond",
@@ -155,4 +172,11 @@ export function safeHref(value: string | undefined | null): string | null {
 
 export function isExternal(link: string): boolean {
   return /^https:\/\//i.test(link);
+}
+
+
+/** Placeholder tiles not already covered by a real project (matched by title, case-insensitive). */
+export function stripPlaceholders(strip: HomeStrip, projectTitles: string[]) {
+  const taken = projectTitles.map((title) => title.toLowerCase());
+  return strip.placeholders.filter((item) => !taken.some((title) => title.startsWith(item.title.toLowerCase())));
 }

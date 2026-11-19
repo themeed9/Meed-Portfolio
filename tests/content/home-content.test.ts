@@ -1,11 +1,12 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { beyondSchema, homeAboutSchema, homeContactSchema, homeDefaults, homeHeroSchema, moreWorkSchema, resolveContent, safeHref } from "../../lib/home-content.ts";
+import { beyondSchema, homeAboutSchema, homeContactSchema, homeDefaults, homeHeroSchema, homeStripSchema, moreWorkSchema, resolveContent, safeHref, stripPlaceholders } from "../../lib/home-content.ts";
 
 describe("homepage content (ADR-010 phase 5)", () => {
   it("ships defaults that pass their own schemas", () => {
     assert.equal(homeHeroSchema.safeParse(homeDefaults.hero).success, true);
     assert.equal(moreWorkSchema.safeParse(homeDefaults.moreWork).success, true);
+    assert.equal(homeStripSchema.safeParse(homeDefaults.strip).success, true);
     assert.equal(homeAboutSchema.safeParse(homeDefaults.about).success, true);
     assert.equal(beyondSchema.safeParse(homeDefaults.beyond).success, true);
     assert.equal(homeContactSchema.safeParse(homeDefaults.contact).success, true);
@@ -36,5 +37,10 @@ describe("homepage content (ADR-010 phase 5)", () => {
   it("keeps More work rows without a URL as plain rows", () => {
     const rows = homeDefaults.moreWork.items.map((item) => safeHref("href" in item ? item.href : undefined));
     assert.deepEqual(rows, ["/work/backrock-insurance", null, "/brand", null]);
+  });
+
+  it("fills the strip with placeholders only where no real project exists", () => {
+    const left = stripPlaceholders(homeDefaults.strip, ["GoFinancial", "Solar-8 (sample)", "SecureGate"]).map((item) => item.title);
+    assert.deepEqual(left, ["ClinIQ", "KudiPouch", "AI-built WordPress site", "Meed Cordwainer", "Next case study"]);
   });
 });

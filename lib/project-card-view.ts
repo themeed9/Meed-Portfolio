@@ -37,6 +37,13 @@ export type CardView = {
   card: NormalizedCard;
 };
 
+/**
+ * Figma project palette (GoFinancial/bg, Solar-8/bg, SecureGate/bg). A card with no colour saved
+ * in the CMS takes the next one in order, so Selected work always has the designed colour bands.
+ * Setting a colour in Admin → Homepage card overrides this.
+ */
+export const DEFAULT_CARD_PALETTE = ["#1872F5", "#FF6900", "#0F7A44"] as const;
+
 const DEFAULT_SCREEN_RATIO = "9 / 19.5";
 const DEFAULT_IMAGE_RATIO = "16 / 10";
 
@@ -90,7 +97,7 @@ export function buildCardView(project: CardProjectInput, index: number): CardVie
     summary: project.recruiterSummary || project.description,
     facts,
     cta: ("ctaLabel" in card.payload && card.payload.ctaLabel) || "Read the case study",
-    colors: cardColors(project.primaryColor),
+    colors: cardColors(project.primaryColor || DEFAULT_CARD_PALETTE[index % DEFAULT_CARD_PALETTE.length]),
     card,
   };
 }

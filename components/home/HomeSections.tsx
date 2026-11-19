@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Beyond, HomeAbout, HomeContact, HomeHero, MoreWork } from "@/lib/home-content";
 import { isExternal, safeHref } from "@/lib/home-content";
+import StripScroller from "./StripScroller";
 
 // Homepage sections from the owner's Figma "Landing — Desktop" (ADR-010 phase 5).
 // Server components only: everything is visible on first paint, no motion.
@@ -43,11 +44,11 @@ export function HomeHero({ content, fallbackImage }: { content: HomeHero; fallba
   );
 }
 
-export function ProjectStrip({ projects }: { projects: StripProject[] }) {
-  if (!projects.length) return null;
+export function ProjectStrip({ projects, placeholders }: { projects: StripProject[]; placeholders: { title: string; note: string }[] }) {
+  if (!projects.length && !placeholders.length) return null;
   return (
     <section className="home-strip" aria-label="All projects">
-      <ul className="home-strip-list">
+      <StripScroller label="Projects, scroll sideways for more">
         {projects.map((project) => {
           const src = project.homepageImage || project.coverImage;
           return (
@@ -61,7 +62,18 @@ export function ProjectStrip({ projects }: { projects: StripProject[] }) {
             </li>
           );
         })}
-      </ul>
+        {placeholders.map((item) => (
+          <li key={`placeholder-${item.title}`} className="home-strip-item">
+            {/* Placeholder until this case study is published: wireframe preview, not a link. */}
+            <div className="home-strip-link">
+              <span className="home-strip-preview home-strip-wireframe" aria-hidden="true">
+                <span /><span /><span />
+              </span>
+              <span className="home-strip-label">{item.title} <span className="home-strip-note">{item.note}</span></span>
+            </div>
+          </li>
+        ))}
+      </StripScroller>
     </section>
   );
 }

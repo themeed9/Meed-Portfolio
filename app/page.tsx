@@ -1,6 +1,7 @@
 import FeaturedProjects from "@/components/home/FeaturedProjects";
 import { AboutSection, BeyondSection, ContactBand, HomeHero, MoreWorkSection, ProjectStrip } from "@/components/home/HomeSections";
 import { getHomeContent } from "@/lib/home-content-server";
+import { stripPlaceholders } from "@/lib/home-content";
 import { getPublishedProductProjects, getPublishedProjects, getSiteContent } from "@/lib/portfolio-content";
 import { generateMetadata } from "@/lib/seo";
 
@@ -28,7 +29,7 @@ export default async function HomePage() {
 
   return <>
     <HomeHero content={content.hero} fallbackImage={heroImage} />
-    <ProjectStrip projects={products} />
+    <ProjectStrip projects={products} placeholders={stripPlaceholders(content.strip, products.map((project) => project.title))} />
     <FeaturedProjects intro={workIntro} projects={selected} />
     <MoreWorkSection content={content.moreWork} />
     <AboutSection content={content.about} />
