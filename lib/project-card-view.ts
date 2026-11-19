@@ -42,7 +42,10 @@ export type CardView = {
  * in the CMS takes the next one in order, so Selected work always has the designed colour bands.
  * Setting a colour in Admin → Homepage card overrides this.
  */
-export const DEFAULT_CARD_PALETTE = ["#1872F5", "#FF6900", "#0F7A44"] as const;
+// White is the primary text on these bands (owner decision, 2026-11-19). The Figma blue and orange
+// are darkened just enough for white to pass WCAG AA: #1872F5 -> #1870F0 (4.55:1), #FF6900 -> #C75200
+// (4.53:1). SecureGate green #0F7A44 is unchanged (5.40:1).
+export const DEFAULT_CARD_PALETTE = ["#1870F0", "#C75200", "#0F7A44"] as const;
 
 const DEFAULT_SCREEN_RATIO = "9 / 19.5";
 const DEFAULT_IMAGE_RATIO = "16 / 10";

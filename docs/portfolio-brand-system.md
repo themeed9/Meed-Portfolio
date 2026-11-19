@@ -66,7 +66,7 @@ Use a neutral shell, deep forest main text and one restrained green accent.
 - Subtle border: #E7EAE8 / dark #202A23.
 - Accent: #257A4C / dark #62C88F. A band whose background stays light in both themes keeps the light accent.
 
-**Project colours (owner decision, 2026-11-18, ADR-010 C2).** On the homepage, each featured project's card may fill its full-width band with that project's primary colour, set in the CMS. Text on the band is never chosen by hand: it is the first of white, deep forest, near-black or black that reaches 4.5:1, at full strength with no opacity. Inner panels use a light tint of the colour with deep forest text. Elsewhere, project colours stay inside screenshots and evidence frames. Avoid gradients.
+**Project colours (owner decision, 2026-11-18, ADR-010 C2).** On the homepage, each featured project's card may fill its full-width band with that project's primary colour, set in the CMS. Without a CMS colour, cards use the default palette `#1870F0`, `#C75200`, `#0F7A44` (the Figma blue, orange and green, with blue and orange darkened just enough for white text to pass AA; owner decision 2026-11-19), so the bands carry white text. Text on the band is never chosen by hand: it is the first of white, deep forest, near-black or black that reaches 4.5:1, at full strength with no opacity. Inner panels use a light tint of the colour with deep forest text. Elsewhere, project colours stay inside screenshots and evidence frames. Avoid gradients.
 
 All text must meet WCAG 2.1 AA contrast (4.5:1 body, 3:1 large) in both themes; check with an automated contrast audit before release.
 

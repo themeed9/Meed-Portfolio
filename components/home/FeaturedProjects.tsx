@@ -1,4 +1,5 @@
 import ProjectCard from "@/components/projects/cards/ProjectCard";
+import CardTextReveal from "@/components/projects/cards/CardTextReveal";
 import { buildCardView, type CardProjectInput } from "@/lib/project-card-view";
 
 // Selected work renders each project through its typed homepage card (ADR-010 phase 4).
@@ -16,6 +17,7 @@ export default function FeaturedProjects({ projects, intro }: { projects: Featur
           <ProjectCard key={project.id} view={buildCardView(project, index)} fallbackImage={project.homepageImage || project.coverImage} />
         ))}
       </div>
+      <CardTextReveal />
     </section>
   );
 }

@@ -102,7 +102,7 @@ function Layout({ view, fallbackImage }: Props) {
       );
     case "statement":
       return (
-        <div className="grid gap-8">
+        <div className="grid gap-8" data-reveal-group="">
           <p className="project-card-meta">{view.label}</p>
           <p className="project-card-statement">{card.payload.statement}</p>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end">
@@ -129,8 +129,8 @@ function Layout({ view, fallbackImage }: Props) {
 
 function Text({ view, wide, children }: { view: CardView; wide?: boolean; children?: ReactNode }) {
   return (
-    <div className={`min-w-0 ${wide ? "md:grid md:grid-cols-[1fr_auto] md:items-end md:gap-12" : ""}`}>
-      <div className="min-w-0">
+    <div className={`min-w-0 ${wide ? "md:grid md:grid-cols-[1fr_auto] md:items-end md:gap-12" : ""}`} data-reveal-group={wide ? "" : undefined}>
+      <div className="min-w-0" data-reveal-group={wide ? undefined : ""}>
         <p className="project-card-meta">{view.label}</p>
         <h3 id={`project-${view.id}-title`} className="project-card-title">{view.title}</h3>
         <p className="project-card-summary">{view.summary}</p>
