@@ -20,7 +20,15 @@ export const caseStudySectionInputSchema = z.object({
   order: z.number().int().min(0).default(0),
 });
 
-const mediaSchema = z.object({ url: z.string().min(1), alt: z.string().min(1), caption: z.string().optional() });
+// Payload media may be a still image, GIF or video (kind is detected from the URL when omitted).
+const mediaSchema = z.object({
+  url: z.string().min(1),
+  alt: z.string().min(1),
+  caption: z.string().optional(),
+  kind: z.enum(["image", "gif", "video"]).optional(),
+  fit: z.enum(["cover", "contain"]).optional(),
+  poster: z.string().optional(),
+});
 const textBlockSchema = z.object({ body: z.string() });
 const mediaBlockSchema = z.object({ media: z.array(mediaSchema).min(1), note: z.string().optional(), annotations: z.array(z.object({ number: z.string(), title: z.string(), detail: z.string() })).optional() });
 
@@ -45,6 +53,10 @@ const payloadSchemas = {
   gallery: z.object({ media: z.array(mediaSchema).min(1) }),
   rich_text: z.object({ body: z.string() }),
 } satisfies Partial<Record<CaseStudySectionType, z.ZodType>>;
+
+export function payloadSchemaFor(type: CaseStudySectionType) {
+  return payloadSchemas[type as keyof typeof payloadSchemas];
+}
 
 export type CaseStudySectionRecord = {
   id: string;
