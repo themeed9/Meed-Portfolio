@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { Beyond, HomeAbout, HomeContact, HomeHero, MoreWork } from "@/lib/home-content";
-import { isExternal, safeHref } from "@/lib/home-content";
+import { HERO_BACKGROUND, isExternal, safeHref } from "@/lib/home-content";
 import StripScroller from "./StripScroller";
 
 // Homepage sections from the owner's Figma "Landing — Desktop" (ADR-010 phase 5).
@@ -20,8 +20,13 @@ export function HomeHero({ content, fallbackImage }: { content: HomeHero; fallba
   const cta = safeHref(content.ctaLink) ?? "#selected-work";
   const roles = safeHref(content.rolesLink);
   const image = content.image ?? (fallbackImage ? { src: fallbackImage, alt: "Product interface from a featured case study" } : null);
+  const background = content.background ?? HERO_BACKGROUND;
   return (
-    <section className="home-hero" aria-labelledby="home-hero-title">
+    <section className="home-hero home-hero--photo" aria-labelledby="home-hero-title">
+      {/* Decorative sky photo; the wash on top keeps every line of hero text at WCAG AA. */}
+      <div className="home-hero-bg" aria-hidden="true">
+        <Image src={background.src} alt="" fill priority sizes="100vw" className="object-cover object-[50%_35%]" />
+      </div>
       <div className="home-shell home-hero-grid">
         <div className="min-w-0">
           <p className="home-status"><span className="home-status-dot" aria-hidden="true" />{content.status}</p>

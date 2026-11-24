@@ -58,7 +58,7 @@ Database models (`prisma/schema.prisma`):
 | `SiteContent` | Keyed JSON records (`key` unique, `value` JSON) for editable copy/settings |
 | `Project` | Portfolio project + case study record (`slug` unique, `published`, `featured`, metadata, order); homepage card fields `primaryColor`, `cardTemplate`, `cardPayload` and `collection` (`product` or `brand`) per ADR-010 |
 | `ProjectImage` | Ordered image gallery per project; optional `width`, `height` and `role` (`cover`, `screen`, `detail`) |
-| `CaseStudySection` | Ordered typed content blocks per project (`type`, `payload` JSON, `metadata`, `imageUrl`, `order`) |
+| `CaseStudySection` | Ordered typed content blocks per project (`type`, `payload` JSON, `metadata` JSON holding block media and settings per ADR-011, legacy `imageUrl`, `order`) |
 | `Skill` / `Service` | Capability and service records with order |
 | `Testimonial` | Client testimonials |
 | `SocialLink` | Social links with order |
@@ -79,6 +79,11 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
   `product_principle`) with a Zod payload schema per type.
 - `normalizeSection()` validates payloads and falls back safely to `rich_text` for unknown/legacy blocks.
 - A single renderer (`components/projects/CaseStudyLayout` + `CaseStudySection`) renders all types.
+- CMS layer (ADR-011, `lib/case-study-blocks.ts`): every block can carry its own images, GIFs or videos (or be text
+  only) and has per-block media layout, width, background and visibility, stored in `CaseStudySection.metadata`.
+  The admin edits each type through form fields (never JSON); hidden blocks are drafts shown only in the admin preview
+  (`/admin/projects/[id]/preview`). Legacy `overview`/`challenge` render until converted into blocks
+  (`POST /api/projects/[id]/sections/starter`); starter templates use the same endpoint.
 - `app/work/[slug]/page.tsx` is the only project page. **A new project requires CMS data only — never a new React page.**
 
 ## 6. Authentication
@@ -114,7 +119,7 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
 - Cloudinary owns production uploads (`app/api/upload/route.ts`).
 - Server-side signed uploads: server computes the SHA-1 signature and uploads directly to Cloudinary; the API secret
   never leaves the server.
-- Restrictions: authenticated access, allowed types (JPG/JPEG/PNG/WebP/AVIF, PDF), MIME + extension agreement,
+- Restrictions: authenticated access, allowed types (JPG/JPEG/PNG/WebP/AVIF/GIF, PDF; rules in `lib/upload-signature.ts`), MIME + extension agreement,
   magic-byte signature checks, size caps (12 MB images, 5 MB PDFs), random UUID public IDs.
 - CMS media is replaceable via the admin; uploads return `{ url }` consumed by existing clients, plus `width` and `height`
   for images, read from Cloudinary's response (no extra signed parameters; ADR-010).
@@ -185,3 +190,4 @@ See `docs/security/security-regression-contract.md` for the executable security 
 | `docs/adr/ADR-008.md` | Database / deployment architecture (Supabase + Vercel) |
 | `docs/adr/ADR-009.md` | Motion is purposeful and restrained |
 | `docs/adr/ADR-010.md` | Typed homepage project cards and the Beyond section (accepted; data model, admin editor and public renderer `components/projects/cards/ProjectCard.tsx` implemented) |
+| `docs/adr/ADR-011.md` | Case-study CMS layer: media on every block, per-block layout and visibility, form editing, templates, preview |

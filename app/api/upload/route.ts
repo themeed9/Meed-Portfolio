@@ -2,28 +2,7 @@ import { createHash, randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
-const IMAGE_TYPES = new Map([
-  ["image/jpeg", new Set(["jpg", "jpeg"])],
-  ["image/png", new Set(["png"])],
-  ["image/webp", new Set(["webp"])],
-  ["image/avif", new Set(["avif"])],
-]);
-const PDF_TYPE = "application/pdf";
-const MAX_IMAGE_BYTES = 12 * 1024 * 1024;
-const MAX_PDF_BYTES = 5 * 1024 * 1024;
-
-function extensionOf(name: string) {
-  return name.toLowerCase().split(".").pop() ?? "";
-}
-
-function matchesSignature(bytes: Uint8Array, mime: string) {
-  if (mime === "image/jpeg") return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
-  if (mime === "image/png") return bytes.slice(0, 8).every((value, index) => value === [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a][index]);
-  if (mime === "image/webp") return new TextDecoder().decode(bytes.slice(0, 4)) === "RIFF" && new TextDecoder().decode(bytes.slice(8, 12)) === "WEBP";
-  if (mime === "image/avif") return new TextDecoder().decode(bytes.slice(4, 12)).includes("ftypavif") || new TextDecoder().decode(bytes.slice(4, 12)).includes("ftypavis");
-  if (mime === PDF_TYPE) return new TextDecoder().decode(bytes.slice(0, 5)) === "%PDF-";
-  return false;
-}
+import { IMAGE_TYPES, MAX_IMAGE_BYTES, MAX_PDF_BYTES, PDF_TYPE, extensionOf, matchesSignature } from "@/lib/upload-signature";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -46,7 +25,7 @@ export async function POST(request: Request) {
     const isImage = Boolean(imageExtensions?.has(extension));
     const isPdf = file.type === PDF_TYPE && extension === "pdf";
     if (!isImage && !isPdf) {
-      return NextResponse.json({ error: "Unsupported file. Use JPG, JPEG, PNG, WebP, AVIF, or PDF." }, { status: 415 });
+      return NextResponse.json({ error: "Unsupported file. Use JPG, JPEG, PNG, WebP, AVIF, GIF, or PDF." }, { status: 415 });
     }
 
     const limit = isPdf ? MAX_PDF_BYTES : MAX_IMAGE_BYTES;

@@ -15,12 +15,31 @@ export type ImageRole = (typeof imageRoles)[number];
 
 export const hexColorSchema = z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, "Use a 6-digit hex colour such as #1872F5");
 
+export const mediaKinds = ["image", "gif", "video"] as const;
+export type MediaKind = (typeof mediaKinds)[number];
+
 const cardMediaSchema = z.object({
   url: z.string().min(1),
   alt: z.string().trim().min(1).max(300),
   width: z.number().int().positive().optional(),
   height: z.number().int().positive().optional(),
+  // Optional overrides: kind is otherwise detected from the URL; fit defaults per slot.
+  kind: z.enum(mediaKinds).optional(),
+  fit: z.enum(["cover", "contain"]).optional(),
+  poster: z.string().min(1).optional(),
 });
+
+/**
+ * What a media URL is: a video (.mp4/.webm/.mov or a Cloudinary /video/upload/ URL), an animated
+ * GIF (.gif or a Cloudinary f_gif delivery), or a still image. An explicit kind always wins.
+ */
+export function mediaKind(url: string, kind?: MediaKind): MediaKind {
+  if (kind) return kind;
+  const path = url.split(/[?#]/)[0].toLowerCase();
+  if (/\.(mp4|webm|mov|m4v)$/.test(path) || /res\.cloudinary\.com\/[^/]+\/video\/upload\//.test(path)) return "video";
+  if (/\.gif$/.test(path) || /\/f_gif[,/]/.test(path)) return "gif";
+  return "image";
+}
 
 const factSchema = z.object({ label: z.string().trim().min(1).max(40), value: z.string().trim().min(1).max(160) });
 

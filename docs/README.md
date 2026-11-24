@@ -7,7 +7,7 @@ report before starting normal work.
 
 1. `ARCHITECTURE.md` (repository root) — current architecture reality
 2. `AGENTS.md` (repository root) — agent rules, authority hierarchy, stop conditions
-3. `docs/adr/` — approved architecture decisions (ADR-001 … ADR-010). ADR-010 is accepted but not implemented, with open conflicts C1–C5
+3. `docs/adr/` — approved architecture decisions (ADR-001 … ADR-011). ADR-010 covers homepage cards; ADR-011 the case-study CMS layer (block media, layout, form editing)
 4. `docs/product/content-architecture.md` — what a project/case study is
 5. `docs/security/security-regression-contract.md` — security invariants (SEC-INV-001 … 010)
 6. Current approved phase/task specification

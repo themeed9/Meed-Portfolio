@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { aspectRatioFor, buildCardView, cardColors, DEFAULT_CARD_PALETTE, galleryColumns } from "../../lib/project-card-view.ts";
+import { aspectRatioFor, buildCardView, cardColors, DEFAULT_CARD_PALETTE, factIcon, galleryColumns } from "../../lib/project-card-view.ts";
 import { contrastRatio } from "../../lib/project-card.ts";
 
 const base = {
@@ -52,7 +52,9 @@ describe("homepage card view model (ADR-010 phase 4)", () => {
   });
 
   it("gives cards without a saved colour the Figma palette in order", () => {
-    assert.deepEqual([0, 1, 2, 3].map((i) => buildCardView(base, i).colors?.background), ["#1872F5", "#FF6900", "#0F7A44", "#1872F5"]);
+    assert.deepEqual([0, 1, 2, 3].map((i) => buildCardView(base, i).colors?.background), ["#1870F0", "#C75200", "#0F7A44", "#1870F0"]);
+    // White is the primary text on every default band, and it passes AA.
+    assert.deepEqual([0, 1, 2].map((i) => buildCardView(base, i).colors?.text), ["#FFFFFF", "#FFFFFF", "#FFFFFF"]);
     assert.equal(buildCardView({ ...base, primaryColor: "#62C88F" }, 0).colors?.background, "#62C88F");
     for (const hex of DEFAULT_CARD_PALETTE) assert.ok((cardColors(hex)?.ratio ?? 0) >= 4.5, hex);
   });
@@ -70,5 +72,10 @@ describe("homepage card view model (ADR-010 phase 4)", () => {
 
   it("chooses gallery columns that avoid a lone item where possible", () => {
     assert.deepEqual([3, 4, 5, 6, 7, 8, 9].map(galleryColumns), [3, 2, 3, 3, 3, 3, 3]);
+  });
+
+  it("maps fact labels to icons, with a neutral fallback", () => {
+    assert.deepEqual(["Role", "Platform", "Status", "Stack", "Scope", "Year", "Client", "Duration", "Anything"].map(factIcon),
+      ["role", "platform", "status", "stack", "scope", "year", "client", "duration", "info"]);
   });
 });

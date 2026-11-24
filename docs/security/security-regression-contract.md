@@ -41,8 +41,8 @@ seed/password-rotation tooling (`prisma/seed.ts`, `scripts/rotate-admin-password
 ### SEC-INV-006 — Unsupported file uploads are rejected
 Uploads enforce allowed MIME types, MIME/extension agreement, magic-byte signatures, and size caps
 (12 MB images / 5 MB PDFs). Empty files rejected.
-- Implementation: `app/api/upload/route.ts`.
-- Verification: integration — uploading disguised/oversized/unsupported files returns `415`/`413`.
+- Implementation: `app/api/upload/route.ts`, type rules in `lib/upload-signature.ts` (JPG, PNG, WebP, AVIF, GIF, PDF; no SVG or video).
+- Verification: unit test `tests/security/upload-signature.test.ts` (signatures, disguised files, extension agreement); integration — uploading disguised/oversized/unsupported files returns `415`/`413`.
 
 ### SEC-INV-007 — Contact abuse controls remain active
 Contact requests are bounded (20 KB body), validated (Zod), honeypot-guarded, IP rate-limited
@@ -75,7 +75,7 @@ runs without a database or running server:
 
 - `tests/security/rate-limit.test.ts` — login throttling and contact limiters (supports SEC-INV-004, SEC-INV-007).
 - `tests/security/validation.test.ts` — contact/validation bounds and honeypot rejection (SEC-INV-007).
-- `tests/security/case-study.test.ts` — typed section normalization and safe fallback (content integrity).
+- `tests/security/case-study.test.ts` — typed section normalization and safe fallback (content integrity), and case-study block media URLs limited to the CSP-allowed hosts (ADR-011).
 
 Invariants requiring a server and/or database (SEC-INV-001, SEC-INV-002, SEC-INV-003, SEC-INV-006, SEC-INV-008) are
 verified by integration/manual checks and must never be weakened. No security test targets production data.
