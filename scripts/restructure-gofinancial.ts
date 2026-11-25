@@ -60,7 +60,8 @@ async function main() {
     await prisma.$transaction([
       prisma.caseStudySection.deleteMany({ where: { id: { in: ours.map((s) => s.id) } } }),
       ...hiddenByUs.map((s) => {
-        const { hiddenBy: _drop, wasHidden, ...rest } = meta(s.metadata);
+        const { wasHidden, ...rest } = meta(s.metadata);
+        delete rest.hiddenBy;
         return prisma.caseStudySection.update({ where: { id: s.id }, data: { metadata: json({ ...rest, hidden: wasHidden === true }), order: Math.max(0, s.order - ours.length) } });
       }),
     ]);

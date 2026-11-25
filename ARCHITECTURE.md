@@ -141,6 +141,10 @@ Case studies are **typed blocks**, not free-form HTML or per-project React pages
 - Design tokens: single semantic source `tokens/design-tokens.css` (color, type roles, spacing, radii, motion).
 - The homepage (`app/page.tsx`) composes the Figma sections from `components/home/HomeSections.tsx` and
   `FeaturedProjects`; section copy is loaded by `lib/home-content-server.ts` from `SiteContent` keys validated in
+- Admin → Content edits every homepage section through forms (`lib/home-content-cms.ts`,
+  `components/admin/HomeContentEditor.tsx`): text plus image/GIF/video fields, carousel tiles (image or video,
+  link) and hidden projects. Saves go through `PUT /api/content/sections/[key]`, which validates against the
+  section schema and rejects media from hosts outside the CSP and unsafe links; `DELETE` resets to the default.
   `lib/home-content.ts`, with Figma copy as fallback. `/brand` lists `collection = "brand"` projects.
 - Homepage Selected work renders each product project through `components/projects/cards/ProjectCard.tsx`, driven by
   `lib/project-card-view.ts` (template, auto-contrast colours, media shapes). Brand-collection projects are excluded

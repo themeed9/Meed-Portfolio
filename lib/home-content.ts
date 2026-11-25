@@ -7,6 +7,17 @@ import { z } from "zod";
 const text = (max: number) => z.string().trim().min(1).max(max);
 const href = z.string().trim().min(1).max(500);
 const image = z.object({ src: href, alt: text(300) });
+/**
+ * An image, GIF or video in a homepage section (owner request, 2026-11-25). `kind` is detected from
+ * the URL when omitted. Older values ({ src, alt }) stay valid.
+ */
+const media = z.object({
+  src: href,
+  alt: text(300),
+  kind: z.enum(["image", "gif", "video"]).optional(),
+  poster: href.optional(),
+});
+export type HomeMedia = z.infer<typeof media>;
 
 export const homeHeroSchema = z.object({
   status: text(80),
@@ -16,31 +27,33 @@ export const homeHeroSchema = z.object({
   ctaLink: href,
   rolesText: text(160).optional(),
   rolesLink: href.optional(),
-  image: image.optional(),
+  image: media.optional(),
   /** Full-bleed photo behind the hero text and image. Falls back to HERO_BACKGROUND. */
   background: image.optional(),
 });
 
 export const homeStripSchema = z.object({
-  // Placeholder tiles shown after the real projects until their case studies are published.
-  placeholders: z.array(z.object({ title: text(80), note: text(40) })).max(12),
+  // Extra tiles shown after the real projects (coming soon, side projects, external work).
+  placeholders: z.array(z.object({ title: text(80), note: text(40), media: media.optional(), href: href.optional() })).max(12),
+  /** Slugs of published projects to leave out of the strip. */
+  hiddenProjects: z.array(text(200)).max(50).optional(),
 });
 
 export const moreWorkSchema = z.object({
   label: text(60),
-  items: z.array(z.object({ title: text(80), description: text(160), href: href.optional() })).max(12),
+  items: z.array(z.object({ title: text(80), description: text(160), href: href.optional(), media: media.optional() })).max(12),
 });
 
 export const homeAboutSchema = z.object({
   label: text(60),
   statement: text(600),
-  image: image.optional(),
+  image: media.optional(),
 });
 
 export const beyondSchema = z.object({
   label: text(60),
-  ai: z.object({ label: text(40), title: text(80), body: text(600), videoUrl: href.optional(), videoCaption: text(80) }),
-  founder: z.object({ label: text(40), title: text(80), body: text(300), interests: text(400).optional() }),
+  ai: z.object({ label: text(40), title: text(80), body: text(600), videoUrl: href.optional(), videoCaption: text(80), media: media.optional() }),
+  founder: z.object({ label: text(40), title: text(80), body: text(300), interests: text(400).optional(), media: media.optional() }),
   brand: z.object({ label: text(60), title: text(80), body: text(400), linkText: text(60) }),
 });
 
