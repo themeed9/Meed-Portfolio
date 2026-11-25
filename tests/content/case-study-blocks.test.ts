@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { caseStudySectionTypes, payloadSchemaFor } from "../../lib/case-study.ts";
 import {
-  READ_TIME_TARGET_MINUTES, TYPE_INFO, blockIntro, WORD_BUDGET, blockWords, caseStudyLength, caseStudyTemplates, checkBlock, cleanBlockMedia, cleanPayload, contentsEntries, convertedLegacyFields,
+  READ_TIME_TARGET_MINUTES, TYPE_INFO, blockIntro, visualPlan, WORD_BUDGET, blockWords, caseStudyLength, caseStudyTemplates, checkBlock, cleanBlockMedia, cleanPayload, contentsEntries, convertedLegacyFields,
   emptyPayload, legacyBlocks, readBlockSettings, readingMinutes, type FieldSpec,
 } from "../../lib/case-study-blocks.ts";
 
@@ -95,8 +95,8 @@ describe("block checks before saving (ADR-011)", () => {
 });
 
 describe("reading block settings for the page", () => {
-  it("defaults to text-only, visible, plain, below", () => {
-    assert.deepEqual(readBlockSettings(undefined), { media: [], mediaLayout: "below", width: "default", background: "plain", hidden: false, showInContents: true });
+  it("defaults to no media, visible, plain, alternating image side", () => {
+    assert.deepEqual(readBlockSettings(undefined), { media: [], mediaLayout: "auto", width: "default", background: "plain", hidden: false, showInContents: true });
   });
 
   it("turns the legacy single image into the first media item", () => {
@@ -205,5 +205,29 @@ describe("block intro text is never shown twice", () => {
   it("counts a duplicated paragraph once in the reading time", () => {
     const body = Array(300).fill("word").join(" ");
     assert.equal(caseStudyLength([{ type: "problem_statement", title: null, content: body, payload: { body }, metadata: null }]).words, 300);
+  });
+});
+
+describe("every section has an image area (owner request, 2026-11-25)", () => {
+  const settings = (media: unknown[] = [], mediaLayout = "auto") => ({ media: media as never[], mediaLayout: mediaLayout as never });
+
+  it("alternates block media right, left, right down the page", () => {
+    assert.deepEqual([0, 1, 2].map((i) => visualPlan(settings([img]), null, i)), [
+      { kind: "media", side: "right" }, { kind: "media", side: "left" }, { kind: "media", side: "right" },
+    ]);
+  });
+
+  it("respects an explicit image position", () => {
+    assert.deepEqual(visualPlan(settings([img], "below"), null, 1), { kind: "media", side: "below" });
+  });
+
+  it("shows a tinted panel when a section has no screens at all", () => {
+    assert.deepEqual(visualPlan(settings(), { problem: "x" }, 1), { kind: "panel", side: "left" });
+    assert.deepEqual(visualPlan(settings([], "right"), null, 1), { kind: "panel", side: "right" });
+  });
+
+  it("keeps screens inline for blocks whose fields already show media", () => {
+    assert.deepEqual(visualPlan(settings(), { media: [img] }, 0), { kind: "inline" });
+    assert.deepEqual(visualPlan(settings(), { beforeMedia: img, afterMedia: img, change: "c", significance: "s" }, 0), { kind: "inline" });
   });
 });

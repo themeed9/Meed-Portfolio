@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { normalizeSection, type CaseStudySectionRecord } from "@/lib/case-study";
-import { blockIntro, readBlockSettings } from "@/lib/case-study-blocks";
+import { TYPE_INFO, blockIntro, readBlockSettings, visualPlan } from "@/lib/case-study-blocks";
 import { CaseMediaSet, type CaseMediaItem } from "./CaseMedia";
 
 // ADR-003 typed blocks, with the ADR-011 CMS layer: every block can carry its own media (or be text
@@ -8,7 +8,7 @@ import { CaseMediaSet, type CaseMediaItem } from "./CaseMedia";
 
 type Normalized = ReturnType<typeof normalizeSection>;
 type Media = CaseMediaItem;
-export type BlockColors = { background: string; text: string } | null;
+export type BlockColors = { background: string; text: string; surface?: string } | null;
 
 function RichText({ content }: { content: string }) {
   return <div className="space-y-4">{content.split("\n").map((line, index) => {
@@ -59,7 +59,7 @@ function render(section: Normalized) {
   if (section.type === "annotated_screen" && Array.isArray(payload.media)) return <Annotated payload={payload} />;
   if (section.type === "evidence") return <Evidence payload={payload} />;
   if (section.type === "outcome") return <Outcome payload={payload} />;
-  if ("media" in payload && Array.isArray(payload.media)) return <MediaSet media={payload.media as Media[]} />;
+  if ("media" in payload && Array.isArray(payload.media)) return <MediaSet media={payload.media as Media[]} preserveInterface />;
   if ("events" in payload && Array.isArray(payload.events)) return <ol>{(payload.events as Array<{period:string;title:string;detail:string}>).map(event => <li key={`${event.period}-${event.title}`} className="grid gap-2 border-t border-border-subtle py-5 sm:grid-cols-[8rem_1fr]"><p className="type-small text-text-tertiary">{event.period}</p><div><h3 className="font-semibold">{event.title}</h3><p className="mt-2 type-body text-text-secondary">{event.detail}</p></div></li>)}</ol>;
   if ("items" in payload && Array.isArray(payload.items)) return <ul className="divide-y divide-border-subtle border-y border-border-subtle">{(payload.items as string[]).map(item => <li key={item} className="py-4 type-body text-text-secondary">{item}</li>)}</ul>;
   if (section.type === "before_after") { const before = payload.beforeMedia as Media; const after = payload.afterMedia as Media; return <><div className="grid gap-6 md:grid-cols-2"><MediaSet media={[before]} /><MediaSet media={[after]} /></div><Structured payload={{ change: payload.change, significance: payload.significance }} /></>; }
@@ -67,7 +67,7 @@ function render(section: Normalized) {
   return <Structured payload={payload} />;
 }
 
-export default function CaseStudySection({ section, preview = false, colors = null }: { section: CaseStudySectionRecord; preview?: boolean; colors?: BlockColors }) {
+export default function CaseStudySection({ section, preview = false, colors = null, index = 0 }: { section: CaseStudySectionRecord; preview?: boolean; colors?: BlockColors; index?: number }) {
   const normalized = normalizeSection(section);
   const settings = readBlockSettings(section.metadata, { url: section.imageUrl, alt: section.imageAlt });
   if (settings.hidden && !preview) return null;
@@ -76,9 +76,13 @@ export default function CaseStudySection({ section, preview = false, colors = nu
   const intro = introText ? <RichText content={introText} /> : null;
   const body = render(normalized);
   const media = settings.media;
-  const layout = media.length ? settings.mediaLayout : "none";
+  const plan = visualPlan(settings, normalized.payload, index);
+  const layout = plan.kind === "inline" ? "none" : plan.side;
   const brand = settings.background === "brand" && colors;
-  const style = brand ? ({ "--case-brand-bg": colors.background, "--case-brand-fg": colors.text } as CSSProperties) : undefined;
+  const style = {
+    ...(brand ? { "--case-brand-bg": colors.background, "--case-brand-fg": colors.text } : {}),
+    ...(colors?.surface ? { "--case-tint": colors.surface } : {}),
+  } as CSSProperties;
   const classes = [
     "case-block", `case-block-${normalized.type}`, emphasized ? "py-4" : "",
     settings.width !== "default" ? `case-w-${settings.width}` : "",
@@ -91,7 +95,15 @@ export default function CaseStudySection({ section, preview = false, colors = nu
     {hasHeading && <header className="case-heading">{normalized.eyebrow && <p className="eyebrow">{normalized.eyebrow}</p>}{normalized.title && <h2 id={`section-${section.id}-title`} className="mt-4 type-h2">{normalized.title}</h2>}</header>}
     <div className={`case-content case-layout-${layout} ${hasHeading ? "mt-8" : ""}`}>
       {(intro || body) && <div className="case-text">{intro}{intro && body ? <div className="mt-8">{body}</div> : body}</div>}
-      {media.length > 0 && <div className="case-block-media"><CaseMediaSet media={media} columns={layout === "left" || layout === "right" ? 1 : undefined} /></div>}
+      {plan.kind === "media" && <div className="case-block-media"><CaseMediaSet media={media} columns={layout === "left" || layout === "right" ? 1 : undefined} /></div>}
+      {plan.kind === "panel" && (
+        // Decorative image area for a section with no screens yet: section number and label on the
+        // project tint. Hidden from assistive tech; the heading already names the section.
+        <div className="case-block-media case-visual-panel" aria-hidden="true">
+          <span className="case-visual-number">{String(index + 1).padStart(2, "0")}</span>
+          <span className="case-visual-label">{normalized.eyebrow || TYPE_INFO[normalized.type].label}</span>
+        </div>
+      )}
     </div>
   </section>;
 }

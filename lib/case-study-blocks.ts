@@ -28,7 +28,7 @@ export const blockMediaSchema = z.object({
 });
 export type BlockMedia = z.infer<typeof blockMediaSchema>;
 
-export const mediaLayouts = ["below", "above", "left", "right", "grid"] as const;
+export const mediaLayouts = ["auto", "below", "above", "left", "right", "grid"] as const;
 export const blockWidths = ["default", "text", "wide", "full"] as const;
 export const blockBackgrounds = ["plain", "tint", "brand"] as const;
 export const legacyFields = ["overview", "challenge", "approach", "results", "testimonial"] as const;
@@ -39,7 +39,7 @@ export type LegacyField = (typeof legacyFields)[number];
 
 export const blockSettingsSchema = z.object({
   media: z.array(blockMediaSchema).max(12, "Up to 12 media items per block").default([]),
-  mediaLayout: z.enum(mediaLayouts).default("below"),
+  mediaLayout: z.enum(mediaLayouts).default("auto"),
   width: z.enum(blockWidths).default("default"),
   background: z.enum(blockBackgrounds).default("plain"),
   hidden: z.boolean().default(false),
@@ -51,6 +51,7 @@ export type BlockSettings = z.infer<typeof blockSettingsSchema>;
 export const DEFAULT_SETTINGS: BlockSettings = blockSettingsSchema.parse({});
 
 export const MEDIA_LAYOUT_LABELS: Record<MediaLayout, string> = {
+  auto: "Beside the text, alternating sides (recommended)",
   below: "Below the text",
   above: "Above the text",
   left: "Beside the text, on the left",
@@ -96,6 +97,31 @@ export function readBlockSettings(metadata: unknown, legacyImage?: { url?: strin
     settings = { ...settings, media: [{ url: legacyImage.url, alt: legacyImage.alt || "Case study image" }] };
   }
   return settings;
+}
+
+/** True when a block's own typed fields already show media (gallery, screens, before/after, evidence). */
+export function payloadHasMedia(payload: unknown): boolean {
+  if (!payload || typeof payload !== "object") return false;
+  const data = payload as Record<string, unknown>;
+  if (Array.isArray(data.media) && data.media.length > 0) return true;
+  return Boolean(data.beforeMedia || data.afterMedia);
+}
+
+export type VisualPlan =
+  | { kind: "media"; side: "left" | "right" | "below" | "above" | "grid" }
+  | { kind: "panel"; side: "left" | "right" }
+  | { kind: "inline" };
+
+/**
+ * Every case-study section has an image area (owner request, 2026-11-25). Block media shows in it;
+ * a block whose typed fields already carry screens keeps them inline; any other block gets a
+ * decorative tinted panel. "auto" alternates sides down the page by the block's visible position.
+ */
+export function visualPlan(settings: Pick<BlockSettings, "media" | "mediaLayout">, payload: unknown, visibleIndex: number): VisualPlan {
+  const alternate = visibleIndex % 2 === 0 ? "right" : "left";
+  if (settings.media.length) return { kind: "media", side: settings.mediaLayout === "auto" ? alternate : settings.mediaLayout };
+  if (payloadHasMedia(payload)) return { kind: "inline" };
+  return { kind: "panel", side: settings.mediaLayout === "left" || settings.mediaLayout === "right" ? settings.mediaLayout : alternate };
 }
 
 /** Media with its kind resolved from the URL when not set explicitly. */
