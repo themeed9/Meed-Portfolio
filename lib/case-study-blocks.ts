@@ -445,6 +445,25 @@ function wordsIn(value: unknown): number {
   return 0;
 }
 
+/**
+ * The intro text to show above a block's typed fields, or null. Older blocks often store the same
+ * text twice (in `content` and in a payload field such as `body`); showing it once avoids a
+ * duplicated paragraph and an inflated reading time.
+ */
+export function blockIntro(type: string, content: string, payload: unknown): string | null {
+  const text = content.trim();
+  if (!text || type === "rich_text") return null;
+  const norm = (value: string) => value.replace(/\s+/g, " ").trim();
+  const strings: string[] = [];
+  const collect = (value: unknown) => {
+    if (typeof value === "string") strings.push(norm(value));
+    else if (Array.isArray(value)) value.forEach(collect);
+    else if (value && typeof value === "object") Object.values(value).forEach(collect);
+  };
+  collect(payload);
+  return strings.includes(norm(text)) ? null : text;
+}
+
 export const WORDS_PER_MINUTE = 220;
 /** Every case study should read in two minutes or less: recruiters skim (owner decision, 2026-11-25). */
 export const READ_TIME_TARGET_MINUTES = 2;
@@ -456,11 +475,12 @@ export function countWords(parts: unknown[]): number {
   return parts.reduce((sum: number, part) => sum + wordsIn(part), 0);
 }
 
-type LengthSection = { title: string | null; eyebrow?: string | null; content: string; payload?: unknown; metadata?: unknown; imageUrl?: string | null; imageAlt?: string | null };
+type LengthSection = { type?: string | null; title: string | null; eyebrow?: string | null; content: string; payload?: unknown; metadata?: unknown; imageUrl?: string | null; imageAlt?: string | null };
 
 /** Words a block shows on the page (title, text and typed fields; not URLs). */
-export function blockWords(section: LengthSection): number {
-  return countWords([section.title, section.content, section.payload]);
+export function blockWords(section: LengthSection & { type?: string | null }): number {
+  const intro = section.type === undefined || section.type === null || section.type === "rich_text" ? section.content : blockIntro(section.type, section.content, section.payload);
+  return countWords([section.title, intro, section.payload]);
 }
 
 /**
@@ -473,7 +493,7 @@ export function caseStudyLength(sections: LengthSection[], intro: { description?
   const legacy = [converted.includes("overview") ? null : intro.overview, converted.includes("challenge") ? null : intro.challenge];
   const words = countWords([intro.description, ...legacy]) + visible.reduce((sum, section) => sum + blockWords(section), 0);
   const media = visible.reduce((sum, section) => sum + readBlockSettings(section.metadata, { url: section.imageUrl, alt: section.imageAlt }).media.length, 0);
-  const minutes = readingMinutes([intro.description, ...legacy, ...visible.map((section) => [section.title, section.content, section.payload])], media);
+  const minutes = readingMinutes([intro.description, ...legacy, ...visible.map((section) => [section.title, section.type && section.type !== "rich_text" ? blockIntro(section.type, section.content, section.payload) : section.content, section.payload])], media);
   return { words, minutes, media, overBudget: minutes > READ_TIME_TARGET_MINUTES };
 }
 
