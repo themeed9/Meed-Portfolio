@@ -45,6 +45,22 @@ describe("Admin → Content section forms (owner request, 2026-11-25)", () => {
   });
 });
 
+describe("homepage media display (fill or whole)", () => {
+  it("keeps the chosen fit, so a GIF can fill the hero frame", () => {
+    const hero = homeSectionByKey("home-hero")!;
+    const value = cleanHomeValue(hero.fields, { ...editableValue(hero, null), image: { src: "/uploads/loop.gif", alt: "Loop", fit: "cover" } });
+    assert.deepEqual(value.image, { src: "/uploads/loop.gif", alt: "Loop", fit: "cover" });
+    assert.ok(checkHomeSection("home-hero", value).ok);
+  });
+
+  it("never stores a fit on the background photo, and rejects unknown fits", () => {
+    const hero = homeSectionByKey("home-hero")!;
+    const value = cleanHomeValue(hero.fields, { ...editableValue(hero, null), background: { src: "/images/hero-sky.webp", alt: "", fit: "cover" } });
+    assert.equal("fit" in (value.background as object), false);
+    assert.equal(checkHomeSection("home-hero", { ...value, image: { src: "/uploads/a.gif", alt: "A", fit: "stretch" } }).ok, false);
+  });
+});
+
 describe("Admin → Content save checks", () => {
   const hero = homeSectionByKey("home-hero")!;
   const base = () => cleanHomeValue(hero.fields, editableValue(hero, null));

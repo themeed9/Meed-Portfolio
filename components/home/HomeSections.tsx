@@ -55,7 +55,7 @@ export function HomeHero({ content, fallbackImage }: { content: HomeHero; fallba
         </div>
         {image && (
           <div className="home-hero-media">
-            <HomeMedia media={image} sizes="(max-width: 767px) 100vw, 560px" fit="contain" />
+            <HomeMedia media={image} sizes="(max-width: 767px) 100vw, 560px" fit="contain" showToggle={false} />
           </div>
         )}
       </div>
@@ -89,7 +89,7 @@ export function ProjectStrip({ projects, placeholders }: { projects: StripProjec
           const inner = (
             <>
               {item.media
-                ? <span className="home-strip-preview"><HomeMedia media={item.media} sizes="260px" /></span>
+                ? <span className="home-strip-preview"><HomeMedia media={item.media} sizes="260px" showToggle={false} /></span>
                 : <span className="home-strip-preview home-strip-wireframe" aria-hidden="true"><span /><span /><span /></span>}
               <span className="home-strip-label">{item.title} <span className="home-strip-note">{item.note}</span></span>
             </>

@@ -35,7 +35,7 @@ function MediaPreview({ url }: { url: string }) {
 }
 
 /** One image, GIF or video: upload or paste a link, then alt text, caption and display. */
-export function MediaControl({ value, onChange, label, showCaption = true, showFit = true, imageOnly = false, help }: { value: MediaDraft; onChange: (value: MediaDraft) => void; label: string; showCaption?: boolean; showFit?: boolean; imageOnly?: boolean; help?: string }) {
+export function MediaControl({ value, onChange, label, showCaption = true, showFit = true, imageOnly = false, help, defaultFit }: { value: MediaDraft; onChange: (value: MediaDraft) => void; label: string; showCaption?: boolean; showFit?: boolean; imageOnly?: boolean; help?: string; defaultFit?: "cover" | "contain" }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const set = (patch: Partial<MediaDraft>) => onChange({ ...value, ...patch });
@@ -66,8 +66,18 @@ export function MediaControl({ value, onChange, label, showCaption = true, showF
           {showCaption && <TextControl label="Caption" value={value.caption ?? ""} onChange={(caption) => set({ caption })} help="Optional. Shown under the media." />}
           {showFit && <label className="block text-sm font-medium">Display
             <select className={input} value={value.fit ?? ""} onChange={(event) => set({ fit: event.target.value || undefined })}>
-              <option value="">Show the whole image (recommended for screens)</option>
-              <option value="cover">Fill the frame (may crop the edges)</option>
+              {defaultFit ? (
+                <>
+                  <option value="">Default here: {defaultFit === "cover" ? "fill the frame" : "show the whole image"}</option>
+                  <option value="cover">Fill the frame (may crop the edges)</option>
+                  <option value="contain">Show the whole image</option>
+                </>
+              ) : (
+                <>
+                  <option value="">Show the whole image (recommended for screens)</option>
+                  <option value="cover">Fill the frame (may crop the edges)</option>
+                </>
+              )}
             </select>
           </label>}
           {kind === "video" && !imageOnly && <TextControl label="Poster image link" value={value.poster ?? ""} onChange={(poster) => set({ poster })} help="Optional still frame shown before the video plays." />}

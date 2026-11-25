@@ -11,7 +11,7 @@ import { isAllowedMediaUrl } from "./case-study-blocks.ts";
 
 export type HomeField =
   | { key: string; label: string; kind: "text" | "textarea" | "link" | "email"; required?: boolean; help?: string }
-  | { key: string; label: string; kind: "media"; help?: string; imageOnly?: boolean }
+  | { key: string; label: string; kind: "media"; help?: string; imageOnly?: boolean; defaultFit?: "cover" | "contain" }
   | { key: string; label: string; kind: "group"; fields: HomeField[]; help?: string }
   | { key: string; label: string; kind: "list"; itemLabel: string; fields: HomeField[]; max: number; help?: string }
   | { key: string; label: string; kind: "projects"; help?: string };
@@ -41,7 +41,7 @@ export const homeSections: HomeSection[] = [
       req("ctaLink", "Button link", "link", "A page (/work), a section (#selected-work) or a full https:// link."),
       opt("rolesText", "Line under the button"),
       opt("rolesLink", "Link for that line", "link"),
-      { key: "image", label: "Hero image or video", kind: "media", help: "Shown on the right. Leave empty to use your first featured project's image." },
+      { key: "image", label: "Hero image or video", kind: "media", defaultFit: "contain", help: "Shown on the right. Leave empty to use your first featured project's image." },
       { key: "background", label: "Background photo", kind: "media", imageOnly: true, help: "The sky photo behind the header, hero and carousel. Leave empty for the default sky." },
     ],
   },
@@ -135,8 +135,10 @@ function cleanMedia(value: unknown, imageOnly?: boolean): Record<string, string>
   if (!imageOnly) {
     const kind = trim(value.kind);
     const poster = trim(value.poster);
+    const fit = trim(value.fit);
     if (kind === "image" || kind === "gif" || kind === "video") out.kind = kind;
     if (poster) out.poster = poster;
+    if (fit === "cover" || fit === "contain") out.fit = fit;
   }
   return out;
 }
