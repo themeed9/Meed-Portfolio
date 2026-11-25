@@ -4,7 +4,9 @@
   --surface-muted: #e6e9e7;
   --surface-inverse: #07100b;
   --text-primary: #0b3d2e; /* deep forest main text, 12.2:1 on white (owner decision, ADR-010 C1) */
-  --text-secondary: #4a554e; /* Figma color/muted */
+  /* Body text: the main deep forest at 75% opacity, so headings lead and body text sits one step back
+     (owner request, 2026-11-25). 5.8:1 on white, 5.1:1 on the darkest light surface (#e6e9e7). */
+  --text-secondary: rgba(11, 61, 46, 0.75);
   --text-muted: #5e6862; /* >= 5.0:1 on every light surface (was #707a73, 3.9-4.4:1) */
   --text-inverse: #f7faf8;
   --accent: #257a4c;
@@ -117,7 +119,7 @@
   --surface-muted: #152019;
   --surface-inverse: #f7faf8;
   --text-primary: #f7faf8;
-  --text-secondary: #cbd2cd;
+  --text-secondary: rgba(247, 250, 248, 0.75); /* main text at 75% opacity; 9:1+ on dark surfaces */
   --text-muted: #98a29b;
   --text-inverse: #07100b;
   --accent: #62c88f;

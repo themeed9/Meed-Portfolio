@@ -46,6 +46,8 @@ export default function CaseStudyLayout({ project, preview = false, nextProject 
             <p className="eyebrow">{project.category}</p>
             <h1 className="mt-5 type-h1">{project.title}</h1>
             <p className="mt-7 max-w-3xl type-body-lg text-text-secondary">{project.description}</p>
+            {/* Recruiters can see the real product straight away (owner, 2026-11-25). */}
+            {project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer" className="home-button home-button-primary mt-8 gap-2">View live project <ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>}
           </div>
           <div className="lg:col-span-4">
             <dl className="grid grid-cols-2 gap-x-6 gap-y-5 border-t border-border-subtle pt-5">

@@ -148,3 +148,7 @@ colour once the page scrolls (or the phone menu opens); on every other page it i
 All text on the sky, including the nav links and strip labels, passes WCAG AA in both themes at
 1440, 1024 and 390 px (lowest 5.6:1, worst background pixel). The page scrollbar is hidden at the
 owner's request. Selected work cards inset their media container by 24px.
+
+## Body text (2026-11-25)
+
+Body text (`--text-secondary`) is the main text colour at 75% opacity, so headings lead and body text sits a step back: `rgba(11, 61, 46, .75)` in light (5.8:1 on white, 5.1:1 on the darkest light surface) and `rgba(247, 250, 248, .75)` in dark. Text on coloured cards keeps its full-strength auto-picked colour.

@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { caseStudySectionTypes, payloadSchemaFor } from "../../lib/case-study.ts";
 import {
-  TYPE_INFO, caseStudyTemplates, checkBlock, cleanBlockMedia, cleanPayload, contentsEntries, convertedLegacyFields,
+  READ_TIME_TARGET_MINUTES, TYPE_INFO, WORD_BUDGET, blockWords, caseStudyLength, caseStudyTemplates, checkBlock, cleanBlockMedia, cleanPayload, contentsEntries, convertedLegacyFields,
   emptyPayload, legacyBlocks, readBlockSettings, readingMinutes, type FieldSpec,
 } from "../../lib/case-study-blocks.ts";
 
@@ -151,5 +151,40 @@ describe("page extras", () => {
     assert.equal(readingMinutes(["short"]), 1);
     assert.equal(readingMinutes([Array(1100).fill("word").join(" ")]), 5);
     assert.equal(readingMinutes([{ url: "https://x/very-long-url", body: "two words" }]), 1);
+  });
+});
+
+describe("two-minute case study budget (owner decision, 2026-11-25)", () => {
+  const words = (n: number) => Array(n).fill("word").join(" ");
+
+  it("targets two minutes, about 440 words", () => {
+    assert.equal(READ_TIME_TARGET_MINUTES, 2);
+    assert.equal(WORD_BUDGET, 440);
+  });
+
+  it("counts titles, text and typed fields, but not URLs", () => {
+    assert.equal(blockWords({ title: "Two words", content: "three more words", payload: { media: [{ url: "https://res.cloudinary.com/a/b.png", alt: "alt text" }] } }), 7);
+  });
+
+  it("counts the intro, unconverted legacy text and visible blocks; hidden drafts are free", () => {
+    const sections = [
+      { title: null, content: words(300), payload: null, metadata: null },
+      { title: null, content: words(5000), payload: null, metadata: { hidden: true } },
+      { title: null, content: words(50), payload: null, metadata: { legacy: "overview" } },
+    ];
+    const length = caseStudyLength(sections, { description: words(20), overview: words(999), challenge: words(30) });
+    assert.equal(length.words, 400);
+    assert.equal(length.overBudget, false);
+  });
+
+  it("flags a case study that reads longer than two minutes", () => {
+    const length = caseStudyLength([{ title: null, content: words(2330), payload: null, metadata: null }]);
+    assert.equal(length.minutes, 11);
+    assert.equal(length.overBudget, true);
+  });
+
+  it("offers the 2-minute recruiter brief first, with five blocks", () => {
+    assert.equal(Object.keys(caseStudyTemplates)[0], "recruiter");
+    assert.equal(caseStudyTemplates.recruiter.blocks.length, 5);
   });
 });
