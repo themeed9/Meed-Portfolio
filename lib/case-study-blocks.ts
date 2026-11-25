@@ -341,6 +341,18 @@ const draft = (type: CaseStudySectionType, eyebrow: string, title: string, conte
 });
 
 export const caseStudyTemplates = {
+  // Recruiters skim: the default is a 2-minute brief where screens carry the story (owner, 2026-11-25).
+  recruiter: {
+    label: "Recruiter brief (2 min)",
+    description: "Five short blocks, about 400 words: summary, problem, key decisions, what shipped, outcome. Screens do the explaining.",
+    blocks: [
+      draft("project_tldr", "Summary", "The project at a glance"),
+      draft("problem_statement", "Problem", "The problem"),
+      draft("rich_text", "Key decisions", "What I decided, and why", "- Decision one, and why, in one sentence.\n- Decision two, and why.\n- Decision three, and why.\n\nAdd a screen for each decision below."),
+      draft("gallery", "The product", "What shipped"),
+      draft("outcome", "Outcome", "The result, and what I learned"),
+    ],
+  },
   product: {
     label: "Product case study",
     description: "Full story: summary, problem, research, flow, decisions, before and after, outcome, reflection.",
@@ -433,10 +445,42 @@ function wordsIn(value: unknown): number {
   return 0;
 }
 
+export const WORDS_PER_MINUTE = 220;
+/** Every case study should read in two minutes or less: recruiters skim (owner decision, 2026-11-25). */
+export const READ_TIME_TARGET_MINUTES = 2;
+export const WORD_BUDGET = READ_TIME_TARGET_MINUTES * WORDS_PER_MINUTE;
+/** Guide for one block, so five or six blocks fit the budget. */
+export const BLOCK_WORD_GUIDE = 80;
+
+export function countWords(parts: unknown[]): number {
+  return parts.reduce((sum: number, part) => sum + wordsIn(part), 0);
+}
+
+type LengthSection = { title: string | null; eyebrow?: string | null; content: string; payload?: unknown; metadata?: unknown; imageUrl?: string | null; imageAlt?: string | null };
+
+/** Words a block shows on the page (title, text and typed fields; not URLs). */
+export function blockWords(section: LengthSection): number {
+  return countWords([section.title, section.content, section.payload]);
+}
+
+/**
+ * Length of the public case study as the page computes it: the intro, any legacy text not yet
+ * converted, and every visible block. Hidden drafts do not count.
+ */
+export function caseStudyLength(sections: LengthSection[], intro: { description?: string | null; overview?: string | null; challenge?: string | null } = {}) {
+  const converted = convertedLegacyFields(sections);
+  const visible = sections.filter((section) => !readBlockSettings(section.metadata).hidden);
+  const legacy = [converted.includes("overview") ? null : intro.overview, converted.includes("challenge") ? null : intro.challenge];
+  const words = countWords([intro.description, ...legacy]) + visible.reduce((sum, section) => sum + blockWords(section), 0);
+  const media = visible.reduce((sum, section) => sum + readBlockSettings(section.metadata, { url: section.imageUrl, alt: section.imageAlt }).media.length, 0);
+  const minutes = readingMinutes([intro.description, ...legacy, ...visible.map((section) => [section.title, section.content, section.payload])], media);
+  return { words, minutes, media, overBudget: minutes > READ_TIME_TARGET_MINUTES };
+}
+
 /** Whole minutes at 220 words a minute, plus a few seconds per image; never less than 1. */
 export function readingMinutes(parts: unknown[], mediaCount = 0): number {
   const words = parts.reduce((sum: number, part) => sum + wordsIn(part), 0);
-  return Math.max(1, Math.round(words / 220 + mediaCount * 0.1));
+  return Math.max(1, Math.round(words / WORDS_PER_MINUTE + mediaCount * 0.1));
 }
 
 export const isSectionType = (value: unknown): value is CaseStudySectionType => caseStudySectionTypes.includes(value as CaseStudySectionType);

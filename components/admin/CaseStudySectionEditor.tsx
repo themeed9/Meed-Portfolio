@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, ExternalLink, Pencil, Plus, Trash2 } from "lucide-react";
 import { caseStudySectionTypes, type CaseStudySectionType } from "@/lib/case-study";
 import {
-  BACKGROUND_LABELS, MEDIA_LAYOUT_LABELS, TYPE_INFO, WIDTH_LABELS, blockBackgrounds, blockWidths, caseStudyTemplates,
+  BACKGROUND_LABELS, BLOCK_WORD_GUIDE, MEDIA_LAYOUT_LABELS, READ_TIME_TARGET_MINUTES, TYPE_INFO, WORD_BUDGET, blockWords, caseStudyLength, WIDTH_LABELS, blockBackgrounds, blockWidths, caseStudyTemplates,
   checkBlock, cleanBlockMedia, cleanPayload, convertedLegacyFields, emptyPayload, isSectionType, legacyBlocks, mediaLayouts, readBlockSettings,
   type BlockSettings, type CaseStudyTemplate, type LegacyField,
 } from "@/lib/case-study-blocks";
@@ -42,7 +42,7 @@ async function readError(response: Response, fallback: string) {
   try { const data = await response.json(); return typeof data.error === "string" ? data.error : fallback; } catch { return fallback; }
 }
 
-export default function CaseStudySectionEditor({ projectId, initialSections, legacy = {} }: { projectId: string; initialSections: EditableSection[]; legacy?: LegacyText }) {
+export default function CaseStudySectionEditor({ projectId, initialSections, legacy = {}, description = "" }: { projectId: string; initialSections: EditableSection[]; legacy?: LegacyText; description?: string }) {
   const [sections, setSections] = useState(initialSections);
   const [editing, setEditing] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -50,6 +50,7 @@ export default function CaseStudySectionEditor({ projectId, initialSections, leg
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const legacyLeft = legacyBlocks(legacy, convertedLegacyFields(sections));
+  const length = caseStudyLength(sections, { description, overview: legacy.overview, challenge: legacy.challenge });
   const nextOrder = () => sections.reduce((max, s) => Math.max(max, s.order + 1), 0);
 
   const startEdit = (section: EditableSection) => { setError(""); setPicking(false); setEditing(section.id); setDraft(toDraft(section)); };
@@ -130,6 +131,18 @@ export default function CaseStudySectionEditor({ projectId, initialSections, leg
         </a>
       </div>
 
+      <div className={`mt-4 rounded-lg border p-4 text-sm ${length.overBudget ? "border-[#E0A100] bg-[#FFF8E1] text-[#4A3500]" : "border-border-subtle"}`}>
+        <p className="font-semibold">Reading time: about {length.minutes} min · {length.words} words{length.media ? ` · ${length.media} media` : ""}</p>
+        <div className="mt-2 h-2 overflow-hidden rounded-full bg-bg-tertiary" aria-hidden="true">
+          <div className={`h-full rounded-full ${length.overBudget ? "bg-[#B07D00]" : "bg-[#257A4C]"}`} style={{ width: `${Math.min(100, Math.round((length.words / WORD_BUDGET) * 100))}%` }} />
+        </div>
+        <p className="mt-2">
+          {length.overBudget
+            ? `Over the ${READ_TIME_TARGET_MINUTES}-minute target. Recruiters skim: shorten or hide blocks until it reads in ${READ_TIME_TARGET_MINUTES} minutes (about ${WORD_BUDGET} words), and let screens do the explaining. Hidden blocks don't count and aren't deleted.`
+            : `Within the ${READ_TIME_TARGET_MINUTES}-minute target (about ${WORD_BUDGET} words). Hidden blocks don't count.`}
+        </p>
+      </div>
+
       {error && <p className="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700" role="alert">{error}</p>}
 
       {legacyLeft.length > 0 && (
@@ -173,6 +186,7 @@ export default function CaseStudySectionEditor({ projectId, initialSections, leg
                     <p className="mt-1 flex flex-wrap gap-2 text-xs">
                       {info.settings.hidden && <span className="rounded-full bg-[#FFF4CC] px-2 py-0.5 font-semibold text-[#5C4300]">Hidden draft</span>}
                       {info.media.length > 0 && <span className="rounded-full bg-bg-secondary px-2 py-0.5 text-text-secondary">{info.media.length} media</span>}
+                      {(() => { const words = blockWords(section); return <span className={`rounded-full px-2 py-0.5 ${words > BLOCK_WORD_GUIDE ? "bg-[#FFF4CC] font-semibold text-[#5C4300]" : "bg-bg-secondary text-text-secondary"}`}>{words} words</span>; })()}
                       {info.settings.legacy && <span className="rounded-full bg-bg-secondary px-2 py-0.5 text-text-secondary">From old {info.settings.legacy} text</span>}
                     </p>
                   </div>
@@ -243,6 +257,7 @@ function BlockForm({ draft, onChange, onSave, onCancel, busy, heading }: { draft
       <TextControl label={info.textLabel} multiline value={draft.content} onChange={(content) => set({ content })} help={draft.type === "rich_text" ? "Start a line with ## for a subheading or - for a point." : "Optional text shown before the fields below."} />
 
       {info.fields.length > 0 && <PayloadFields fields={info.fields} value={draft.payload} onChange={(payload) => set({ payload })} />}
+      {(() => { const words = blockWords({ title: draft.title, content: draft.content, payload: draft.type === "rich_text" ? null : draft.payload }); return <p className={`text-sm ${words > BLOCK_WORD_GUIDE ? "font-semibold text-[#5C4300]" : "text-text-tertiary"}`} aria-live="polite">{words} words in this block. Aim for {BLOCK_WORD_GUIDE} or fewer, so the case study stays under 2 minutes.</p>; })()}
 
       <div className="space-y-4 rounded-lg bg-bg-secondary p-4">
         <MediaListControl label="Images for this block" help="Optional. Add screenshots, GIFs or videos to explain this part of the product, or leave empty for text only." value={draft.media} onChange={(media) => set({ media })} />

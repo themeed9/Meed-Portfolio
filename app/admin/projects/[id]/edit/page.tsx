@@ -81,7 +81,7 @@ export default function EditProjectPage() {
         {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{error}</div>}
         <ProjectForm form={form} onSubmit={onSubmit} isSubmitting={form.formState.isSubmitting} />
         <ProjectMediaEditor projectId={String(params.id)} initialImages={images} />
-        <CaseStudySectionEditor projectId={String(params.id)} initialSections={sections} legacy={legacy} />
+        <CaseStudySectionEditor projectId={String(params.id)} initialSections={sections} legacy={legacy} description={form.getValues("description") ?? ""} />
       </div>
     </div>
   );
