@@ -69,7 +69,7 @@ export default function CaseStudyLayout({ project, preview = false, nextProject 
         {overview && <section className="case-legacy mt-16"><p className="eyebrow">Overview</p><h2 className="mt-4 type-h2">The product in context.</h2><p className="mt-6 type-body-lg text-text-secondary">{overview}</p></section>}
         {challenge && <section className="case-legacy mt-24"><p className="eyebrow">The tension</p><h2 className="mt-4 type-h2">The product challenge.</h2><p className="mt-6 type-body text-text-secondary">{challenge}</p></section>}
         <div className="case-study-stream mt-20">
-          {sections.map((section) => <CaseStudySection key={section.id} section={section} preview={preview} colors={colors ? { background: colors.background, text: colors.text } : null} />)}
+          {sections.map((section, index) => <CaseStudySection key={section.id} section={section} preview={preview} index={index} colors={colors ? { background: colors.background, text: colors.text, surface: colors.surface } : null} />)}
         </div>
         {project.images.length > 0 && (
           <section className="mt-28"><p className="eyebrow">Additional evidence</p>

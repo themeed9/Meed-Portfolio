@@ -481,3 +481,15 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 /* Selected work: the product image container sits 24px inside the card (owner request). */
 .project-card-media { margin: 24px; border-radius: 16px; }
 @media (min-width: 900px) { .project-card-media { min-height: 0; } }
+
+/* Every case-study section has an image area (owner request, 2026-11-25). Sections without screens
+   show a decorative panel on the project tint: big section number and label, so the page keeps its
+   text-and-image rhythm. Text on the tint uses deep forest (AA on every tint, per the card tests). */
+.case-visual-panel { position: relative; display: flex; flex-direction: column; justify-content: space-between; aspect-ratio: 4 / 3; padding: 28px; border-radius: var(--radius-md); overflow: hidden;
+  background: radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, #ffffff 55%, transparent), transparent 60%), var(--case-tint, var(--color-bg-secondary)); color: #0B3D2E; }
+.case-visual-number { font-family: var(--font-family-display); font-size: clamp(4rem, 9vw, 7.5rem); line-height: .9; letter-spacing: -.05em; font-weight: 600; }
+.case-visual-label { align-self: flex-end; font-family: var(--font-family-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 500; }
+.dark .case-visual-panel { background: radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--case-tint, #ffffff) 22%, transparent), transparent 60%), color-mix(in srgb, var(--case-tint, #ffffff) 10%, var(--color-bg-secondary)); color: var(--color-text-primary); }
+@media (max-width: 1023px) { .case-visual-panel { aspect-ratio: 5 / 2; padding: 20px; } .case-visual-number { font-size: 3.5rem; } }
+/* A gallery with a single screen should not fill the whole page width. */
+.case-block-gallery .case-media-cols-1 { max-width: 760px; margin-inline: auto; }

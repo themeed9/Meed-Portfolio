@@ -5,7 +5,7 @@ import { ArrowDown, ArrowUp, Copy, Eye, EyeOff, ExternalLink, Pencil, Plus, Tras
 import { caseStudySectionTypes, type CaseStudySectionType } from "@/lib/case-study";
 import {
   BACKGROUND_LABELS, BLOCK_WORD_GUIDE, MEDIA_LAYOUT_LABELS, READ_TIME_TARGET_MINUTES, TYPE_INFO, WORD_BUDGET, blockWords, caseStudyLength, WIDTH_LABELS, blockBackgrounds, blockWidths, caseStudyTemplates,
-  checkBlock, cleanBlockMedia, cleanPayload, convertedLegacyFields, emptyPayload, isSectionType, legacyBlocks, mediaLayouts, readBlockSettings,
+  checkBlock, cleanBlockMedia, payloadHasMedia, cleanPayload, convertedLegacyFields, emptyPayload, isSectionType, legacyBlocks, mediaLayouts, readBlockSettings,
   type BlockSettings, type CaseStudyTemplate, type LegacyField,
 } from "@/lib/case-study-blocks";
 import { MediaListControl, PayloadFields, TextControl, type MediaDraft } from "./case-study/BlockFields";
@@ -185,7 +185,7 @@ export default function CaseStudySectionEditor({ projectId, initialSections, leg
                     <p className="font-medium">{section.title || "Untitled block"}</p>
                     <p className="mt-1 flex flex-wrap gap-2 text-xs">
                       {info.settings.hidden && <span className="rounded-full bg-[#FFF4CC] px-2 py-0.5 font-semibold text-[#5C4300]">Hidden draft</span>}
-                      {info.media.length > 0 && <span className="rounded-full bg-bg-secondary px-2 py-0.5 text-text-secondary">{info.media.length} media</span>}
+                      {info.media.length > 0 ? <span className="rounded-full bg-bg-secondary px-2 py-0.5 text-text-secondary">{info.media.length} media</span> : !payloadHasMedia(section.payload) && <span className="rounded-full bg-bg-secondary px-2 py-0.5 text-text-secondary">No image yet: shows a tinted panel</span>}
                       {(() => { const words = blockWords(section); return <span className={`rounded-full px-2 py-0.5 ${words > BLOCK_WORD_GUIDE ? "bg-[#FFF4CC] font-semibold text-[#5C4300]" : "bg-bg-secondary text-text-secondary"}`}>{words} words</span>; })()}
                       {info.settings.legacy && <span className="rounded-full bg-bg-secondary px-2 py-0.5 text-text-secondary">From old {info.settings.legacy} text</span>}
                     </p>
@@ -260,8 +260,8 @@ function BlockForm({ draft, onChange, onSave, onCancel, busy, heading }: { draft
       {(() => { const words = blockWords({ title: draft.title, content: draft.content, payload: draft.type === "rich_text" ? null : draft.payload }); return <p className={`text-sm ${words > BLOCK_WORD_GUIDE ? "font-semibold text-[#5C4300]" : "text-text-tertiary"}`} aria-live="polite">{words} words in this block. Aim for {BLOCK_WORD_GUIDE} or fewer, so the case study stays under 2 minutes.</p>; })()}
 
       <div className="space-y-4 rounded-lg bg-bg-secondary p-4">
-        <MediaListControl label="Images for this block" help="Optional. Add screenshots, GIFs or videos to explain this part of the product, or leave empty for text only." value={draft.media} onChange={(media) => set({ media })} />
-        {draft.media.length > 0 && (
+        <MediaListControl label="Images for this block" help="Every section has an image area beside the text. Add screenshots, GIFs or videos here; with none, the page shows a tinted panel with the section number." value={draft.media} onChange={(media) => set({ media })} />
+        {(
           <label className="block text-sm font-medium">Image position
             <select className={select} value={draft.settings.mediaLayout} onChange={(event) => setSettings({ mediaLayout: event.target.value as Settings["mediaLayout"] })}>
               {mediaLayouts.map((layout) => <option key={layout} value={layout}>{MEDIA_LAYOUT_LABELS[layout]}</option>)}
