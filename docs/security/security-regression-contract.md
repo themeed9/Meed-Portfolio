@@ -75,6 +75,7 @@ runs without a database or running server:
 
 - `tests/security/rate-limit.test.ts` — login throttling and contact limiters (supports SEC-INV-004, SEC-INV-007).
 - `tests/security/validation.test.ts` — contact/validation bounds and honeypot rejection (SEC-INV-007).
+- `tests/content/home-content-cms.test.ts` — homepage section saves: schema validation, media hosts limited to the CSP-allowed set, and links limited to `/`, `#`, `https:` and `mailto:` (Admin → Content).
 - `tests/security/case-study.test.ts` — typed section normalization and safe fallback (content integrity), and case-study block media URLs limited to the CSP-allowed hosts (ADR-011).
 
 Invariants requiring a server and/or database (SEC-INV-001, SEC-INV-002, SEC-INV-003, SEC-INV-006, SEC-INV-008) are

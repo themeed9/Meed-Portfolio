@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import AdminHeader from "@/components/layout/AdminHeader";
 import ContentForm from "@/components/admin/ContentForm";
 import NewContentForm from "@/components/admin/NewContentForm";
+import HomeContentEditor from "@/components/admin/HomeContentEditor";
+import { editableValue, homeSections } from "@/lib/home-content-cms";
 
 export const dynamic = "force-dynamic";
 import { Mail } from "lucide-react";
@@ -19,11 +21,19 @@ export default async function AdminContentPage() {
   const session = await auth();
   if (!session?.user) redirect("/admin/login");
 
-  const [contentEntries, messages, settings] = await Promise.all([
+  const [contentEntries, messages, settings, projects] = await Promise.all([
     prisma.siteContent.findMany({ orderBy: { key: "asc" } }).catch(() => []),
     prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.siteContent.findUnique({ where: { key: "site-settings" } }).catch(() => null),
+    prisma.project.findMany({ where: { published: true, collection: "product" }, orderBy: { order: "asc" }, select: { slug: true, title: true } }).catch(() => []),
   ]);
+  // Every homepage section, prefilled with what the live site shows (saved value or default).
+  const sections = homeSections.map((section) => {
+    const row = contentEntries.find((entry) => entry.key === section.key);
+    return { key: section.key, value: editableValue(section, row?.value), stored: Boolean(row) };
+  });
+  const homeKeys = new Set(homeSections.map((section) => section.key));
+  const otherEntries = contentEntries.filter((entry) => !homeKeys.has(entry.key) && entry.key !== "site-settings");
 
   const unreadCount = messages.filter((message) => !message.read).length;
   const settingsValue = settings?.value && typeof settings.value === "object" && !Array.isArray(settings.value) ? settings.value : null;
@@ -32,16 +42,22 @@ export default async function AdminContentPage() {
   return (
     <div>
       <AdminHeader
-        title="Content Manager"
-        description={`Manage homepage content${unreadCount > 0 ? ` — ${unreadCount} unread messages` : ""}`}
+        title="Content"
+        description={`Edit every section of your homepage: text, images and videos${unreadCount > 0 ? ` — ${unreadCount} unread messages` : ""}`}
       />
 
-      <NewContentForm />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-        {contentEntries.map((entry) => (
-          <ContentForm key={entry.id} entry={entry} />
-        ))}
-      </div>
+      <HomeContentEditor sections={sections} projects={projects} />
+
+      <details className="mt-10 rounded-xl border border-border-subtle p-4">
+        <summary className="min-h-11 cursor-pointer font-semibold">Advanced: other content keys</summary>
+        <p className="mt-2 text-sm text-text-tertiary">Raw content used by other pages (for example the Work page intro). Only change these if you know the format.</p>
+        <div className="mt-4"><NewContentForm /></div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {otherEntries.map((entry) => (
+            <ContentForm key={entry.id} entry={entry} />
+          ))}
+        </div>
+      </details>
 
       <div className="border-t border-border-subtle pt-12 mt-12">
         <div className="flex items-center gap-3 mb-2">

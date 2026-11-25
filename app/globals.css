@@ -493,3 +493,11 @@ html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 @media (max-width: 1023px) { .case-visual-panel { aspect-ratio: 5 / 2; padding: 20px; } .case-visual-number { font-size: 3.5rem; } }
 /* A gallery with a single screen should not fill the whole page width. */
 .case-block-gallery .case-media-cols-1 { max-width: 760px; margin-inline: auto; }
+
+/* More work: optional thumbnail per item (Admin → Content). */
+.home-index-thumb { position: relative; width: 64px; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 8px; background: var(--color-bg-secondary); grid-row: span 2; align-self: center; }
+.home-index-row:has(.home-index-thumb) { grid-template-columns: 64px minmax(0, 1fr); column-gap: 16px; }
+@media (min-width: 768px) {
+  .home-index-thumb { width: 72px; grid-row: auto; }
+  .home-index-row:has(.home-index-thumb) { grid-template-columns: 72px 360px minmax(0, 1fr) 24px; }
+}

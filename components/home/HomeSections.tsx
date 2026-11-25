@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-import type { Beyond, HomeAbout, HomeContact, HomeHero, MoreWork } from "@/lib/home-content";
+import type { Beyond, HomeAbout, HomeContact, HomeHero, HomeMedia as HomeMediaValue, MoreWork } from "@/lib/home-content";
 import { HERO_BACKGROUND, isExternal, safeHref } from "@/lib/home-content";
 import StripScroller from "./StripScroller";
+import HomeMedia from "./HomeMedia";
 
 // Homepage sections from the owner's Figma "Landing — Desktop" (ADR-010 phase 5).
 // Server components only: everything is visible on first paint, no motion.
@@ -54,7 +55,7 @@ export function HomeHero({ content, fallbackImage }: { content: HomeHero; fallba
         </div>
         {image && (
           <div className="home-hero-media">
-            <Image src={image.src} alt={image.alt} fill sizes="(max-width: 767px) 100vw, 560px" className="object-contain" priority={false} />
+            <HomeMedia media={image} sizes="(max-width: 767px) 100vw, 560px" fit="contain" />
           </div>
         )}
       </div>
@@ -62,7 +63,9 @@ export function HomeHero({ content, fallbackImage }: { content: HomeHero; fallba
   );
 }
 
-export function ProjectStrip({ projects, placeholders }: { projects: StripProject[]; placeholders: { title: string; note: string }[] }) {
+type StripTile = { title: string; note: string; href?: string; media?: HomeMediaValue };
+
+export function ProjectStrip({ projects, placeholders }: { projects: StripProject[]; placeholders: StripTile[] }) {
   if (!projects.length && !placeholders.length) return null;
   return (
     <section className="home-strip" aria-label="All projects">
@@ -80,17 +83,23 @@ export function ProjectStrip({ projects, placeholders }: { projects: StripProjec
             </li>
           );
         })}
-        {placeholders.map((item) => (
-          <li key={`placeholder-${item.title}`} className="home-strip-item">
-            {/* Placeholder until this case study is published: wireframe preview, not a link. */}
-            <div className="home-strip-link">
-              <span className="home-strip-preview home-strip-wireframe" aria-hidden="true">
-                <span /><span /><span />
-              </span>
+        {placeholders.map((item) => {
+          // Extra tile (Admin → Content → Project carousel): its own image or video, or a wireframe.
+          const href = safeHref(item.href);
+          const inner = (
+            <>
+              {item.media
+                ? <span className="home-strip-preview"><HomeMedia media={item.media} sizes="260px" /></span>
+                : <span className="home-strip-preview home-strip-wireframe" aria-hidden="true"><span /><span /><span /></span>}
               <span className="home-strip-label">{item.title} <span className="home-strip-note">{item.note}</span></span>
-            </div>
-          </li>
-        ))}
+            </>
+          );
+          return (
+            <li key={`tile-${item.title}`} className="home-strip-item">
+              {href ? <SmartLink href={href} className="home-strip-link">{inner}</SmartLink> : <div className="home-strip-link">{inner}</div>}
+            </li>
+          );
+        })}
       </StripScroller>
     </section>
   );
@@ -105,7 +114,7 @@ export function MoreWorkSection({ content }: { content: MoreWork }) {
         <ul className="home-index">
           {content.items.map((item) => {
             const href = safeHref(item.href);
-            const row = <><span className="home-index-title">{item.title}</span><span className="home-index-context">{item.description}</span>{href && <ArrowRight size={18} className="home-index-arrow" aria-hidden="true" />}</>;
+            const row = <>{item.media && <span className="home-index-thumb"><HomeMedia media={item.media} sizes="96px" /></span>}<span className="home-index-title">{item.title}</span><span className="home-index-context">{item.description}</span>{href && <ArrowRight size={18} className="home-index-arrow" aria-hidden="true" />}</>;
             return <li key={item.title}>{href ? <SmartLink href={href} className="home-index-row">{row}</SmartLink> : <div className="home-index-row">{row}</div>}</li>;
           })}
         </ul>
@@ -122,7 +131,7 @@ export function AboutSection({ content }: { content: HomeAbout }) {
         <p className="home-about-statement">{content.statement}</p>
         {content.image && (
           <div className="home-about-photo">
-            <Image src={content.image.src} alt={content.image.alt} fill sizes="(max-width: 767px) 100vw, 480px" className="object-cover object-top" />
+            <HomeMedia media={content.image} sizes="(max-width: 767px) 100vw, 480px" className="object-top" />
           </div>
         )}
       </div>
@@ -131,7 +140,8 @@ export function AboutSection({ content }: { content: HomeAbout }) {
 }
 
 export function BeyondSection({ content, brandTiles }: { content: Beyond; brandTiles: BrandTile[] }) {
-  const video = safeHref(content.ai.videoUrl);
+  const legacyVideo = safeHref(content.ai.videoUrl);
+  const aiMedia: HomeMediaValue | null = content.ai.media ?? (legacyVideo && /^https:\/\//i.test(legacyVideo) ? { src: legacyVideo, alt: `${content.ai.title} episode`, kind: "video" } : null);
   const tiles = brandTiles.slice(0, 3);
   return (
     <section id="beyond" className="home-section scroll-mt-20" aria-labelledby="beyond-title">
@@ -145,8 +155,8 @@ export function BeyondSection({ content, brandTiles }: { content: Beyond; brandT
               <p className="home-beyond-body">{content.ai.body}</p>
             </div>
             <div className="home-media-frame">
-              {video && /^https:\/\//i.test(video) && /\.(mp4|webm)(\?|$)/i.test(video)
-                ? <video src={video} controls preload="metadata" className="h-full w-full object-cover" aria-label={`${content.ai.title} episode`} />
+              {aiMedia
+                ? <HomeMedia media={aiMedia} sizes="(max-width: 767px) 100vw, 520px" controls />
                 : <p className="home-media-caption">{content.ai.videoCaption}</p>}
             </div>
           </article>
@@ -155,8 +165,11 @@ export function BeyondSection({ content, brandTiles }: { content: Beyond; brandT
               <p className="home-beyond-meta">{content.founder.label}</p>
               <h3 className="home-beyond-title">{content.founder.title}</h3>
               <p className="home-beyond-body">{content.founder.body}</p>
+              {content.founder.media && content.founder.interests && <p className="home-beyond-body">{content.founder.interests}</p>}
             </div>
-            {content.founder.interests && <p className="home-beyond-body self-center">{content.founder.interests}</p>}
+            {content.founder.media
+              ? <div className="home-media-frame"><HomeMedia media={content.founder.media} sizes="(max-width: 767px) 100vw, 520px" /></div>
+              : content.founder.interests && <p className="home-beyond-body self-center">{content.founder.interests}</p>}
           </article>
           <article className="home-beyond-row">
             <div className="min-w-0">

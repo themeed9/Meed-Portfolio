@@ -25,12 +25,15 @@ export default async function HomePage() {
   const featured = products.filter((project) => project.featured);
   const selected = featured.length ? featured : products;
   const brandTiles = everything.filter((project) => project.collection === "brand");
+  // Admin → Content → Project carousel can leave chosen projects out of the strip.
+  const hidden = new Set(content.strip.hiddenProjects ?? []);
+  const stripProjects = products.filter((project) => !hidden.has(project.slug));
   const heroImage = selected[0]?.homepageImage || selected[0]?.coverImage || null;
 
   return <>
     <HomeSky background={content.hero.background}>
       <HomeHero content={content.hero} fallbackImage={heroImage} />
-      <ProjectStrip projects={products} placeholders={stripPlaceholders(content.strip, products.map((project) => project.title))} />
+      <ProjectStrip projects={stripProjects} placeholders={stripPlaceholders(content.strip, stripProjects.map((project) => project.title))} />
     </HomeSky>
     <FeaturedProjects intro={workIntro} projects={selected} />
     <MoreWorkSection content={content.moreWork} />

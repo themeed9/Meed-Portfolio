@@ -43,6 +43,7 @@ export default function ContentForm({ entry }: { entry: ContentEntry }) {
         <Button variant="primary" size="sm" onClick={handleSave} isLoading={isSaving}>Save</Button>
       </div>
       <Textarea
+        label={`${entry.key} value (JSON)`}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         rows={8}

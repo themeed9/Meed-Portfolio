@@ -3,6 +3,7 @@ import { getSiteContent } from "@/lib/portfolio-content";
 import {
   beyondSchema, brandPageSchema, homeAboutSchema, homeContactSchema, homeContentKeys, homeDefaults,
   homeHeroSchema, homeStripSchema, moreWorkSchema, resolveContent, siteFooterSchema,
+  type Beyond, type HomeAbout, type HomeHero, type HomeStrip, type MoreWork,
 } from "@/lib/home-content";
 
 type Settings = { contactEmail?: string };
@@ -20,11 +21,11 @@ export const getHomeContent = cache(async () => {
   ]);
   const resolvedContact = resolveContent(homeContactSchema, contact, homeDefaults.contact);
   return {
-    hero: resolveContent(homeHeroSchema, hero, homeDefaults.hero),
-    strip: resolveContent(homeStripSchema, strip, homeDefaults.strip),
-    moreWork: resolveContent(moreWorkSchema, moreWork, homeDefaults.moreWork),
-    about: resolveContent(homeAboutSchema, about, homeDefaults.about),
-    beyond: resolveContent(beyondSchema, beyond, homeDefaults.beyond),
+    hero: resolveContent<HomeHero>(homeHeroSchema, hero, homeDefaults.hero),
+    strip: resolveContent<HomeStrip>(homeStripSchema, strip, homeDefaults.strip),
+    moreWork: resolveContent<MoreWork>(moreWorkSchema, moreWork, homeDefaults.moreWork),
+    about: resolveContent<HomeAbout>(homeAboutSchema, about, homeDefaults.about),
+    beyond: resolveContent<Beyond>(beyondSchema, beyond, homeDefaults.beyond),
     // The contact email set in Admin → Settings wins over the section default.
     contact: { ...resolvedContact, email: settings?.contactEmail || resolvedContact.email || homeDefaults.contact.email },
   };

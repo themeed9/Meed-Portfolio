@@ -35,7 +35,7 @@ function MediaPreview({ url }: { url: string }) {
 }
 
 /** One image, GIF or video: upload or paste a link, then alt text, caption and display. */
-export function MediaControl({ value, onChange, label }: { value: MediaDraft; onChange: (value: MediaDraft) => void; label: string }) {
+export function MediaControl({ value, onChange, label, showCaption = true, showFit = true, imageOnly = false, help }: { value: MediaDraft; onChange: (value: MediaDraft) => void; label: string; showCaption?: boolean; showFit?: boolean; imageOnly?: boolean; help?: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const set = (patch: Partial<MediaDraft>) => onChange({ ...value, ...patch });
@@ -43,6 +43,7 @@ export function MediaControl({ value, onChange, label }: { value: MediaDraft; on
   return (
     <fieldset className="rounded-lg border border-border-subtle p-4">
       <legend className="px-1 text-sm font-semibold">{label}</legend>
+      {help && <p className="mb-3 text-xs text-text-tertiary">{help}</p>}
       <div className="flex flex-col gap-4 sm:flex-row">
         <MediaPreview url={value.url} />
         <div className="min-w-0 flex-1 space-y-3">
@@ -59,17 +60,17 @@ export function MediaControl({ value, onChange, label }: { value: MediaDraft; on
           </label>
           {busy && <p className="text-xs text-text-tertiary" role="status">Uploading…</p>}
           {error && <p className="text-xs text-error" role="alert">{error}</p>}
-          <TextControl label="Or paste a link" value={value.url} onChange={(url) => set({ url })} help="For video, upload it to Cloudinary and paste the link. Videos play muted on a loop with a pause button." />
+          <TextControl label="Or paste a link" value={value.url} onChange={(url) => set({ url })} help={imageOnly ? "A still image: upload one, or paste a Cloudinary or Unsplash link." : "For video, upload it to Cloudinary and paste the link. Videos play muted on a loop with a pause button."} />
           {kind && <p className="text-xs text-text-tertiary">Detected: {KIND_LABEL[kind]}</p>}
           <TextControl label="Alt text" required value={value.alt} onChange={(alt) => set({ alt })} help="What the image shows, for screen readers." />
-          <TextControl label="Caption" value={value.caption ?? ""} onChange={(caption) => set({ caption })} help="Optional. Shown under the media." />
-          <label className="block text-sm font-medium">Display
+          {showCaption && <TextControl label="Caption" value={value.caption ?? ""} onChange={(caption) => set({ caption })} help="Optional. Shown under the media." />}
+          {showFit && <label className="block text-sm font-medium">Display
             <select className={input} value={value.fit ?? ""} onChange={(event) => set({ fit: event.target.value || undefined })}>
               <option value="">Show the whole image (recommended for screens)</option>
               <option value="cover">Fill the frame (may crop the edges)</option>
             </select>
-          </label>
-          {kind === "video" && <TextControl label="Poster image link" value={value.poster ?? ""} onChange={(poster) => set({ poster })} help="Optional still frame shown before the video plays." />}
+          </label>}
+          {kind === "video" && !imageOnly && <TextControl label="Poster image link" value={value.poster ?? ""} onChange={(poster) => set({ poster })} help="Optional still frame shown before the video plays." />}
         </div>
       </div>
     </fieldset>
