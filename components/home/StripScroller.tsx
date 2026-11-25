@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Pause, Play } from "lucide-react";
+import { useCallback, useEffect, useRef } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 // Project strip that drifts slowly on its own (owner request) in a seamless loop.
 // - A second copy of the tiles follows the first so the loop never shows a gap; it is
 //   hidden from assistive tech and inert, so screen readers and keyboards meet each tile once.
-// - WCAG 2.2.2: a visible Pause/Play button; it also pauses while hovered, touched or focused.
-// - prefers-reduced-motion: never moves on its own (starts paused, the button can start it).
+// - Pausing (owner removed the visible Pause button, 2026-11-25): it stops while hovered, touched
+//   or focused (keyboard users tab into it), and for 4s after an arrow press.
+// - prefers-reduced-motion: never moves on its own; the arrows, swipe and keyboard still scroll it.
 // - The scrollbar is hidden; arrows, trackpad, swipe and the keyboard still scroll it.
 
 const SPEED_PX_PER_SECOND = 24;
@@ -19,14 +20,10 @@ export default function StripScroller({ label, children }: { label: string; chil
   const position = useRef(0);
   const hold = useRef(false); // hover, focus or touch
   const resumeAt = useRef(0);
-  const [playing, setPlaying] = useState(true);
   const playingRef = useRef(true);
 
   useEffect(() => {
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    playingRef.current = false; // stop the drift at once; the button label follows on the next frame
-    const frame = requestAnimationFrame(() => setPlaying(false));
-    return () => cancelAnimationFrame(frame);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) playingRef.current = false;
   }, []);
 
   const loopWidth = useCallback(() => {
@@ -70,11 +67,6 @@ export default function StripScroller({ label, children }: { label: string; chil
     return () => { cancelAnimationFrame(frame); el.removeEventListener("scroll", onScroll); };
   }, [loopWidth]);
 
-  const toggle = () => {
-    playingRef.current = !playingRef.current;
-    setPlaying(playingRef.current);
-  };
-
   const step = (direction: -1 | 1) => {
     const el = scroller.current;
     if (!el) return;
@@ -92,9 +84,6 @@ export default function StripScroller({ label, children }: { label: string; chil
   return (
     <div className="home-strip-scroller">
       <div className="home-shell home-strip-controls">
-        <button type="button" className="home-strip-arrow" onClick={toggle} aria-pressed={!playing} aria-label={playing ? "Pause scrolling projects" : "Play scrolling projects"}>
-          {playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
-        </button>
         <button type="button" className="home-strip-arrow" onClick={() => step(-1)} aria-label="Scroll projects left">
           <ArrowLeft size={18} aria-hidden="true" />
         </button>
@@ -107,7 +96,7 @@ export default function StripScroller({ label, children }: { label: string; chil
         className="home-strip-viewport"
         tabIndex={0}
         role="region"
-        aria-label={label}
+        aria-label={`${label}. Scrolling stops while you hover, touch or focus it.`}
         onMouseEnter={pauseHold}
         onMouseLeave={releaseHold}
         onFocus={pauseHold}

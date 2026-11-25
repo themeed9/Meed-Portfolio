@@ -16,9 +16,9 @@ const asText = (value: unknown) => (typeof value === "string" ? value : "");
 
 const toDraft = (value: unknown): MediaDraft => {
   const m = isObj(value) ? value : {};
-  return { url: asText(m.src), alt: asText(m.alt), kind: asText(m.kind) || undefined, poster: asText(m.poster) || undefined };
+  return { url: asText(m.src), alt: asText(m.alt), kind: asText(m.kind) || undefined, poster: asText(m.poster) || undefined, fit: asText(m.fit) || undefined };
 };
-const fromDraft = (draft: MediaDraft) => ({ src: draft.url, alt: draft.alt, ...(draft.kind ? { kind: draft.kind } : {}), ...(draft.poster ? { poster: draft.poster } : {}) });
+const fromDraft = (draft: MediaDraft) => ({ src: draft.url, alt: draft.alt, ...(draft.kind ? { kind: draft.kind } : {}), ...(draft.poster ? { poster: draft.poster } : {}), ...(draft.fit ? { fit: draft.fit } : {}) });
 
 function emptyRow(fields: HomeField[]): Record<string, unknown> {
   return Object.fromEntries(fields.map((f) => [f.key, f.kind === "group" ? emptyRow(f.fields) : f.kind === "list" || f.kind === "projects" ? [] : f.kind === "media" ? undefined : ""]));
@@ -34,7 +34,7 @@ function Fields({ fields, value, onChange, projects }: { fields: HomeField[]; va
         const current = value[field.key];
         if (field.kind === "media") {
           return (
-            <MediaControl key={field.key} label={field.label} help={field.help} showCaption={false} showFit={false} imageOnly={field.imageOnly}
+            <MediaControl key={field.key} label={field.label} help={field.help} showCaption={false} showFit={!field.imageOnly} defaultFit={field.defaultFit ?? "cover"} imageOnly={field.imageOnly}
               value={toDraft(current)} onChange={(draft) => set(field.key, draft.url || draft.alt ? fromDraft(draft) : undefined)} />
           );
         }

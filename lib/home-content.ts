@@ -16,6 +16,8 @@ const media = z.object({
   alt: text(300),
   kind: z.enum(["image", "gif", "video"]).optional(),
   poster: href.optional(),
+  /** "cover" fills the frame (may crop); "contain" shows the whole image. Omitted: the slot's default. */
+  fit: z.enum(["cover", "contain"]).optional(),
 });
 export type HomeMedia = z.infer<typeof media>;
 

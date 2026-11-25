@@ -6,7 +6,7 @@ import { Pause, Play } from "lucide-react";
 // Video in a card media container: muted, looping and inline like a GIF, but with a Pause/Play
 // button (WCAG 2.2.2) and no autoplay for prefers-reduced-motion. Playback also stops while the
 // video is off screen, to save battery and data.
-export default function CardVideo({ src, poster, label, fit }: { src: string; poster?: string; label: string; fit: "cover" | "contain" }) {
+export default function CardVideo({ src, poster, label, fit, showToggle = true }: { src: string; poster?: string; label: string; fit: "cover" | "contain"; showToggle?: boolean }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const wanted = useRef(true);
@@ -44,11 +44,13 @@ export default function CardVideo({ src, poster, label, fit }: { src: string; po
         playsInline
         preload="metadata"
         aria-label={label}
+        // Without the visible button (hero, carousel), clicking the video itself pauses or plays it.
+        onClick={showToggle ? undefined : toggle}
         className={`absolute inset-0 h-full w-full ${fit === "contain" ? "object-contain" : "object-cover"}`}
       />
-      <button type="button" className="card-media-toggle" onClick={toggle} aria-pressed={!playing} aria-label={playing ? `Pause video: ${label}` : `Play video: ${label}`}>
+      {showToggle && <button type="button" className="card-media-toggle" onClick={toggle} aria-pressed={!playing} aria-label={playing ? `Pause video: ${label}` : `Play video: ${label}`}>
         {playing ? <Pause size={14} aria-hidden="true" /> : <Play size={14} aria-hidden="true" />}
-      </button>
+      </button>}
     </>
   );
 }
