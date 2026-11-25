@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { caseStudySectionTypes, payloadSchemaFor } from "../../lib/case-study.ts";
 import {
-  READ_TIME_TARGET_MINUTES, TYPE_INFO, WORD_BUDGET, blockWords, caseStudyLength, caseStudyTemplates, checkBlock, cleanBlockMedia, cleanPayload, contentsEntries, convertedLegacyFields,
+  READ_TIME_TARGET_MINUTES, TYPE_INFO, blockIntro, WORD_BUDGET, blockWords, caseStudyLength, caseStudyTemplates, checkBlock, cleanBlockMedia, cleanPayload, contentsEntries, convertedLegacyFields,
   emptyPayload, legacyBlocks, readBlockSettings, readingMinutes, type FieldSpec,
 } from "../../lib/case-study-blocks.ts";
 
@@ -186,5 +186,24 @@ describe("two-minute case study budget (owner decision, 2026-11-25)", () => {
   it("offers the 2-minute recruiter brief first, with five blocks", () => {
     assert.equal(Object.keys(caseStudyTemplates)[0], "recruiter");
     assert.equal(caseStudyTemplates.recruiter.blocks.length, 5);
+  });
+});
+
+describe("block intro text is never shown twice", () => {
+  it("hides intro text that repeats a typed field (older blocks stored it in both)", () => {
+    const body = "GoFinancial began with my own attempt to track daily expenses in a notebook.";
+    assert.equal(blockIntro("problem_statement", body, { body }), null);
+    assert.equal(blockIntro("problem_statement", `  ${body}\n`, { body: body.replace("daily", "daily ") }), null);
+  });
+
+  it("keeps a genuine intro, and never treats Text block content as an intro", () => {
+    assert.equal(blockIntro("decision", "Why bank sync waited.", { context: "c", decision: "d", rationale: "r", tradeoff: "t" }), "Why bank sync waited.");
+    assert.equal(blockIntro("rich_text", "Body", null), null);
+    assert.equal(blockIntro("outcome", "  ", { result: "r" }), null);
+  });
+
+  it("counts a duplicated paragraph once in the reading time", () => {
+    const body = Array(300).fill("word").join(" ");
+    assert.equal(caseStudyLength([{ type: "problem_statement", title: null, content: body, payload: { body }, metadata: null }]).words, 300);
   });
 });

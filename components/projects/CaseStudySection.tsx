@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { normalizeSection, type CaseStudySectionRecord } from "@/lib/case-study";
-import { readBlockSettings } from "@/lib/case-study-blocks";
+import { blockIntro, readBlockSettings } from "@/lib/case-study-blocks";
 import { CaseMediaSet, type CaseMediaItem } from "./CaseMedia";
 
 // ADR-003 typed blocks, with the ADR-011 CMS layer: every block can carry its own media (or be text
@@ -72,7 +72,8 @@ export default function CaseStudySection({ section, preview = false, colors = nu
   const settings = readBlockSettings(section.metadata, { url: section.imageUrl, alt: section.imageAlt });
   if (settings.hidden && !preview) return null;
   const emphasized = ["project_tldr", "decision", "evidence", "outcome"].includes(normalized.type);
-  const intro = normalized.type !== "rich_text" && normalized.content.trim() ? <RichText content={normalized.content} /> : null;
+  const introText = blockIntro(normalized.type, normalized.content, normalized.payload);
+  const intro = introText ? <RichText content={introText} /> : null;
   const body = render(normalized);
   const media = settings.media;
   const layout = media.length ? settings.mediaLayout : "none";

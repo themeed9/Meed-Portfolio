@@ -3,7 +3,7 @@ import Link from "next/link";
 import Script from "next/script";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import CaseStudySection from "./CaseStudySection";
-import { contentsEntries, convertedLegacyFields, readBlockSettings, readingMinutes } from "@/lib/case-study-blocks";
+import { caseStudyLength, contentsEntries, convertedLegacyFields, readBlockSettings } from "@/lib/case-study-blocks";
 import { cardColors } from "@/lib/project-card-view";
 
 // Case-study page (ADR-003 blocks + ADR-011 CMS layer). Everything below the header is composed in
@@ -28,9 +28,8 @@ export default function CaseStudyLayout({ project, preview = false, nextProject 
   const converted = convertedLegacyFields(project.caseStudySections);
   const overview = converted.includes("overview") ? null : project.overview;
   const challenge = converted.includes("challenge") ? null : project.challenge;
-  const visible = project.caseStudySections.filter((section) => !readBlockSettings(section.metadata).hidden);
-  const mediaCount = visible.reduce((sum, section) => sum + readBlockSettings(section.metadata).media.length, 0);
-  const minutes = readingMinutes([project.description, overview, challenge, ...visible.map((section) => [section.title, section.content, section.payload])], mediaCount);
+  // Same calculation as the admin meter, so the page and the editor always agree.
+  const { minutes } = caseStudyLength(project.caseStudySections, { description: project.description, overview: project.overview, challenge: project.challenge });
   const contents = contentsEntries(sections);
   const colors = cardColors(project.primaryColor || "#0B3D2E");
   const facts = [["Role", project.role], ["Client", project.client], ["Duration", project.duration], ["Year", project.year], ["Read time", `${minutes} min`]]
