@@ -396,10 +396,10 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
 /* Hero on a sky photo (owner request). The photo is decorative; a white wash that is strongest
    behind the text (left) keeps the deep-forest and secondary text above AA in light mode, and a
    deep scrim does the same for white text in dark mode. Checked in the hero contrast audit. */
-.home-hero--photo { position: relative; isolation: isolate; overflow: hidden; border-bottom: 1px solid var(--color-border-subtle); }
+.home-hero--photo { position: relative; }
 .home-hero-bg { position: absolute; inset: 0; z-index: -1; }
-.home-hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.55) 45%, rgba(255,255,255,.12) 100%); }
-.dark .home-hero-bg::after { background: linear-gradient(90deg, rgba(4,14,9,.84) 0%, rgba(4,14,9,.74) 45%, rgba(4,14,9,.5) 100%); }
+.home-hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(255,255,255,.55) 0, rgba(255,255,255,0) 120px), linear-gradient(90deg, rgba(255,255,255,.72) 0%, rgba(255,255,255,.55) 45%, rgba(255,255,255,.12) 100%); }
+.dark .home-hero-bg::after { background: linear-gradient(180deg, rgba(4,14,9,.6) 0, rgba(4,14,9,0) 120px), linear-gradient(90deg, rgba(4,14,9,.84) 0%, rgba(4,14,9,.74) 45%, rgba(4,14,9,.5) 100%); }
 .home-hero--photo .home-hero-media { box-shadow: 0 24px 60px -28px rgba(11, 61, 46, .45); border-color: rgba(255,255,255,.7); }
 @media (max-width: 899px) {
   .home-hero-bg::after { background: linear-gradient(180deg, rgba(255,255,255,.7), rgba(255,255,255,.5)); }
@@ -461,3 +461,23 @@ a.home-index-row:hover .home-index-title { text-decoration: underline; text-unde
 .case-preview-bar a { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 /* Phones: every block is one column, whatever its width or layout setting. */
 @media (max-width: 767px) { .case-block.case-block.case-block > .case-heading, .case-block.case-block.case-block > .case-content { grid-column: 1 / -1; } }
+
+/* One continuous sky (owner request): the transparent header, hero and project strip share the
+   photo with no dividers, and it fades into the page colour at the bottom. The wrapper slides up
+   under the sticky header (64px) so the sky shows through it. */
+.home-sky { position: relative; isolation: isolate; overflow: hidden; margin-top: -65px; padding-top: 65px; }
+.home-sky .home-strip { border-block: 0; padding-block: 8px 72px; }
+.home-sky-fade { position: absolute; inset: auto 0 0 0; height: 45%; z-index: 1; background: linear-gradient(180deg, color-mix(in srgb, var(--color-bg-primary) 0%, transparent) 0%, color-mix(in srgb, var(--color-bg-primary) 82%, transparent) 70%, var(--color-bg-primary) 100%); }
+.site-header { transition: background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease; }
+.site-header[data-over-sky] { background: transparent; border-bottom-color: transparent; }
+.site-header:not([data-over-sky]) { box-shadow: 0 1px 0 rgba(7, 16, 11, .02); }
+@media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
+
+/* No visible page scrollbar (owner request). Scrolling still works with wheel, touch, keys and the
+   "On this page" links. */
+html { scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
+/* Selected work: the product image container sits 24px inside the card (owner request). */
+.project-card-media { margin: 24px; border-radius: 16px; }
+@media (min-width: 900px) { .project-card-media { min-height: 0; } }

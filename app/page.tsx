@@ -1,5 +1,5 @@
 import FeaturedProjects from "@/components/home/FeaturedProjects";
-import { AboutSection, BeyondSection, ContactBand, HomeHero, MoreWorkSection, ProjectStrip } from "@/components/home/HomeSections";
+import { AboutSection, BeyondSection, ContactBand, HomeHero, HomeSky, MoreWorkSection, ProjectStrip } from "@/components/home/HomeSections";
 import { getHomeContent } from "@/lib/home-content-server";
 import { stripPlaceholders } from "@/lib/home-content";
 import { getPublishedProductProjects, getPublishedProjects, getSiteContent } from "@/lib/portfolio-content";
@@ -28,8 +28,10 @@ export default async function HomePage() {
   const heroImage = selected[0]?.homepageImage || selected[0]?.coverImage || null;
 
   return <>
-    <HomeHero content={content.hero} fallbackImage={heroImage} />
-    <ProjectStrip projects={products} placeholders={stripPlaceholders(content.strip, products.map((project) => project.title))} />
+    <HomeSky background={content.hero.background}>
+      <HomeHero content={content.hero} fallbackImage={heroImage} />
+      <ProjectStrip projects={products} placeholders={stripPlaceholders(content.strip, products.map((project) => project.title))} />
+    </HomeSky>
     <FeaturedProjects intro={workIntro} projects={selected} />
     <MoreWorkSection content={content.moreWork} />
     <AboutSection content={content.about} />

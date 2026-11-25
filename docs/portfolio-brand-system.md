@@ -138,3 +138,13 @@ photo-1499346030926, free under the Unsplash License, self-hosted at 68 KB). It 
 (`alt=""`, `aria-hidden`). A white wash in light mode and a deep forest scrim in dark mode keep every
 line of hero text at WCAG AA, measured against the worst single background pixel behind each line
 (lowest 5.4:1). The CMS `home-hero` content can override it with a `background` image.
+
+## Sky header and hero (2026-11-25)
+
+On the homepage the sky photo runs behind the header, the hero and the project strip as one section,
+with no dividers, fading into the page colour before Selected work (`HomeSky` in
+`components/home/HomeSections.tsx`). The header is transparent over the sky and fills with the page
+colour once the page scrolls (or the phone menu opens); on every other page it is always filled.
+All text on the sky, including the nav links and strip labels, passes WCAG AA in both themes at
+1440, 1024 and 390 px (lowest 5.6:1, worst background pixel). The page scrollbar is hidden at the
+owner's request. Selected work cards inset their media container by 24px.

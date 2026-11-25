@@ -14,6 +14,16 @@ const links = [
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  // Homepage only: the header is transparent over the sky until the page scrolls, then fills.
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 8);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, [pathname]);
+  const overSky = pathname === "/" && !scrolled && !open;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -25,7 +35,7 @@ export default function Navbar() {
   const active = (href: string) => href !== "/#beyond" && (pathname === href || (href === "/work" && pathname.startsWith("/work/")));
 
   return (
-    <header className="site-header">
+    <header className="site-header" data-over-sky={overSky ? "" : undefined}>
       <nav className="site-header-inner" aria-label="Primary navigation">
         <Link href="/" className="site-wordmark" aria-label="Meed, home">MEED</Link>
         <div className="site-nav-links">

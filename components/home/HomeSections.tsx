@@ -16,17 +16,30 @@ function SmartLink({ href, className, children, ariaLabel }: { href: string; cla
   return <Link href={href} className={className} aria-label={ariaLabel}>{children}</Link>;
 }
 
+/**
+ * One continuous sky behind the transparent header, the hero and the project strip (owner request):
+ * no divider between them, fading into the page colour at the bottom. The photo is decorative; the
+ * washes keep all text on it at WCAG AA (checked by the hero contrast audit).
+ */
+export function HomeSky({ background, children }: { background?: HomeHero["background"]; children: React.ReactNode }) {
+  const photo = background ?? HERO_BACKGROUND;
+  return (
+    <div className="home-sky">
+      <div className="home-hero-bg" aria-hidden="true">
+        <Image src={photo.src} alt="" fill priority sizes="100vw" className="object-cover object-[50%_30%]" />
+        <div className="home-sky-fade" />
+      </div>
+      {children}
+    </div>
+  );
+}
+
 export function HomeHero({ content, fallbackImage }: { content: HomeHero; fallbackImage?: string | null }) {
   const cta = safeHref(content.ctaLink) ?? "#selected-work";
   const roles = safeHref(content.rolesLink);
   const image = content.image ?? (fallbackImage ? { src: fallbackImage, alt: "Product interface from a featured case study" } : null);
-  const background = content.background ?? HERO_BACKGROUND;
   return (
     <section className="home-hero home-hero--photo" aria-labelledby="home-hero-title">
-      {/* Decorative sky photo; the wash on top keeps every line of hero text at WCAG AA. */}
-      <div className="home-hero-bg" aria-hidden="true">
-        <Image src={background.src} alt="" fill priority sizes="100vw" className="object-cover object-[50%_35%]" />
-      </div>
       <div className="home-shell home-hero-grid">
         <div className="min-w-0">
           <p className="home-status"><span className="home-status-dot" aria-hidden="true" />{content.status}</p>
