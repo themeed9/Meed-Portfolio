@@ -211,7 +211,7 @@ function Media({ media, className = "", fill }: { media: CardMediaView; classNam
   const fitClass = fit === "contain" ? "object-contain" : "object-cover";
   const frame = fill ? `absolute inset-0 overflow-hidden ${className}` : `relative block overflow-hidden rounded-[12px] ${className}`;
   return (
-    <div className={frame} style={fill ? undefined : { aspectRatio: media.aspectRatio }} data-media-kind={media.kind}>
+    <div className={frame} style={fill ? undefined : { aspectRatio: media.aspectRatio }} data-media-kind={media.kind} data-parallax="">
       {media.kind === "video" ? (
         <CardVideo src={media.url} poster={media.poster} label={media.alt} fit={fit} />
       ) : (

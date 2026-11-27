@@ -54,7 +54,7 @@ export function HomeHero({ content, fallbackImage }: { content: HomeHero; fallba
           </div>
         </div>
         {image && (
-          <div className="home-hero-media">
+          <div className="home-hero-media" data-parallax="">
             <HomeMedia media={image} sizes="(max-width: 767px) 100vw, 560px" fit="contain" showToggle={false} />
           </div>
         )}
