@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import Script from "next/script";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
@@ -32,34 +33,38 @@ export default function CaseStudyLayout({ project, preview = false, nextProject 
   const { minutes } = caseStudyLength(project.caseStudySections, { description: project.description, overview: project.overview, challenge: project.challenge });
   const contents = contentsEntries(sections);
   const colors = cardColors(project.primaryColor || "#0B3D2E");
+  const heroStyle = (colors ? { "--hero-bg": colors.background, "--hero-fg": colors.text } : {}) as CSSProperties;
   const facts = [["Role", project.role], ["Client", project.client], ["Duration", project.duration], ["Year", project.year], ["Read time", `${minutes} min`]]
     .filter((item): item is [string, string] => Boolean(item[1]));
   const jsonLd = { "@context": "https://schema.org", "@type": "CreativeWork", name: project.title, description: project.description, dateCreated: project.year || undefined, keywords: project.tags.join(", "), author: { "@type": "Person", name: "Abdulhameed Abdulsalam" } };
 
   return (
-    <article className="page-pad">
+    <article className="case-page">
       {!preview && <Script id="schema-project" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
-      <header className="shell">
-        <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-8">
-            <p className="eyebrow">{project.category}</p>
-            <h1 className="mt-5 type-h1">{project.title}</h1>
-            <p className="mt-7 max-w-3xl type-body-lg text-text-secondary">{project.description}</p>
+      {/* Full-bleed hero in the project's colour with a large title; the cover image overlaps the
+          band's lower edge and drifts as you scroll (owner request, 2026-11-27). Text uses the
+          auto-picked AA colour for the band. */}
+      <header className="case-hero" style={heroStyle}>
+        <div className="case-hero-band">
+          <div className="shell case-hero-inner">
+            <p className="case-hero-eyebrow">{project.category}</p>
+            <h1 className="case-hero-title">{project.title}</h1>
+            <p className="case-hero-intro">{project.description}</p>
             {/* Recruiters can see the real product straight away (owner, 2026-11-25). */}
-            {project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer" className="home-button home-button-primary mt-8 gap-2">View live project <ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>}
-          </div>
-          <div className="lg:col-span-4">
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-5 border-t border-border-subtle pt-5">
-              {facts.map(([label, value]) => <div key={label}><dt className="type-micro text-text-tertiary">{label}</dt><dd className="mt-1 type-small font-semibold">{value}</dd></div>)}
-              {project.tags.length > 0 && <div className="col-span-2"><dt className="type-micro text-text-tertiary">Contribution</dt><dd className="mt-1 type-small text-text-secondary">{project.tags.join(" · ")}</dd></div>}
-              {project.tools.length > 0 && <div className="col-span-2"><dt className="type-micro text-text-tertiary">Tools</dt><dd className="mt-1 type-small text-text-secondary">{project.tools.join(" · ")}</dd></div>}
-            </dl>
+            {project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer" className="case-hero-cta">View live project <ArrowUpRight size={16} aria-hidden="true" /><span className="sr-only"> (opens in a new tab)</span></a>}
           </div>
         </div>
-        {project.coverImage && <div className="project-evidence relative mt-14 aspect-[16/8] overflow-hidden bg-bg-tertiary"><Image src={project.coverImage} alt={`${project.title} product interface`} fill preload sizes="(max-width:1200px) 100vw,1200px" className="object-cover" /></div>}
+        <div className="shell">
+          {project.coverImage && <div className="case-hero-media" data-parallax=""><Image src={project.coverImage} alt={`${project.title} product interface`} fill preload sizes="(max-width:1200px) 100vw,1200px" className="object-cover" /></div>}
+          <dl className={`case-hero-facts ${project.coverImage ? "" : "case-hero-facts--flush"}`}>
+            {facts.map(([label, value]) => <div key={label}><dt className="type-micro text-text-tertiary">{label}</dt><dd className="mt-1 type-small font-semibold">{value}</dd></div>)}
+            {project.tags.length > 0 && <div className="case-hero-facts-wide"><dt className="type-micro text-text-tertiary">Contribution</dt><dd className="mt-1 type-small text-text-secondary">{project.tags.join(" · ")}</dd></div>}
+            {project.tools.length > 0 && <div className="case-hero-facts-wide"><dt className="type-micro text-text-tertiary">Tools</dt><dd className="mt-1 type-small text-text-secondary">{project.tools.join(" · ")}</dd></div>}
+          </dl>
+        </div>
       </header>
 
-      <div className="shell mt-20">
+      <div className="shell mt-16">
         {contents.length >= 3 && (
           <nav className="case-contents" aria-label="On this page">
             <p className="type-micro text-text-tertiary">On this page</p>

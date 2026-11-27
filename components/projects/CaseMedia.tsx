@@ -12,7 +12,7 @@ export default function CaseMedia({ item, defaultFit = "contain", ratio = "16 / 
   const fit = item.fit ?? defaultFit;
   return (
     <figure className="case-media">
-      <div className="case-media-frame" style={{ aspectRatio: ratio }} data-media-kind={kind}>
+      <div className="case-media-frame" style={{ aspectRatio: ratio }} data-media-kind={kind} data-parallax="">
         {kind === "video" ? (
           <CardVideo src={item.url} poster={item.poster} label={item.alt} fit={fit} />
         ) : (
